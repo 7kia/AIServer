@@ -19,39 +19,44 @@ class Controller:
         [game_id, player_id] = game_info
 
         path = "/ai-server/" + ai_name + "/" + ai_type + "/" + str(game_id) + "/" + str(player_id)
-        cls.ai_sockets.update({game_id: {player_id: socket.socket()}})
-        current_socket = cls.ai_sockets[game_id][player_id]
-        current_socket.bind(("", 5001))
-        current_socket.listen(1)
+        return path
 
     @classmethod
     def create_ai_for_game(cls, game_info, ai_info):
-        [game_id, player_id] = game_info
+        try:
+            [game_id, player_id] = game_info
 
-        cls.init_socket(ai_info, game_info)
-        current_socket = cls.ai_sockets[game_id][player_id]
+            path = cls.init_socket(ai_info, game_info)
 
-        conn, addr = current_socket.accept()
-        cls.ai_socket_connections[game_id][player_id] = conn
+            cls.ai_list.update({game_id: {}})
+            cls.ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
+            return path, 200
+        except Exception as e:
+            print(e)
+            return 500
 
-        cls.ai_list[game_id][player_id] = AiBuilder.create_ai(ai_info, game_info)
 
-        return addr, 200
+
 
     @classmethod
     def find_ai(cls, game_id, player_id):
         try:
-            return cls.ai_list[game_id][player_id]
+            return cls.ai_list[str(game_id)][str(player_id)]
         except KeyError as e:
-            raise ValueError('Undefined ai type: {}'.format(e.args[0]))
-        return None
+            raise ValueError('Undefined ai type: {0}'.format(e.args[0]))
 
     @classmethod
     def update_ai(cls, game, param):
-        [game_id, player_id] = param
-        ai = cls.find_ai(game_id, player_id)
-        commandList = ai.get_commands(game)
-        return jsonify(commandList)
+        try:
+            [game_id, player_id] = param
+            ai = cls.find_ai(game_id, player_id)
+            command_list = ai.get_commands(game)
+            return jsonify(command_list), 200
+        except Exception as e:
+            print(e)
+            return 500
+
+
 
 
 

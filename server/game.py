@@ -1,3 +1,5 @@
 class Game:
+    id = None
+    users = {}
     def __init__(self):
-        self.id = None
+        pass
