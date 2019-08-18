@@ -2,22 +2,6 @@ import unittest
 import requests
 
 
-class MyTestCase(unittest.TestCase):
-    def update_ai(self):
-        url = 'http://127.0.0.1:5000/ai-server/1/1/'
-        data = ({"id": 1, "users": {"1": {}}})
-        res = requests.post(url, json=data)
-        self.assertEqual(res.text,
-                         "f" """[
-  {
-    "arguments": {
-      "arg1": "value1"
-    },
-    "commandName": "moveOrAttack"
-  }
-]""")
-
-
 class TestStringMethods(unittest.TestCase):
 
     def test_create_ai(self):

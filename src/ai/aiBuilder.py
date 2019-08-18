@@ -16,7 +16,7 @@ class AiBuilder:
 
             new_ai = AI_TYPES[ai_type]["class"]()
             new_ai.id = player_id
-            # TODO
+            # TODO set AI
             return new_ai
         except KeyError as e:
             raise ValueError('Undefined ai type: {}'.format(e.args[0]))
