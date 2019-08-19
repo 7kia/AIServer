@@ -7,8 +7,8 @@ class UpdateAiRules:
     def __init__(self, ai_manager):
         self.ai_manager = ai_manager
 
-    @classmethod
-    def validate_game(cls, game, param):
+    @staticmethod
+    def validate_game(game, param):
         [game_id, player_id] = param
         message = ""
 
@@ -21,8 +21,7 @@ class UpdateAiRules:
             message += "Posted user id={0} not content to game with id={1};\n".format(game.id, game_id)
         return message
 
-    @classmethod
-    def exist_ai(cls, game_id, player_id):
-        return cls.ai_manager.exist_ai(game_id, player_id) is not None
+    def exist_ai(self, game_id, player_id):
+        return self.ai_manager.exist_ai(game_id, player_id)
 
 

@@ -4,6 +4,5 @@ class Ai:
     def __init__(self):
         pass
 
-    @classmethod
-    def get_commands(cls, game):
+    def get_commands(self, game):
         return [{"commandName": "moveOrAttack", "arguments": {"arg1": "value1"}}]

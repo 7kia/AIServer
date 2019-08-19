@@ -2,17 +2,20 @@ from src.ai.aiManager import AiManager
 
 
 class AiManagmentStrategies:
-    ai_manager = None
-
     def __init__(self, ai_manager):
         self.ai_manager = ai_manager
 
-    @classmethod
-    def create_ai(cls, game_info, ai_info):
-        path = cls.ai_manager.create_ai(game_info, ai_info)
+    def create_ai(self, game_info, ai_info):
+        path = self.ai_manager.create_ai(game_info, ai_info)
         return path
 
-    @classmethod
-    def update_ai(cls, game, game_id, player_id):
-        return cls.ai_manager.update_ai(game, game_id, player_id)
+    def update_ai(self, game, game_id, player_id):
+        return self.ai_manager.update_ai(game, game_id, player_id)
+
+    @staticmethod
+    def send_error_message(message):
+        return message, 500
+
+    def delete_ai(self, game_id, player_id):
+        return self.ai_manager.delete_ai(game_id, player_id)
 

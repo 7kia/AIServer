@@ -1,12 +1,12 @@
 {
-  "intellectual-000":
+  "Intellectual000":
   {
     "type": "Script bot",
     "name": "Intellectual000",
     "address": "intellectual-000",
     "description": "Test bot. Random get command by units."
   },
-  "neuron-ai-test":
+  "NeuronAITest":
   {
     "type": "Neuron network",
     "name": "NeuronAITest",
