@@ -1,0 +1,16 @@
+{
+  "Intellectual000":
+  {
+    "type": "Script bot",
+    "name": "Intellectual000",
+    "address": "intellectual-000",
+    "description": "Test bot. Random get command by units."
+  },
+  "NeuronAITest":
+  {
+    "type": "Neuron network",
+    "name": "NeuronAITest",
+    "address": "neuron-ai-test",
+    "description": "Test neuron network. Not trained."
+  }
+}

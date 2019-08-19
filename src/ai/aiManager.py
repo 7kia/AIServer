@@ -1,3 +1,5 @@
+import json
+
 from flask import jsonify
 
 from .aiBuilder import AiBuilder
@@ -10,7 +12,14 @@ class AiManager:
     ai_type_list = {}
     ai_info_list = {}
 
-    def __init__(self, ai_type_list, ai_info_list):
+    def __init__(self):
+        ai_type_list_file = open("src/ai/AI-type-list.json")
+        ai_info_list_file = open("src/ai/AI-list.json")
+        ai_type_list = json.load(ai_type_list_file)
+        ai_info_list = json.load(ai_info_list_file)
+        ai_type_list_file.close()
+        ai_info_list_file.close()
+
         self.ai_type_list = ai_type_list
         self.ai_info_list = ai_info_list
 
@@ -44,7 +53,7 @@ class AiManager:
     def update_ai(self, game, game_id, player_id):
         ai = self.find_ai(game_id, player_id)
         command_list = ai.get_commands(game)
-        return jsonify(command_list)
+        return command_list
 
     def delete_ai(self, game_id, player_id):
         del self.ai_list[str(game_id)][str(player_id)]

@@ -1,4 +1,4 @@
-import json
+from flask import jsonify
 
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
@@ -9,14 +9,7 @@ from .ai.aiManager import AiManager
 
 class RouteController:
     def __init__(self):
-        ai_type_list_file = open("src/ai/AI-type-list.json")
-        ai_info_list_file = open("src/ai/AI-list.json")
-        ai_type_list = json.load(ai_type_list_file)
-        ai_info_list = json.load(ai_info_list_file)
-        ai_type_list_file.close()
-        ai_info_list_file.close()
-
-        ai_manager = AiManager(ai_type_list, ai_info_list)
+        ai_manager = AiManager()
         self.ai_managment_strategies = AiManagmentStrategies(ai_manager)
         self.create_ai_rules = CreateAiRules(ai_manager)
         self.update_ai_rules = UpdateAiRules(ai_manager)
@@ -72,7 +65,7 @@ class RouteController:
                 return AiManagmentStrategies.send_error_message(
                     "Ai with player_id={0} not found to game with id={1}".format(game_id, player_id)
                 )
-            return self.ai_managment_strategies.update_ai(game, game_id, player_id), 200
+            return jsonify(self.ai_managment_strategies.update_ai(game, game_id, player_id)), 200
         except Exception as e:
             print(e)
             return "", 500

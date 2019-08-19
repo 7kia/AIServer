@@ -3,7 +3,6 @@ import requests
 
 
 class TestServer(unittest.TestCase):
-
     @staticmethod
     def generate_create_ai_request(ai_type, ai_name, game_id, player_id):
         return 'http://localhost:5000/ai-server/{0}/{1}/new?gameId={2}&playerId={3}'\
