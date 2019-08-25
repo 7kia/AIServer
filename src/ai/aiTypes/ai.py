@@ -1,6 +1,6 @@
 class Ai:
     id = None
-
+    location = None
     def __init__(self):
         pass
 
