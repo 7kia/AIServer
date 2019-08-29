@@ -13,12 +13,12 @@ AI_SERVER_ADDRESS = AI_SERVER_HOST + ":" + AI_SERVER_PORT
 class TestRouteController(asynctest.TestCase):
     @staticmethod
     def generate_create_ai_request(ai_type, ai_name, game_id, player_id):
-        return 'http://localhost:5000/ai-server/{0}/{1}/new?gameId={2}&playerId={3}'\
+        return 'http://localhost:5000/ai-server/{0}/{1}/new?gameId={2}&playerId={3}' \
             .format(ai_type, ai_name, game_id, player_id)
 
     @staticmethod
     def generate_ai_address(game_id, player_id):
-        return "/ai-server/{0}/{1}/".format(game_id, player_id)
+        return "/ai-server/{0}/{1}".format(game_id, player_id)
 
     def test_generate_ai_address(self):
         controller = RouteController()
@@ -26,7 +26,7 @@ class TestRouteController(asynctest.TestCase):
         game_id = 2
         player_id = 21
         ai_type = "script-bot"
-        ai_name = "Intellectual000"
+        ai_name = "intellectual-000"
 
         game_info = [game_id, player_id]
         ai_info = [ai_type, ai_name]
@@ -111,6 +111,19 @@ class TestRouteController(asynctest.TestCase):
             }
         }
 
+    @classmethod
+    def create_template_controller_with_ai(cls, game_id, player_id, ai_type, ai_name):
+        controller = RouteController()
+        input_data = {
+            "game_id": game_id,
+            "player_id": player_id,
+            "ai_type": ai_type,
+            "ai_name": ai_name,
+            "location": TestRouteController.generate_mock_location_info()
+        }
+        controller.create_ai(input_data)
+        return controller
+
     def test_create_ai(self):
         game_id = "3"
         player_id = "31"
@@ -118,7 +131,7 @@ class TestRouteController(asynctest.TestCase):
             "game_id": game_id,
             "player_id": player_id,
             "ai_type": "script-bot",
-            "ai_name": "Intellectual000",
+            "ai_name": "intellectual-000",
             "location": TestRouteController.generate_mock_location_info()
         }
 
@@ -151,18 +164,9 @@ class TestRouteController(asynctest.TestCase):
         game_id = "4"
         player_id = "41"
         ai_type = "script-bot"
-        ai_name = "Intellectual000"
+        ai_name = "intellectual-000"
 
-        controller = RouteController()
-        input_data = {
-            "game_id": game_id,
-            "player_id": player_id,
-            "ai_type": ai_type,
-            "ai_name": ai_name,
-            "location": TestRouteController.generate_mock_location_info()
-        }
-        controller.create_ai(input_data)
-
+        controller = TestRouteController.create_template_controller_with_ai(game_id, player_id, ai_type, ai_name)
         json_object = {
             "id": game_id,
             "users": {player_id: {}}
@@ -172,15 +176,15 @@ class TestRouteController(asynctest.TestCase):
         self.assertEqual(
             json.loads(commands),
             {
-                "commands":
-                [
-                    {
-                        "arguments": {
-                            "arg1": "value1"
-                        },
-                        "commandName": "moveOrAttack"
-                    }
-                ]
+                "data":
+                    [
+                        {
+                            "arguments": {
+                                "arg1": "value1"
+                            },
+                            "commandName": "moveOrAttack"
+                        }
+                    ]
             }
         )
 
@@ -188,17 +192,8 @@ class TestRouteController(asynctest.TestCase):
         game_id = "5"
         player_id = "51"
         ai_type = "script-bot"
-        ai_name = "Intellectual000"
-
-        controller = RouteController()
-        input_data = {
-            "game_id": game_id,
-            "player_id": player_id,
-            "ai_type": ai_type,
-            "ai_name": ai_name,
-            "location": TestRouteController.generate_mock_location_info()
-        }
-        controller.create_ai(input_data)
+        ai_name = "intellectual-000"
+        controller = TestRouteController.create_template_controller_with_ai(game_id, player_id, ai_type, ai_name)
         message = controller.delete_ai([game_id, player_id])
 
         self.assertEqual(message, "Ai delete")
@@ -206,6 +201,42 @@ class TestRouteController(asynctest.TestCase):
             var = controller.ai_manager.get_ai(game_id, player_id)
         with self.assertRaises(Exception):
             var = controller.ai_manager.get_ai_socket_connection_info(game_id, player_id)
+
+    def test_set_ai_unit_positions(self):
+        game_id = "6"
+        player_id = "61"
+        ai_type = "script-bot"
+        ai_name = "intellectual-000"
+        controller = TestRouteController.create_template_controller_with_ai(game_id, player_id, ai_type, ai_name)
+
+        unit_counts = {
+            "tank": {
+                "regiment": 1,
+            },
+            "landbase": {
+                "tactic": 1,
+            },
+        }
+        unit_positions = controller.generate_ai_unit_positions(game_id, player_id, unit_counts)
+        self.assertEqual(
+            json.loads(unit_positions),
+            {
+                "data":
+                [
+                    {
+                        "type": "tank",
+                        "position": [0, 0],
+                        "troopSize": "regiment",
+                    },
+                    {
+                        "type": "landbase",
+                        "position": [0, 0],
+                        "troopSize": "tactic",
+                    },
+                ]
+            }
+
+        )
 
 
 if __name__ == '__main__':

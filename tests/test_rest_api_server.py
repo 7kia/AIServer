@@ -22,7 +22,7 @@ class TestRestApiServer(asynctest.TestCase):
         game_id = 1
         player_id = 11
         ai_type = "script-bot"
-        ai_name = "Intellectual000"
+        ai_name = "intellectual-000"
 
         url = TestRestApiServer.generate_create_ai_request(ai_type, ai_name, game_id, player_id)
         res = requests.get(url)

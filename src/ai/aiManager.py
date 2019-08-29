@@ -24,7 +24,7 @@ class AiManager:
 
     @staticmethod
     def generate_ai_address(game_id, player_id):
-        return "/ai-server/{0}/{1}/".format(game_id, player_id)
+        return "/ai-server/{0}/{1}".format(game_id, player_id)
 
     def create_ai(self, ai_info, game_info, data):
         [game_id, player_id] = game_info
@@ -65,13 +65,17 @@ class AiManager:
             del self._ai_list[str(game_id)]
         return AiManager.get_succsess_delete_message()
 
-    def exist_type(self, ai_type):
-        type = self.ai_type_list.get(ai_type)
-        return type is not None
+    def exist_type(self, ai_type_address):
+        for key in self.ai_type_list:
+            if self.ai_type_list[key]["address"] == ai_type_address:
+                return True
+        return False
 
-    def exist_name(self, ai_name):
-        name = self.ai_info_list.get(ai_name)
-        return name is not None
+    def exist_name(self, ai_name_address):
+        for key in self.ai_info_list:
+            if self.ai_info_list[key]["address"] == ai_name_address:
+                return True
+        return False
 
     def exist_ai(self, game_id, player_id):
         player_list = self._ai_list.get(str(game_id))

@@ -17,19 +17,19 @@ class RouteController:
     def generate_ai_address(self, game_info, ai_info):
         try:
             [game_id, player_id] = game_info
-            [ai_type, ai_name] = ai_info
+            [ai_type_address, ai_name_address] = ai_info
 
-            exist_type = self.create_ai_rules.exist_type(ai_type)
-            exist_name = self.create_ai_rules.exist_name(ai_name)
+            exist_type = self.create_ai_rules.exist_type(ai_type_address)
+            exist_name = self.create_ai_rules.exist_name(ai_name_address)
             exist_ai = self.create_ai_rules.exist_ai(game_id, player_id)
 
             if exist_type is False:
                 return AiManagmentStrategies.send_error_message(
-                    "Ai type \'" + ai_type + "\' not found"
+                    "Ai type address \'" + ai_type_address + "\' not found"
                 ), 500
             if exist_name is False:
                 return AiManagmentStrategies.send_error_message(
-                    "Ai name \'" + ai_name + "\' not found"
+                    "Ai name address \'" + ai_name_address + "\' not found"
                 ), 500
             if exist_ai:
                 return AiManagmentStrategies.send_error_message(
@@ -85,7 +85,7 @@ class RouteController:
 
     @classmethod
     def generate_json_with_double_quotes(cls, commands):
-        str_commands = str({"commands": commands})
+        str_commands = str({"data": commands})
         str_commands = str_commands.replace("\'", "\"")
         return str_commands
 
@@ -100,5 +100,11 @@ class RouteController:
 
         self.ai_manager.create_ai([ai_type, ai_name], [game_id, player_id], [location])
         self.ai_manager.add_ai_socket_connection_info(game_id, player_id)
+
+    def generate_ai_unit_positions(self, game_id, player_id, unit_counts):
+        ai = self.ai_manager.get_ai(game_id, player_id)
+        return RouteController.generate_json_with_double_quotes(
+            ai.generate_unit_positions(unit_counts)
+        )
 
 

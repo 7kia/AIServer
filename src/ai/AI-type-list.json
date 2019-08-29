@@ -1,4 +1,10 @@
 {
-    "script-bot": {"name": "Script bot"},
-    "neuron-network": {"name": "Neuron network"}
+    "script-bot": {
+        "name": "Script bot",
+        "address": "script-bot"
+    },
+    "neuron-network": {
+        "name": "Neuron network",
+        "address": "neuron-network"
+    }
 }
