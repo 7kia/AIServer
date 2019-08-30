@@ -96,9 +96,13 @@ class RouteController:
         ai_type = data["ai_type"]
         ai_name = data["ai_name"]
         location = data["location"]
+        country = data["country"]
         # print("connect {0} {1}".format(game_id, player_id))
-
-        self.ai_manager.create_ai([ai_type, ai_name], [game_id, player_id], [location])
+        self.ai_manager.create_ai(
+            ai_info=[ai_type, ai_name],
+            game_info=[game_id, player_id],
+            ai_data=[location, country]
+        )
         self.ai_manager.add_ai_socket_connection_info(game_id, player_id)
 
     def generate_ai_unit_positions(self, game_id, player_id, unit_counts):

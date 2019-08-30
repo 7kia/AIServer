@@ -119,7 +119,8 @@ class TestRouteController(asynctest.TestCase):
             "player_id": player_id,
             "ai_type": ai_type,
             "ai_name": ai_name,
-            "location": TestRouteController.generate_mock_location_info()
+            "location": TestRouteController.generate_mock_location_info(),
+            "country": "Ukraine",
         }
         controller.create_ai(input_data)
         return controller
@@ -127,12 +128,14 @@ class TestRouteController(asynctest.TestCase):
     def test_create_ai(self):
         game_id = "3"
         player_id = "31"
+        country = "Ukraine"
         input_data = {
             "game_id": game_id,
             "player_id": player_id,
             "ai_type": "script-bot",
             "ai_name": "intellectual-000",
-            "location": TestRouteController.generate_mock_location_info()
+            "location": TestRouteController.generate_mock_location_info(),
+            "country": country,
         }
 
         controller = RouteController()
@@ -150,7 +153,8 @@ class TestRouteController(asynctest.TestCase):
         try:
             ai = controller.ai_manager.get_ai(game_id, player_id)
             self.assertEqual(ai is not None, True)
-            self.assertEqual(ai.location, TestRouteController.generate_mock_location_info())
+            self.assertEqual(ai.get_location(), TestRouteController.generate_mock_location_info())
+            self.assertEqual(ai.get_country(), country)
 
             ai_socket_connection_info = controller.ai_manager.get_ai_socket_connection_info(game_id, player_id)
             self.assertEqual(
@@ -218,6 +222,15 @@ class TestRouteController(asynctest.TestCase):
             },
         }
         unit_positions = controller.generate_ai_unit_positions(game_id, player_id, unit_counts)
+
+        ai = controller.ai_manager.get_ai(game_id, player_id)
+        ai_location = ai.get_location()
+        bounds_country = ai_location["boundsCountry"][ai.get_country()]
+
+        position = [
+            (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
+            (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
+        ]
         self.assertEqual(
             json.loads(unit_positions),
             {
@@ -225,12 +238,12 @@ class TestRouteController(asynctest.TestCase):
                 [
                     {
                         "type": "tank",
-                        "position": [0, 0],
+                        "position": position,
                         "troopSize": "regiment",
                     },
                     {
                         "type": "landbase",
-                        "position": [0, 0],
+                        "position": position,
                         "troopSize": "tactic",
                     },
                 ]

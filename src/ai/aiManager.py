@@ -26,14 +26,15 @@ class AiManager:
     def generate_ai_address(game_id, player_id):
         return "/ai-server/{0}/{1}".format(game_id, player_id)
 
-    def create_ai(self, ai_info, game_info, data):
+    def create_ai(self, ai_info, game_info, ai_data):
         [game_id, player_id] = game_info
 
         self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
 
-        [location] = data
-        self._ai_list[game_id][player_id].location = location
+        [location, country] = ai_data
+        self._ai_list[game_id][player_id].set_location(location)
+        self._ai_list[game_id][player_id].set_country(country)
 
     def add_ai_socket_connection_info(self, game_id, player_id):
         self._ai_socket_connection_info.update({game_id: {}})
