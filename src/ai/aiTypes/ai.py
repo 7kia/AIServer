@@ -23,6 +23,7 @@ class Ai:
                 amount = unit_counts[type_unit][troop_size]
                 for i in range(amount):
                     unit_positions.append({
+                        "country": self.__country,
                         "type": type_unit,
                         "position": self.generate_position(type_unit, troop_size, i, amount),
                         "troopSize": troop_size,

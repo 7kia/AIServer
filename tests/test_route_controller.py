@@ -231,24 +231,26 @@ class TestRouteController(asynctest.TestCase):
             (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
             (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
         ]
+        expected_country = "Ukraine"
         self.assertEqual(
             json.loads(unit_positions),
             {
                 "data":
                 [
                     {
+                        "country": expected_country,
                         "type": "tank",
                         "position": position,
                         "troopSize": "regiment",
                     },
                     {
+                        "country": expected_country,
                         "type": "landbase",
                         "position": position,
                         "troopSize": "tactic",
                     },
                 ]
             }
-
         )
 
 
