@@ -125,6 +125,15 @@ class TestRouteController(asynctest.TestCase):
         controller.create_ai(input_data)
         return controller
 
+    @classmethod
+    def generate_position_to_center_map(cls, ai):
+        ai_location = ai.get_location()
+        bounds_country = ai_location["boundsCountry"][ai.get_country()]
+        return [
+            (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
+            (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
+        ]
+
     def test_create_ai(self):
         game_id = "3"
         player_id = "31"
@@ -177,17 +186,35 @@ class TestRouteController(asynctest.TestCase):
         }
         commands = controller.update_ai(json_object, [game_id, player_id])
 
+        position = TestRouteController.generate_position_to_center_map(
+            controller.ai_manager.get_ai(game_id, player_id)
+        )
+
         self.assertEqual(
             json.loads(commands),
             {
                 "data":
                     [
                         {
+                            "commandName": "move_or_attack",
                             "arguments": {
-                                "arg1": "value1"
-                            },
-                            "commandName": "moveOrAttack"
-                        }
+                                "unit_id": 1,
+                                "position": position
+                            }
+                        },
+                        {
+                            "commandName": "retreat_or_storm",
+                            "arguments": {
+                                "unit_id": 2,
+                                "position": position
+                            }
+                        },
+                        {
+                            "commandName": "stop_or_defence",
+                            "arguments": {
+                                "unit_id": 3
+                            }
+                        },
                     ]
             }
         )

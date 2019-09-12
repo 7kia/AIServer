@@ -6,8 +6,41 @@ class Ai:
     def __init__(self):
         pass
 
+    @classmethod
+    def generate_move_or_attack_command(cls, unit_id, position):
+        return {
+            "commandName": "move_or_attack",
+            "arguments": {
+                "unit_id": unit_id,
+                "position": position
+            }
+        }
+
+    @classmethod
+    def generate_retreat_or_storm_command(cls, unit_id, position):
+        return {
+            "commandName": "retreat_or_storm",
+            "arguments": {
+                "unit_id": unit_id,
+                "position": position
+            }
+        }
+
+    @classmethod
+    def generate_stop_or_defence_command(cls, unit_id):
+        return {
+            "commandName": "stop_or_defence",
+            "arguments": {
+                "unit_id": unit_id
+            }
+        }
+
     def get_commands(self, game):
-        return [{"commandName": "moveOrAttack", "arguments": {"arg1": "value1"}}]
+        return [
+            Ai.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
+            Ai.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
+            Ai.generate_stop_or_defence_command(3),
+        ]
 
     def generate_position(self, type_unit, troop_size, i, amount):
         country_bound = self.__location["boundsCountry"][self.__country]
