@@ -183,7 +183,8 @@ class TestAiCommands(asynctest.TestCase):
 
         position = TestAiCommands.generate_position_to_center_map(ai)
         unit_id = 4
-        command = ai.generate_take_train_command(unit_id, position)
+        passenger_id = 5
+        command = ai.generate_take_train_command(unit_id, passenger_id)
 
         self.assertEqual(
             command,
@@ -191,7 +192,7 @@ class TestAiCommands(asynctest.TestCase):
                 "commandName": "take_train",
                 "arguments": {
                     "unit_id": unit_id,
-                    "position": position
+                    "passenger_id": passenger_id
                 }
             }
         )

@@ -27,12 +27,12 @@ class Ai:
         }
 
     @classmethod
-    def generate_take_train_command(cls, unit_id, position):
+    def generate_take_train_command(cls, unit_id, passenger_id):
         return {
             "commandName": "take_train",
             "arguments": {
                 "unit_id": unit_id,
-                "position": position
+                "passenger_id": passenger_id
             }
         }
 
@@ -59,6 +59,8 @@ class Ai:
             Ai.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
             Ai.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
             Ai.generate_stop_or_defence_command(3),
+            Ai.generate_take_train_command(4, 5),
+            Ai.generate_unload_train_command(4),
         ]
 
     def generate_position(self, type_unit, troop_size, i, amount):
