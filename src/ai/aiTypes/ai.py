@@ -27,6 +27,25 @@ class Ai:
         }
 
     @classmethod
+    def generate_take_train_command(cls, unit_id, position):
+        return {
+            "commandName": "take_train",
+            "arguments": {
+                "unit_id": unit_id,
+                "position": position
+            }
+        }
+
+    @classmethod
+    def generate_unload_train_command(cls, unit_id):
+        return {
+            "commandName": "unload_train",
+            "arguments": {
+                "unit_id": unit_id
+            }
+        }
+
+    @classmethod
     def generate_stop_or_defence_command(cls, unit_id):
         return {
             "commandName": "stop_or_defence",

@@ -173,6 +173,51 @@ class TestAiCommands(asynctest.TestCase):
             }
         )
 
+    def test_take_train_command(self):
+        game_id = "10"
+        player_id = "101"
+        ai_type = "script-bot"
+        ai_name = "intellectual-000"
+
+        ai = TestAiCommands.create_ai(game_id, player_id, ai_type, ai_name)
+
+        position = TestAiCommands.generate_position_to_center_map(ai)
+        unit_id = 4
+        command = ai.generate_take_train_command(unit_id, position)
+
+        self.assertEqual(
+            command,
+            {
+                "commandName": "take_train",
+                "arguments": {
+                    "unit_id": unit_id,
+                    "position": position
+                }
+            }
+        )
+
+    def test_unload_train_command(self):
+        game_id = "11"
+        player_id = "111"
+        ai_type = "script-bot"
+        ai_name = "intellectual-000"
+
+        ai = TestAiCommands.create_ai(game_id, player_id, ai_type, ai_name)
+
+        position = TestAiCommands.generate_position_to_center_map(ai)
+        unit_id = 5
+        command = ai.generate_unload_train_command(unit_id)
+
+        self.assertEqual(
+            command,
+            {
+                "commandName": "unload_train",
+                "arguments": {
+                    "unit_id": unit_id
+                }
+            }
+        )
+
 
 
 if __name__ == '__main__':
