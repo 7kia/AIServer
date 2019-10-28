@@ -265,17 +265,24 @@ class TestRouteController(asynctest.TestCase):
                 "data":
                 [
                     {
-                        "country": expected_country,
-                        "type": "tank",
-                        "position": position,
-                        "troopSize": "regiment",
-                    },
-                    {
-                        "country": expected_country,
-                        "type": "landbase",
-                        "position": position,
-                        "troopSize": "tactic",
-                    },
+                        "commandName": "create_units",
+                        "arguments": {
+                            "unit_data": [
+                                {
+                                    "country": expected_country,
+                                    "type": "tank",
+                                    "position": position,
+                                    "troopSize": "regiment",
+                                },
+                                {
+                                    "country": expected_country,
+                                    "type": "landbase",
+                                    "position": position,
+                                    "troopSize": "tactic",
+                                }
+                            ]
+                        }
+                    }
                 ]
             }
         )

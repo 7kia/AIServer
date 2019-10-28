@@ -108,7 +108,7 @@ class RouteController:
     def generate_ai_unit_positions(self, game_id, player_id, unit_counts):
         ai = self.ai_manager.get_ai(game_id, player_id)
         return RouteController.generate_json_with_double_quotes(
-            ai.generate_unit_positions(unit_counts)
+            [ai.generate_unit_positions(unit_counts)]
         )
 
 

@@ -1,3 +1,5 @@
+from .aiCommands import AiCommands
+
 class Ai:
     id = None
     __location = None
@@ -6,61 +8,13 @@ class Ai:
     def __init__(self):
         pass
 
-    @classmethod
-    def generate_move_or_attack_command(cls, unit_id, position):
-        return {
-            "commandName": "move_or_attack",
-            "arguments": {
-                "unit_id": unit_id,
-                "position": position
-            }
-        }
-
-    @classmethod
-    def generate_retreat_or_storm_command(cls, unit_id, position):
-        return {
-            "commandName": "retreat_or_storm",
-            "arguments": {
-                "unit_id": unit_id,
-                "position": position
-            }
-        }
-
-    @classmethod
-    def generate_take_train_command(cls, unit_id, passenger_id):
-        return {
-            "commandName": "take_train",
-            "arguments": {
-                "unit_id": unit_id,
-                "passenger_id": passenger_id
-            }
-        }
-
-    @classmethod
-    def generate_unload_train_command(cls, unit_id):
-        return {
-            "commandName": "unload_train",
-            "arguments": {
-                "unit_id": unit_id
-            }
-        }
-
-    @classmethod
-    def generate_stop_or_defence_command(cls, unit_id):
-        return {
-            "commandName": "stop_or_defence",
-            "arguments": {
-                "unit_id": unit_id
-            }
-        }
-
     def get_commands(self, game):
         return [
-            Ai.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
-            Ai.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
-            Ai.generate_stop_or_defence_command(3),
-            Ai.generate_take_train_command(4, 5),
-            Ai.generate_unload_train_command(4),
+            AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
+            AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
+            AiCommands.generate_stop_or_defence_command(3),
+            AiCommands.generate_take_train_command(4, 5),
+            AiCommands.generate_unload_train_command(4),
         ]
 
     def generate_position(self, type_unit, troop_size, i, amount):
@@ -82,7 +36,8 @@ class Ai:
                         "position": self.generate_position(type_unit, troop_size, i, amount),
                         "troopSize": troop_size,
                     })
-        return unit_positions
+
+        return AiCommands.generate_create_units_command(unit_positions)
 
     def get_location(self):
         return self.__location

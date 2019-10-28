@@ -2,6 +2,7 @@ import asynctest
 import json
 
 from src.routeController import RouteController
+from src.ai.aiTypes.aiCommands import AiCommands
 
 
 class TestAiCommands(asynctest.TestCase):
@@ -119,7 +120,7 @@ class TestAiCommands(asynctest.TestCase):
 
         position = TestAiCommands.generate_position_to_center_map(ai)
         unit_id = 1
-        command = ai.generate_move_or_attack_command(unit_id, position)
+        command = AiCommands.generate_move_or_attack_command(unit_id, position)
         self.assertEqual(
             command,
             {
@@ -141,7 +142,7 @@ class TestAiCommands(asynctest.TestCase):
 
         position = TestAiCommands.generate_position_to_center_map(ai)
         unit_id = 2
-        command = ai.generate_retreat_or_storm_command(unit_id, position)
+        command = AiCommands.generate_retreat_or_storm_command(unit_id, position)
         self.assertEqual(
             command,
             {
@@ -162,7 +163,7 @@ class TestAiCommands(asynctest.TestCase):
         ai = TestAiCommands.create_ai(game_id, player_id, ai_type, ai_name)
 
         unit_id = 3
-        command = ai.generate_stop_or_defence_command(unit_id)
+        command = AiCommands.generate_stop_or_defence_command(unit_id)
         self.assertEqual(
             command,
             {
@@ -184,7 +185,7 @@ class TestAiCommands(asynctest.TestCase):
         position = TestAiCommands.generate_position_to_center_map(ai)
         unit_id = 4
         passenger_id = 5
-        command = ai.generate_take_train_command(unit_id, passenger_id)
+        command = AiCommands.generate_take_train_command(unit_id, passenger_id)
 
         self.assertEqual(
             command,
@@ -207,7 +208,7 @@ class TestAiCommands(asynctest.TestCase):
 
         position = TestAiCommands.generate_position_to_center_map(ai)
         unit_id = 5
-        command = ai.generate_unload_train_command(unit_id)
+        command = AiCommands.generate_unload_train_command(unit_id)
 
         self.assertEqual(
             command,
