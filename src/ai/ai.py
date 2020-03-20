@@ -1,4 +1,7 @@
-from .aiCommands import AiCommands
+from .ai_commands import AiCommands
+from ..game import Game
+from typing import List, Dict
+
 
 class Ai:
     id = None
@@ -8,13 +11,13 @@ class Ai:
     def __init__(self):
         pass
 
-    def get_commands(self, game):
+    def get_commands(self, game: Game):
         return [
             AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
             AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
             AiCommands.generate_stop_or_defence_command(3),
-            AiCommands.generate_take_train_command(4, 5),
-            AiCommands.generate_unload_train_command(4),
+            # AiCommands.generate_take_train_command(4, 5),
+            # AiCommands.generate_unload_train_command(4),
         ]
 
     def generate_position(self, type_unit, troop_size, i, amount):
@@ -24,8 +27,8 @@ class Ai:
             (country_bound["NE"][1] + country_bound["SW"][1]) / 2,
         ]
 
-    def generate_unit_positions(self, unit_counts):
-        unit_positions = []
+    def generate_unit_positions(self, unit_counts: Dict[str, str]):
+        unit_positions: List[Dict[str, str]] = []
         for type_unit in unit_counts:
             for troop_size in unit_counts[type_unit]:
                 amount = unit_counts[type_unit][troop_size]

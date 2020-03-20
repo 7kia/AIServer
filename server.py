@@ -9,7 +9,7 @@ from flask_socketio import join_room, leave_room
 from flask_socketio import send, emit
 
 from src.routeController import RouteController
-from src.ai.aiManager import AiManager
+from src.ai.ai_manager import AiManager
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', logger=True, engineio_logger=True)
 controller = RouteController()
@@ -71,14 +71,14 @@ def set_unit_count(data):
     emit("place_units", unit_positions, room=AiManager.generate_ai_address(game_id, player_id))
 
 
-@socketio.on('sendMessage')
+@socketio.on('sendGame')
 def handle_json(data):
     room_info = data['channel_info']
     game_id = room_info["game_id"]
     player_id = room_info["player_id"]
 
     commands = controller.update_ai(
-        data['message'],
+        data['game'],
         param=[game_id, player_id]
     )
     # print('received json: ' + str(commands))

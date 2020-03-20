@@ -1,3 +1,6 @@
+from typing import List, Dict
+
+
 class AiCommands:
     @classmethod
     def generate_create_unit_data(cls, country, troop_type, position, troop_size):
@@ -9,7 +12,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_create_units_command(cls, units_data):
+    def generate_create_units_command(cls, units_data: List[Dict[str, str]]):
         return {
             "commandName": "create_units",
             "arguments": {

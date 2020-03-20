@@ -1,4 +1,5 @@
-from src.ai.aiManager import AiManager
+from typing import List
+from src.game import Game
 
 
 class UpdateAiRules:
@@ -8,7 +9,7 @@ class UpdateAiRules:
         self.ai_manager = ai_manager
 
     @staticmethod
-    def validate_game(game, param):
+    def validate_game(game: Game, param: List[str]):
         [game_id, player_id] = param
         message = ""
 
@@ -18,7 +19,11 @@ class UpdateAiRules:
 
         valid_player_id = game.users[str(player_id)] is not None
         if not valid_player_id:
-            message += "Posted user id={0} not content to game with id={1};\n".format(game.id, game_id)
+            message += "Posted user id={0} not content to game with id={1};\n".format(player_id, game_id)
+
+        exist_unit_list = game.unit_dictionary is not None
+        if not exist_unit_list:
+            message += "Posted game id={0} not have unit dictionary;\n".format(game_id)
         return message
 
     def exist_ai(self, game_id, player_id):

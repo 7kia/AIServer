@@ -1,6 +1,8 @@
 import json
 
-from .aiBuilder import AiBuilder
+from .ai_builder import AiBuilder
+from ..game import Game
+
 
 class AiManager:
     def __init__(self):
@@ -49,13 +51,13 @@ class AiManager:
         [game_id, player_id] = game_info
         return AiManager.generate_ai_address(game_id, player_id)
 
-    def __find_ai(self, game_id, player_id):
+    def __find_ai(self, game_id: str, player_id: str):
         try:
             return self._ai_list[str(game_id)][str(player_id)]
         except KeyError as e:
             raise ValueError('Undefined ai type: {0}'.format(e.args[0]))
 
-    def update_ai(self, game, game_id, player_id):
+    def update_ai(self, game: Game, game_id: str, player_id: str):
         ai = self.__find_ai(game_id, player_id)
         command_list = ai.get_commands(game)
         return command_list

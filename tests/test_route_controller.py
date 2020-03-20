@@ -182,14 +182,14 @@ class TestRouteController(asynctest.TestCase):
         controller = TestRouteController.create_template_controller_with_ai(game_id, player_id, ai_type, ai_name)
         json_object = {
             "id": game_id,
-            "users": {player_id: {}}
+            "users": {player_id: {}},
+            "units": {}
         }
         commands = controller.update_ai(json_object, [game_id, player_id])
 
         position = TestRouteController.generate_position_to_center_map(
             controller.ai_manager.get_ai(game_id, player_id)
         )
-
         self.assertEqual(
             json.loads(commands),
             {

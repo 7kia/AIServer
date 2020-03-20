@@ -1,4 +1,5 @@
-from src.ai.aiManager import AiManager
+from src.ai.ai_manager import AiManager
+from src.game import Game
 
 
 class AiManagmentStrategies:
@@ -8,7 +9,7 @@ class AiManagmentStrategies:
     def generate_ai_address(self, game_info):
         return self.ai_manager.generate_ai_adress(game_info)
 
-    def update_ai(self, game, game_id, player_id):
+    def update_ai(self, game: Game, game_id: str, player_id: str):
         return self.ai_manager.update_ai(game, game_id, player_id)
 
     @staticmethod

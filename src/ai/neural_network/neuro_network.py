@@ -1,4 +1,4 @@
-from .ai import Ai
+from src.ai.ai import Ai
 
 
 class NeuroNetwork(Ai):

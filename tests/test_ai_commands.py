@@ -2,7 +2,7 @@ import asynctest
 import json
 
 from src.routeController import RouteController
-from src.ai.aiTypes.aiCommands import AiCommands
+from src.ai.ai_commands import AiCommands
 
 
 class TestAiCommands(asynctest.TestCase):

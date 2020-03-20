@@ -1,4 +1,4 @@
-from ..ai.aiManager import AiManager
+from ..ai.ai_manager import AiManager
 
 
 class CreateAiRules:

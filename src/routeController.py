@@ -4,8 +4,8 @@ from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
 from .strategies.AiManagmentStrategies import AiManagmentStrategies
 from .game import Game
-from .ai.aiManager import AiManager
-
+from .ai.ai_manager import AiManager
+from typing import List, Dict
 
 class RouteController:
     def __init__(self):
@@ -42,22 +42,23 @@ class RouteController:
             return "", 500
 
     @staticmethod
-    def convert_to_game(json_file_content):
+    def convert_to_game(json_file_content: Dict[str, str]) -> Game:
         game = Game()
         game.id = json_file_content["id"]
         game.users = json_file_content["users"]
+        game.unit_dictionary = json_file_content["units"]
         return game
 
-    def update_ai(self, json_object, param):
+    def update_ai(self, json_object: Dict[str, str], param: List[str]):
         try:
             [game_id, player_id] = param
-            game = RouteController.convert_to_game(json_object)
+            game: Game = RouteController.convert_to_game(json_object)
 
-            valid_game = UpdateAiRules.validate_game(game, param)
-            exist_ai = self.update_ai_rules.exist_ai(game.id, player_id)
+            error_message: str = UpdateAiRules.validate_game(game, param)
+            if error_message != "":
+                return AiManagmentStrategies.send_error_message(error_message)
 
-            if valid_game != "":
-                return AiManagmentStrategies.send_error_message(valid_game)
+            exist_ai: bool = self.update_ai_rules.exist_ai(game.id, player_id)
             if not exist_ai:
                 return AiManagmentStrategies.send_error_message(
                     "Ai with player_id={0} not found to game with id={1}".format(game_id, player_id)

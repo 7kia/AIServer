@@ -1,5 +1,5 @@
-from .aiTypes.neuroNetwork import NeuroNetwork
-from .aiTypes.scriptBot import ScriptBot
+from src.ai.neural_network.neuro_network import NeuroNetwork
+from src.ai.script_bot import ScriptBot
 
 AI_TYPES = {
     "script-bot": {"class": ScriptBot},
