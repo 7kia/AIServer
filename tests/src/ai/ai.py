@@ -21,7 +21,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
     | stop: true | attack: true | defence: true | UNIT_STATUS_ATTACK_DEFENCE: 5
     | stop: false | attack: true | defence: false | UNIT_STATUS_RETREAT: 6
     """
-    def test_if_stop(self):
+    def test_if_stop_then_access_a_move_command(self):
         for attack in [True, False]:
             with self.subTest(attack=attack):
                 if attack:
@@ -29,7 +29,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
                 else:
                     self.assertEqual(False, CommandName.move_or_attack)
 
-    def test_if_move(self):
+    def test_if_move_then_access_stop_and_a_move_command(self):
         for attack in [True, False]:
             with self.subTest(attack=attack):
                 if attack:
