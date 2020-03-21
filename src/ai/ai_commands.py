@@ -1,4 +1,14 @@
 from typing import List, Dict
+from enum import Enum
+
+
+class CommandName(Enum):
+    create_units: str = "create_units"
+    move_or_attack: str = "move_or_attack"
+    retreat_or_storm: str = "retreat_or_storm"
+    take_train: str = "take_train"
+    unload_train: str = "unload_train"
+    stop_or_defence: str = "stop_or_defence"
 
 
 class AiCommands:
