@@ -1,6 +1,11 @@
-from .ai_commands import AiCommands
+from .ai_commands import AiCommands, CommandName
+from src.unit import Unit
 from ..game import Game
-from typing import List, Dict
+from typing import List, Dict, Callable
+
+from ..game_data_extractor import UnitDict, UnitList
+
+CommandList = List[dict]
 
 
 class Ai:
@@ -53,3 +58,31 @@ class Ai:
 
     def set_country(self, country):
         self.__country = country
+
+    @staticmethod
+    def choose_units(
+            choose_function: Callable[[Unit], bool],
+            unit_dict: UnitDict) -> UnitList:
+        unit_list: List[Unit] = []
+        for unit_type in unit_dict.keys():
+            for unit in unit_dict[unit_type]:
+                if choose_function(unit):
+                    unit_list.append(unit)
+        return unit_list
+
+    @staticmethod
+    def generate_access_command_list(unit: Unit) -> List[str]:
+        access_command_list: List[str] = []
+        if unit.state.stop:
+            if unit.state.attack:
+                access_command_list.append(CommandName.retreat_or_storm)
+            else:
+                access_command_list.append(CommandName.move_or_attack)
+        else:
+            if unit.state.attack:
+                access_command_list.append(CommandName.stop_or_defence)
+                access_command_list.append(CommandName.retreat_or_storm)
+            else:
+                access_command_list.append(CommandName.stop_or_defence)
+                access_command_list.append(CommandName.move_or_attack)
+        return access_command_list

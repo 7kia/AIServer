@@ -183,7 +183,11 @@ class TestRouteController(asynctest.TestCase):
         json_object = {
             "id": game_id,
             "users": {player_id: {}},
-            "units": {}
+            "loserId": None,
+            "status": None,
+            "units": {},
+            "currentGameTime": None,
+            "battleMatrix": None,
         }
         commands = controller.update_ai(json_object, [game_id, player_id])
 
