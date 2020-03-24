@@ -88,7 +88,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
                     for unit_id in [UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, UnitStatusFromJson.UNIT_STATUS_ATTACK]:
                         with self.subTest(state=unit_id):
                             command_list: List[str] = Ai.generate_access_command_list(
-                                unit_dictionary["regiment"][unit_id.value])
+                                unit_dictionary["regiment"][unit_id.value - 1])
                             self.assertEqual(True, CommandName.retreat_or_storm in command_list)
                             self.assertEqual(False, CommandName.move_or_attack in command_list)
                             self.assertEqual(False, CommandName.stop_or_defence in command_list)
@@ -97,7 +97,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
                                     UnitStatusFromJson.UNIT_STATUS_STOP]:
                         with self.subTest(state=unit_id):
                             command_list: List[str] = Ai.generate_access_command_list(
-                                unit_dictionary["regiment"][unit_id.value])
+                                unit_dictionary["regiment"][unit_id.value - 1])
                             self.assertEqual(True, CommandName.move_or_attack in command_list)
                             self.assertEqual(False, CommandName.retreat_or_storm in command_list)
                             self.assertEqual(False, CommandName.stop_or_defence in command_list)
@@ -109,14 +109,16 @@ class CanChangeCommandForUnit(unittest.TestCase):
             with self.subTest(attack=attack):
                 if attack:
                     command_list: List[str] = Ai.generate_access_command_list(
-                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_RETREAT])
+                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_RETREAT.value - 1])
                     self.assertEqual(True, CommandName.stop_or_defence in command_list)
                     self.assertEqual(True, CommandName.retreat_or_storm in command_list)
+                    self.assertEqual(False, CommandName.move_or_attack in command_list)
                 else:
                     command_list: List[str] = Ai.generate_access_command_list(
-                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH])
+                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH.value - 1])
                     self.assertEqual(True, CommandName.stop_or_defence in command_list)
                     self.assertEqual(True, CommandName.move_or_attack in command_list)
+                    self.assertEqual(False, CommandName.retreat_or_storm in command_list)
 
 
 class CanGenerateCommandForUnits(unittest.TestCase):
