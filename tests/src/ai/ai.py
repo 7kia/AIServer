@@ -8,14 +8,6 @@ from src.unit import Unit, UnitType, RegimentType, BaseType, SupportType
 from src.unit_state_extractor import unit_states, UnitStatusFromJson
 
 
-class TestScriptBot(Ai):
-    @staticmethod
-    def choose_bases(
-            choose_function: Callable[[Unit], bool],
-            unit_dict: UnitDict) -> UnitList:
-        return super().choose_units(choose_function, unit_dict)
-
-
 class CanChangeUnits(unittest.TestCase):
     @staticmethod
     def change_all_bases(unit: Unit) -> bool:
@@ -51,23 +43,37 @@ class CanChangeCommandForUnit(unittest.TestCase):
     def generate_test_unit_dictionary() -> UnitDict:
         return {
             "regiment": [
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_STOP, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_STOP]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_MARCH, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_DEFENCE, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_RETREAT, RegimentType.tank.__str__(), unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_STOP, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_STOP]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_MARCH, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_DEFENCE, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE]),
+                Unit().set(UnitStatusFromJson.UNIT_STATUS_RETREAT, RegimentType.tank.__str__(),
+                           unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT]),
             ],
             "base": [Unit().set(11, BaseType.land_base.__str__())],
             "support": [Unit().set(12, SupportType.truck.__str__())],
         }
 
     @staticmethod
-    def content_command(command_name: str, where: List[CommandName]) -> bool:
-        for value in where:
-            if value["commandName"] == command_name:
-                return True
-        return False
+    def check_access_commands(where: List[str], expected: List[str]):
+        for command_name in where:
+            if command_name not in expected:
+                raise AssertionError("Command {0} must be not there".format(command_name))
+
+    @staticmethod
+    def generate_and_check_access_commands(
+            unit_dictionary: UnitDict, unit_id: int,
+            access_commands: List[str]):
+        command_list: List[str] = Ai.generate_access_command_list(
+            unit_dictionary["regiment"][unit_id.value - 1]
+        )
+        CanChangeCommandForUnit.check_access_commands(command_list, access_commands)
 
     """
     Таблица состояний
@@ -78,29 +84,25 @@ class CanChangeCommandForUnit(unittest.TestCase):
     | stop: true | attack: true | defence: true | UNIT_STATUS_ATTACK_DEFENCE: 5
     | stop: false | attack: true | defence: false | UNIT_STATUS_RETREAT: 6
     """
-
     def test_if_stop_then_access_a_move_command(self):
         unit_dictionary: UnitDict = CanChangeCommandForUnit.generate_test_unit_dictionary()
 
         for attack in [True, False]:
             with self.subTest(attack=attack):
                 if attack:
-                    for unit_id in [UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, UnitStatusFromJson.UNIT_STATUS_ATTACK]:
+                    for unit_id in [UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE,
+                                    UnitStatusFromJson.UNIT_STATUS_ATTACK]:
                         with self.subTest(state=unit_id):
-                            command_list: List[str] = Ai.generate_access_command_list(
-                                unit_dictionary["regiment"][unit_id.value - 1])
-                            self.assertEqual(True, CommandName.retreat_or_storm in command_list)
-                            self.assertEqual(False, CommandName.move_or_attack in command_list)
-                            self.assertEqual(False, CommandName.stop_or_defence in command_list)
+                            CanChangeCommandForUnit.generate_and_check_access_commands(
+                                unit_dictionary, unit_id, [CommandName.retreat_or_storm]
+                            )
                 else:
                     for unit_id in [UnitStatusFromJson.UNIT_STATUS_DEFENCE,
                                     UnitStatusFromJson.UNIT_STATUS_STOP]:
                         with self.subTest(state=unit_id):
-                            command_list: List[str] = Ai.generate_access_command_list(
-                                unit_dictionary["regiment"][unit_id.value - 1])
-                            self.assertEqual(True, CommandName.move_or_attack in command_list)
-                            self.assertEqual(False, CommandName.retreat_or_storm in command_list)
-                            self.assertEqual(False, CommandName.stop_or_defence in command_list)
+                            CanChangeCommandForUnit.generate_and_check_access_commands(
+                                unit_dictionary, unit_id, [CommandName.move_or_attack]
+                            )
 
     def test_if_move_then_access_stop_and_a_move_command(self):
         unit_dictionary: UnitDict = CanChangeCommandForUnit.generate_test_unit_dictionary()
@@ -108,17 +110,17 @@ class CanChangeCommandForUnit(unittest.TestCase):
         for attack in [True, False]:
             with self.subTest(attack=attack):
                 if attack:
-                    command_list: List[str] = Ai.generate_access_command_list(
-                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_RETREAT.value - 1])
-                    self.assertEqual(True, CommandName.stop_or_defence in command_list)
-                    self.assertEqual(True, CommandName.retreat_or_storm in command_list)
-                    self.assertEqual(False, CommandName.move_or_attack in command_list)
+                    for unit_id in [UnitStatusFromJson.UNIT_STATUS_RETREAT]:
+                        CanChangeCommandForUnit.generate_and_check_access_commands(
+                            unit_dictionary, unit_id,
+                            [CommandName.stop_or_defence, CommandName.retreat_or_storm]
+                        )
                 else:
-                    command_list: List[str] = Ai.generate_access_command_list(
-                        unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH.value - 1])
-                    self.assertEqual(True, CommandName.stop_or_defence in command_list)
-                    self.assertEqual(True, CommandName.move_or_attack in command_list)
-                    self.assertEqual(False, CommandName.retreat_or_storm in command_list)
+                    for unit_id in [UnitStatusFromJson.UNIT_STATUS_MARCH]:
+                        CanChangeCommandForUnit.generate_and_check_access_commands(
+                            unit_dictionary, unit_id,
+                            [CommandName.stop_or_defence, CommandName.move_or_attack]
+                        )
 
 
 class CanGenerateCommandForUnits(unittest.TestCase):
