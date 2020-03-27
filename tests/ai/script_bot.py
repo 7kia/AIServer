@@ -173,6 +173,5 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
         return result
 
 
-
 if __name__ == '__main__':
     unittest.main()
