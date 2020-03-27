@@ -6,8 +6,8 @@ from ..game import Game
 
 class AiManager:
     def __init__(self):
-        ai_type_list_file = open("src/ai/AI-type-list.json")
-        ai_info_list_file = open("src/ai/AI-list.json")
+        ai_type_list_file = open("ai/AI-type-list.json")
+        ai_info_list_file = open("ai/AI-list.json")
         ai_type_list = json.load(ai_type_list_file)
         ai_info_list = json.load(ai_info_list_file)
         ai_type_list_file.close()

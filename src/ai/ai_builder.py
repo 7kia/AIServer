@@ -6,7 +6,7 @@ AI_TYPES = {
     "neuron-network": {"class": NeuroNetwork},
 }
 
-
+# TODO 7kia Скорее всего это просто фабрика
 class AiBuilder:
     @staticmethod
     def create_ai(ai_info, game_info):

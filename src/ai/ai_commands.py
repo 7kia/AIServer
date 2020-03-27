@@ -1,5 +1,6 @@
 from typing import List, Dict
 from enum import Enum
+Json = Dict[str, any]
 
 
 class CommandName(Enum):
@@ -13,7 +14,9 @@ class CommandName(Enum):
 
 class AiCommands:
     @classmethod
-    def generate_create_unit_data(cls, country, troop_type, position, troop_size):
+    def generate_create_unit_data(cls,
+                                  country: str, troop_type: str,
+                                  position: List[float], troop_size: str) -> Json:
         return {
             "country": country,
             "type": troop_type,
@@ -22,7 +25,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_create_units_command(cls, units_data: List[Dict[str, str]]):
+    def generate_create_units_command(cls, units_data: List[Dict[str, str]]) -> Json:
         return {
             "commandName": "create_units",
             "arguments": {
@@ -31,7 +34,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_move_or_attack_command(cls, unit_id, position):
+    def generate_move_or_attack_command(cls, unit_id: int, position: List[float]) -> Json:
         return {
             "commandName": "move_or_attack",
             "arguments": {
@@ -41,7 +44,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_retreat_or_storm_command(cls, unit_id, position):
+    def generate_retreat_or_storm_command(cls, unit_id: int, position: List[float]) -> Json:
         return {
             "commandName": "retreat_or_storm",
             "arguments": {
@@ -51,7 +54,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_take_train_command(cls, unit_id, passenger_id):
+    def generate_take_train_command(cls, unit_id: int, passenger_id: int) -> Json:
         return {
             "commandName": "take_train",
             "arguments": {
@@ -61,7 +64,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_unload_train_command(cls, unit_id):
+    def generate_unload_train_command(cls, unit_id: int) -> Json:
         return {
             "commandName": "unload_train",
             "arguments": {
@@ -70,7 +73,7 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_stop_or_defence_command(cls, unit_id):
+    def generate_stop_or_defence_command(cls, unit_id: int) -> Json:
         return {
             "commandName": "stop_or_defence",
             "arguments": {

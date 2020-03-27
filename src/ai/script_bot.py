@@ -1,7 +1,8 @@
 from random import choice as random_choice
+from typing import List
 
 from src.ai.ai import Ai
-from src.ai.ai_commands import AiCommands
+from src.ai.ai_commands import AiCommands, Json
 from src.game import Game
 from src.game_data_extractor import UnitDict
 from src.unit import UnitList, Unit
@@ -17,11 +18,11 @@ class ScriptBot(Ai):
     def __init__(self):
         super().__init__()
 
-    def get_commands(self, game: Game):
+    def get_commands(self, game: Game) -> List[Json]:
         return [
-            # AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
-            # AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
-            # AiCommands.generate_stop_or_defence_command(3),
+            AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
+            AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
+            AiCommands.generate_stop_or_defence_command(3),
             # AiCommands.generate_take_train_command(4, 5),
             # AiCommands.generate_unload_train_command(4),
         ]

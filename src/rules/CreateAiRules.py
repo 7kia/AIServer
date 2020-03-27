@@ -2,7 +2,7 @@ from ..ai.ai_manager import AiManager
 
 
 class CreateAiRules:
-    ai_manager = None
+    ai_manager: AiManager = None
 
     def __init__(self, ai_manager):
         self.ai_manager = ai_manager

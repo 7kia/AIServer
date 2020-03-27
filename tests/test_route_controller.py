@@ -189,13 +189,13 @@ class TestRouteController(asynctest.TestCase):
             "currentGameTime": None,
             "battleMatrix": None,
         }
-        commands = controller.update_ai(json_object, [game_id, player_id])
+        commands: dict = json.loads(controller.update_ai(json_object, [game_id, player_id]))
 
         position = TestRouteController.generate_position_to_center_map(
             controller.ai_manager.get_ai(game_id, player_id)
         )
         self.assertEqual(
-            json.loads(commands),
+            commands,
             {
                 "data":
                     [

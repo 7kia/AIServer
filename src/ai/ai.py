@@ -1,4 +1,4 @@
-from .ai_commands import AiCommands, CommandName
+from .ai_commands import AiCommands, CommandName, Json
 from src.unit import Unit
 from ..game import Game
 from typing import List, Dict, Callable
@@ -16,7 +16,7 @@ class Ai:
     def __init__(self):
         pass
 
-    def get_commands(self, game: Game):
+    def get_commands(self, game: Game) -> List[Json]:
         return [
             AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
             AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),

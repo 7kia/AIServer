@@ -1,5 +1,7 @@
 from flask import jsonify
 import json
+
+from .game_data_extractor import GameDataExtractor
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
 from .strategies.AiManagmentStrategies import AiManagmentStrategies
@@ -41,18 +43,10 @@ class RouteController:
             print(e)
             return "", 500
 
-    @staticmethod
-    def convert_to_game(json_file_content: Dict[str, str]) -> Game:
-        game = Game()
-        game.id = json_file_content["id"]
-        game.users = json_file_content["users"]
-        game.unit_dictionary = json_file_content["units"]
-        return game
-
     def update_ai(self, json_object: Dict[str, str], param: List[str]):
         try:
             [game_id, player_id] = param
-            game: Game = RouteController.convert_to_game(json_object)
+            game: Game = GameDataExtractor.extract_game(json_object)
 
             error_message: str = UpdateAiRules.validate_game(game, param)
             if error_message != "":
