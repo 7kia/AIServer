@@ -1,37 +1,43 @@
 import unittest
 from abc import ABC
+from typing import List
 
 from src.ai.ai_commands import Json, CommandName
+from src.ai.position import Position
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
+from src.game import Game
 from src.game_data_extractor import UnitDict
-from src.location import Location
-from src.unit import UnitList
+from src.location import Location, Bounds
+from src.unit import UnitList, Unit
+from src.unit_state_extractor import UnitStatusFromJson
 
 
 class TestScriptBot(ScriptBot, ABC):
     def __init__(self):
         super().__init__()
 
-    def generate_move_or_attack_command(self) -> Json:
-        return self._generate_move_or_attack_command()
+    def generate_move_or_attack_command(self, unit: Unit, game: Game) -> Json:
+        return self._generate_move_or_attack_command(unit, game)
 
-    def generate_retreat_or_storm_command(self) -> Json:
-        return self._generate_retreat_or_storm_command()
+    def generate_retreat_or_storm_command(self, unit: Unit, game: Game) -> Json:
+        return self._generate_retreat_or_storm_command(unit, game)
 
-    def generate_stop_or_defence_command(self) -> Json:
-        return self._generate_stop_or_defence_command()
+    def generate_stop_or_defence_command(self, unit: Unit, game: Game) -> Json:
+        return self._generate_stop_or_defence_command(unit, game)
 
-    def choice_random_position(self):
+    def choice_random_position(self) -> Position:
         return self._choice_random_position()
+
 
 class CanGenerateCommandTestData:
     def __init__(self, bot: TestScriptBot, game_id: int, player_id: int):
         self.bot = bot
         self.game = TestDataGenerator.generate_test_game(
-            game_id, player_id
+            game_id, player_id, generate_unit_with_various_state=True
         )
+
 
 class CanGenerateCommands(unittest.TestCase):
     @staticmethod
@@ -60,64 +66,74 @@ class CanGenerateCommands(unittest.TestCase):
         return script_bot
 
     def test_generate_moveOrAttack_command(self):
-        testData: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
+        test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
+        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_STOP.value - 1]
 
-        command: Json = testData.bot\
-            .generate_move_or_attack_command(testData.game)
+        command: Json = test_data.bot \
+            .generate_move_or_attack_command(unit, test_data.game)
         self.assertEqual(command["commandName"], CommandName.move_or_attack.value.__str__())
         self.assertEqual(
-            True,
-            TestsForCommandGenerationPrivateMethods.check_position(command)
+            True, TestsForCommandGenerationPrivateMethods
+                .check_position(command, test_data.bot.get_location())
         )
         self.assertEqual(
-            True,
-            TestsForCommandGenerationPrivateMethods.check_unit_id(command)
+            True, TestsForCommandGenerationPrivateMethods
+                .check_unit_id(command, test_data.game.unit_dictionary)
         )
 
     def test_generate_retreatOrStorm_command(self):
-        script_bot: TestScriptBot = CanGenerateCommands.generate_test_script_bot()
+        test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
+        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_ATTACK.value - 1]
 
-        command: Json = script_bot.generate_retreat_or_storm_command()
+        command: Json = test_data.bot \
+            .generate_retreat_or_storm_command(unit, test_data.game)
         self.assertEqual(command["commandName"], CommandName.retreat_or_storm.value.__str__())
         self.assertEqual(
-            True,
-            TestsForCommandGenerationPrivateMethods.check_position(command)
+            True, TestsForCommandGenerationPrivateMethods
+                .check_position(command, test_data.bot.get_location())
         )
         self.assertEqual(
-            True,
-            TestsForCommandGenerationPrivateMethods.check_unit_id(command)
+            True, TestsForCommandGenerationPrivateMethods
+                .check_unit_id(command, test_data.game.unit_dictionary)
         )
 
     def test_generate_stopOrDefence_command(self):
-        script_bot: TestScriptBot = CanGenerateCommands.generate_test_script_bot()
+        test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
+        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH.value - 1]
 
-        command: Json = script_bot.generate_stop_or_defence_command()
+        command: Json = test_data.bot \
+            .generate_stop_or_defence_command(unit, test_data.game)
         self.assertEqual(command["commandName"], CommandName.stop_or_defence.value.__str__())
         self.assertEqual(
-            True,
-            TestsForCommandGenerationPrivateMethods.check_unit_id(command)
+            True, TestsForCommandGenerationPrivateMethods
+                .check_unit_id(command, test_data.game.unit_dictionary)
         )
 
 
 class TestsForCommandGenerationPrivateMethods(unittest.TestCase):
-    def test_choice_random_unit(self):
-        self.assertEqual(True, False)
-
     def test_choice_random_position(self):
-        self.assertEqual(True, False)
+        test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
+        position: Position = test_data.bot.choice_random_position()
+        self.assertEqual(True, self.isInside(test_data.bot.get_location().bounds, position))
 
     @staticmethod
     def check_unit_id(command: Json, unit_dictionary: UnitDict) -> bool:
         unit_list: UnitList = convert_dictionary_values_to_list(unit_dictionary)
         for unit in unit_list:
-            if command["unit_id"] in unit.id:
+            if command["arguments"]["unit_id"] == unit.id:
                 return True
         return False
 
     @staticmethod
     def check_position(command: Json, location: Location) -> bool:
+        position: List[float] = command["arguments"]["position"]
+        map_bounds: Bounds = location.bounds
+        return TestsForCommandGenerationPrivateMethods.isInside(map_bounds, Position(position[0], position[1]))
 
-        return False
+    @staticmethod
+    def isInside(map_bounds: Bounds, position: Position):
+        return ((position.x >= map_bounds["SW"].x) and (position.x <= map_bounds["NE"].x)) \
+               and ((position.y >= map_bounds["SW"].y) and (position.y <= map_bounds["NE"].y))
 
 
 if __name__ == '__main__':

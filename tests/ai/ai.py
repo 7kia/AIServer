@@ -3,6 +3,7 @@ from typing import Callable, List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import CommandName
+from src.fortest.test_data_generator import TestDataGenerator
 from src.game_data_extractor import UnitDict, UnitList
 from src.unit import Unit, UnitType, RegimentType, BaseType, SupportType
 from src.unit_state_extractor import unit_states, UnitStatusFromJson
@@ -39,26 +40,7 @@ class CanChangeUnits(unittest.TestCase):
 
 
 class CanChangeCommandForUnit(unittest.TestCase):
-    @staticmethod
-    def generate_test_unit_dictionary() -> UnitDict:
-        return {
-            "regiment": [
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_STOP, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_STOP]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_MARCH, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_DEFENCE, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE]),
-                Unit().set(UnitStatusFromJson.UNIT_STATUS_RETREAT, RegimentType.tank.__str__(),
-                           unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT]),
-            ],
-            "base": [Unit().set(11, BaseType.land_base.__str__())],
-            "support": [Unit().set(12, SupportType.truck.__str__())],
-        }
+
 
     @staticmethod
     def check_access_commands(where: List[str], expected: List[str]):
@@ -85,7 +67,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
     | stop: false | attack: true | defence: false | UNIT_STATUS_RETREAT: 6
     """
     def test_if_stop_then_access_a_move_command(self):
-        unit_dictionary: UnitDict = CanChangeCommandForUnit.generate_test_unit_dictionary()
+        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state()
 
         for attack in [True, False]:
             with self.subTest(attack=attack):
@@ -105,7 +87,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
                             )
 
     def test_if_move_then_access_stop_and_a_move_command(self):
-        unit_dictionary: UnitDict = CanChangeCommandForUnit.generate_test_unit_dictionary()
+        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state()
 
         for attack in [True, False]:
             with self.subTest(attack=attack):

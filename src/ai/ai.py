@@ -26,6 +26,9 @@ class Ai:
             # AiCommands.generate_unload_train_command(4),
         ]
 
+    def generate_command_for_unit(self, unit: Unit, game: Game) -> Json:
+        return {}
+
     def generate_position(self, type_unit, troop_size, i, amount) -> Position:
         country_bound: Bounds = self.__location.bounds_country[self.__country]
         return Position(

@@ -3,6 +3,7 @@ from src.game_data_extractor import Json
 from src.location import Location
 
 
+# TODO 7kia протестировать класс
 class LocationBuilder:
     @staticmethod
     def build(json: Json) -> Location:

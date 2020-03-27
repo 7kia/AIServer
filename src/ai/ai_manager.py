@@ -1,9 +1,8 @@
 import json
 from typing import List
 
-from . import location_builder
 from .ai_builder import AiBuilder
-from .location_builder import LocationBuilder
+from src.location_builder import LocationBuilder
 from ..game import Game
 
 

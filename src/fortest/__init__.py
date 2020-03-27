@@ -10,5 +10,5 @@ def generate_mock_location_info():
 def convert_dictionary_values_to_list(dictionary: dict) -> List[any]:
     result: List[any] = []
     for key, value in dictionary.items():
-        result.append(*value)
+        result += value
     return result

@@ -1,9 +1,7 @@
 import asynctest
-import requests
-import socketio
 import json
 
-from src.ai.location_builder import LocationBuilder
+from src.location_builder import LocationBuilder
 from src.location import Location
 from src.routeController import RouteController
 
@@ -160,7 +158,6 @@ class TestRouteController(asynctest.TestCase):
 
         # (7kia) For creating connection create ai_socket_connection_info on AI server
         # for understanding that server handle request or no
-        # TODO(7kia) create ai_socket_connection_info on server, here not see it
         try:
             ai = controller.ai_manager.get_ai(game_id, player_id)
             self.assertEqual(ai is not None, True)
