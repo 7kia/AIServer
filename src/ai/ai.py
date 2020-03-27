@@ -75,16 +75,11 @@ class Ai:
     @staticmethod
     def generate_access_command_list(unit: Unit) -> List[str]:
         access_command_list: List[str] = []
-        if unit.state.stop:
-            if unit.state.attack:
-                access_command_list.append(CommandName.retreat_or_storm)
-            else:
-                access_command_list.append(CommandName.move_or_attack)
+        if not unit.state.stop:
+            access_command_list.append(CommandName.stop_or_defence)
+
+        if unit.state.attack:
+            access_command_list.append(CommandName.retreat_or_storm)
         else:
-            if unit.state.attack:
-                access_command_list.append(CommandName.stop_or_defence)
-                access_command_list.append(CommandName.retreat_or_storm)
-            else:
-                access_command_list.append(CommandName.stop_or_defence)
-                access_command_list.append(CommandName.move_or_attack)
+            access_command_list.append(CommandName.move_or_attack)
         return access_command_list
