@@ -1,13 +1,16 @@
 import json
+from typing import List
 
+from . import location_builder
 from .ai_builder import AiBuilder
+from .location_builder import LocationBuilder
 from ..game import Game
 
 
 class AiManager:
     def __init__(self):
-        ai_type_list_file = open("ai/AI-type-list.json")
-        ai_info_list_file = open("ai/AI-list.json")
+        ai_type_list_file = open("src/ai/AI-type-list.json")
+        ai_info_list_file = open("src/ai/AI-list.json")
         ai_type_list = json.load(ai_type_list_file)
         ai_info_list = json.load(ai_info_list_file)
         ai_type_list_file.close()
@@ -28,14 +31,14 @@ class AiManager:
     def generate_ai_address(game_id, player_id):
         return "/ai-server/{0}/{1}".format(game_id, player_id)
 
-    def create_ai(self, ai_info, game_info, ai_data):
+    def create_ai(self, ai_info, game_info: List[any], ai_data: List[any]):
         [game_id, player_id] = game_info
 
         self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
 
         [location, country] = ai_data
-        self._ai_list[game_id][player_id].set_location(location)
+        self._ai_list[game_id][player_id].set_location(LocationBuilder.build(location))
         self._ai_list[game_id][player_id].set_country(country)
 
     def add_ai_socket_connection_info(self, game_id, player_id):

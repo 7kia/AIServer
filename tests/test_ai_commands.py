@@ -1,5 +1,7 @@
 import asynctest
 
+from src.ai.position import Position
+from src.location import Bounds
 from src.routeController import RouteController
 from src.ai.ai_commands import AiCommands
 
@@ -86,6 +88,7 @@ class TestAiCommands(asynctest.TestCase):
             }
         }
 
+
     @classmethod
     def create_ai(cls, game_id, player_id, ai_type, ai_name):
         controller = RouteController()
@@ -101,13 +104,13 @@ class TestAiCommands(asynctest.TestCase):
         return controller.ai_manager.get_ai(game_id, player_id)
 
     @classmethod
-    def generate_position_to_center_map(cls, ai):
+    def generate_position_to_center_map(cls, ai) -> Position:
         ai_location = ai.get_location()
-        bounds_country = ai_location["boundsCountry"][ai.get_country()]
-        return [
-            (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
-            (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
-        ]
+        bounds_country: Bounds = ai_location.bounds_country[ai.get_country()]
+        return Position(
+            (bounds_country["NE"].x + bounds_country["SW"].x) / 2,
+            (bounds_country["NE"].y + bounds_country["SW"].y) / 2,
+        )
 
     def test_move_or_attack_command(self):
         game_id = "7"
@@ -126,7 +129,7 @@ class TestAiCommands(asynctest.TestCase):
                 "commandName": "move_or_attack",
                 "arguments": {
                     "unit_id": unit_id,
-                    "position": position
+                    "position": [position.x, position.y]
                 }
             }
         )
@@ -148,7 +151,7 @@ class TestAiCommands(asynctest.TestCase):
                 "commandName": "retreat_or_storm",
                 "arguments": {
                     "unit_id": unit_id,
-                    "position": position
+                    "position": [position.x, position.y]
                 }
             }
         )

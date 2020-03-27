@@ -3,6 +3,8 @@ import requests
 import socketio
 import json
 
+from src.ai.location_builder import LocationBuilder
+from src.location import Location
 from src.routeController import RouteController
 
 AI_SERVER_HOST = 'http://127.0.0.1'
@@ -128,10 +130,10 @@ class TestRouteController(asynctest.TestCase):
     @classmethod
     def generate_position_to_center_map(cls, ai):
         ai_location = ai.get_location()
-        bounds_country = ai_location["boundsCountry"][ai.get_country()]
+        bounds_country = ai_location.bounds_country[ai.get_country()]
         return [
-            (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
-            (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
+            (bounds_country["NE"].x + bounds_country["SW"].x) / 2,
+            (bounds_country["NE"].y + bounds_country["SW"].y) / 2,
         ]
 
     def test_create_ai(self):
@@ -162,7 +164,11 @@ class TestRouteController(asynctest.TestCase):
         try:
             ai = controller.ai_manager.get_ai(game_id, player_id)
             self.assertEqual(ai is not None, True)
-            self.assertEqual(ai.get_location(), TestRouteController.generate_mock_location_info())
+            self.assertEqual(
+                ai.get_location(),
+                LocationBuilder.build(
+                    TestRouteController.generate_mock_location_info()
+                ))
             self.assertEqual(ai.get_country(), country)
 
             ai_socket_connection_info = controller.ai_manager.get_ai_socket_connection_info(game_id, player_id)
@@ -255,12 +261,12 @@ class TestRouteController(asynctest.TestCase):
         unit_positions = controller.generate_ai_unit_positions(game_id, player_id, unit_counts)
 
         ai = controller.ai_manager.get_ai(game_id, player_id)
-        ai_location = ai.get_location()
-        bounds_country = ai_location["boundsCountry"][ai.get_country()]
+        ai_location: Location = ai.get_location()
+        bounds_country = ai_location.bounds_country[ai.get_country()]
 
         position = [
-            (bounds_country["NE"][0] + bounds_country["SW"][0]) / 2,
-            (bounds_country["NE"][1] + bounds_country["SW"][1]) / 2,
+            (bounds_country["NE"].x + bounds_country["SW"].x) / 2,
+            (bounds_country["NE"].y + bounds_country["SW"].y) / 2,
         ]
         expected_country = "Ukraine"
         self.assertEqual(

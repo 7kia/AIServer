@@ -3,6 +3,7 @@ from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import AiCommands, Json
+from src.ai.position import Position
 from src.game import Game
 from src.game_data_extractor import UnitDict
 from src.unit import UnitList, Unit
@@ -38,4 +39,16 @@ class ScriptBot(Ai):
             unit_dictionary
         )
 
+    def _generate_move_or_attack_command(self) -> Json:
+        unit_id: int = 0
+        position: Position = Position(0, 0)
+        return AiCommands.generate_move_or_attack_command(unit_id, position)
 
+    def _generate_retreat_or_storm_command(self) -> Json:
+        raise NotImplementedError()
+
+    def _generate_stop_or_defence_command(self) -> Json:
+        raise NotImplementedError()
+
+    def _choice_random_position(self) -> List[int]:
+        raise NotImplementedError()

@@ -1,5 +1,8 @@
 from typing import List, Dict
 from enum import Enum
+
+from src.ai.position import Position
+
 Json = Dict[str, any]
 
 
@@ -16,11 +19,11 @@ class AiCommands:
     @classmethod
     def generate_create_unit_data(cls,
                                   country: str, troop_type: str,
-                                  position: List[float], troop_size: str) -> Json:
+                                  position: Position, troop_size: str) -> Json:
         return {
             "country": country,
             "type": troop_type,
-            "position": position,
+            "position": [position.x, position.y],
             "troopSize": troop_size,
         }
 
@@ -34,22 +37,22 @@ class AiCommands:
         }
 
     @classmethod
-    def generate_move_or_attack_command(cls, unit_id: int, position: List[float]) -> Json:
+    def generate_move_or_attack_command(cls, unit_id: int, position: Position) -> Json:
         return {
             "commandName": "move_or_attack",
             "arguments": {
                 "unit_id": unit_id,
-                "position": position
+                "position": [position.x, position.y]
             }
         }
 
     @classmethod
-    def generate_retreat_or_storm_command(cls, unit_id: int, position: List[float]) -> Json:
+    def generate_retreat_or_storm_command(cls, unit_id: int, position: Position) -> Json:
         return {
             "commandName": "retreat_or_storm",
             "arguments": {
                 "unit_id": unit_id,
-                "position": position
+                "position": [position.x, position.y]
             }
         }
 

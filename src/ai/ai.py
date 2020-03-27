@@ -1,17 +1,18 @@
 from .ai_commands import AiCommands, CommandName, Json
 from src.unit import Unit
+from .position import Position
 from ..game import Game
 from typing import List, Dict, Callable
 
 from ..game_data_extractor import UnitDict, UnitList
+from ..location import Location, Bounds
 
 CommandList = List[dict]
 
-
 class Ai:
-    id = None
-    __location = None
-    __country = None
+    id: int = None
+    __location: Location = None
+    __country: str = None
 
     def __init__(self):
         pass
@@ -25,12 +26,12 @@ class Ai:
             # AiCommands.generate_unload_train_command(4),
         ]
 
-    def generate_position(self, type_unit, troop_size, i, amount):
-        country_bound = self.__location["boundsCountry"][self.__country]
-        return [
-            (country_bound["NE"][0] + country_bound["SW"][0]) / 2,
-            (country_bound["NE"][1] + country_bound["SW"][1]) / 2,
-        ]
+    def generate_position(self, type_unit, troop_size, i, amount) -> Position:
+        country_bound: Bounds = self.__location.bounds_country[self.__country]
+        return Position(
+            (country_bound["NE"].x + country_bound["SW"].x) / 2,
+            (country_bound["NE"].y + country_bound["SW"].y) / 2
+        )
 
     def generate_unit_positions(self, unit_counts: Dict[str, str]):
         unit_positions: List[Dict[str, str]] = []
@@ -38,25 +39,26 @@ class Ai:
             for troop_size in unit_counts[type_unit]:
                 amount = unit_counts[type_unit][troop_size]
                 for i in range(amount):
+                    position: Position = self.generate_position(type_unit, troop_size, i, amount)
                     unit_positions.append({
                         "country": self.__country,
                         "type": type_unit,
-                        "position": self.generate_position(type_unit, troop_size, i, amount),
+                        "position": [position.x, position.y],
                         "troopSize": troop_size,
                     })
 
         return AiCommands.generate_create_units_command(unit_positions)
 
-    def get_location(self):
+    def get_location(self) -> Location:
         return self.__location
 
-    def set_location(self, location):
+    def set_location(self, location: Location):
         self.__location = location
 
-    def get_country(self):
+    def get_country(self) -> str:
         return self.__country
 
-    def set_country(self, country):
+    def set_country(self, country: str):
         self.__country = country
 
     @staticmethod

@@ -16,7 +16,7 @@ class TestRestApiServer(asynctest.TestCase):
 
     @staticmethod
     def generate_ai_address(game_id, player_id):
-        return "/ai-server/{0}/{1}/".format(game_id, player_id)
+        return "/ai-server/{0}/{1}".format(game_id, player_id)
 
     def test_generate_ai_address(self):
         game_id = 1
