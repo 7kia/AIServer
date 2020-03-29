@@ -16,8 +16,8 @@ class ScriptBot(Ai):
         super().__init__()
 
     def get_commands(self, game: Game) -> List[Json]:
-        choised_unit: UnitList = self.choose_random_units(game.unit_dictionary)
         result: List[Json] = []
+        choised_unit: UnitList = self.choose_random_units(game.game_units.own_units)
         for unit in choised_unit:
             result.append(self._generate_command_for_unit(unit, game))
         return result

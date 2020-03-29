@@ -4,8 +4,7 @@ from typing import List
 from src.ai.ai import Ai
 from src.ai.ai_commands import CommandName
 from src.fortest.test_data_generator import TestDataGenerator
-from src.ai.game_components.game_data_extractor import UnitDict, UnitList
-from src.ai.game_components.unit import Unit, RegimentType, BaseType, SupportType
+from src.ai.game_components.unit import Unit, RegimentType, BaseType, SupportType, UnitList, UnitDict
 from src.ai.game_components.unit_state_extractor import UnitStatusFromJson
 
 
@@ -67,7 +66,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
     | stop: false | attack: true | defence: false | UNIT_STATUS_RETREAT: 6
     """
     def test_if_stop_then_access_a_move_command(self):
-        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state()
+        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state().own_units
 
         for attack in [True, False]:
             with self.subTest(attack=attack):
@@ -87,7 +86,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
                             )
 
     def test_if_move_then_access_stop_and_a_move_command(self):
-        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state()
+        unit_dictionary: UnitDict = TestDataGenerator.generate_unit_with_various_state().own_units
 
         for attack in [True, False]:
             with self.subTest(attack=attack):

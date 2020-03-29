@@ -6,13 +6,12 @@ from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
 from src.ai.game_components.game import Game
-from src.ai.game_components.game_data_extractor import UnitList, UnitDict
-from src.ai.game_components.unit import Unit
+from src.ai.game_components.unit import Unit, UnitList, UnitDict
 
 
 class CanChoiceRandomAmountUnits(unittest.TestCase):
     def test_choice_random_amount_units(self):
-        unit_dictionary: UnitDict = TestDataGenerator.generate_test_unit_dictionary()
+        unit_dictionary: UnitDict = TestDataGenerator.generate_test_unit_dictionary().own_units
         choised_units: UnitList = ScriptBot.choose_random_units(unit_dictionary)
 
         if len(choised_units) > 0:

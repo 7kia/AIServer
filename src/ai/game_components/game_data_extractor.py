@@ -1,13 +1,12 @@
 from enum import Enum
+from typing import Dict
 
 from src.ai.game_components.game import Game
-from src.ai.game_components.unit import Unit
-from typing import Dict, List
+from src.ai.game_components.game_units import GameUnits
+from src.ai.game_components.unit import UnitDict
 from src.ai.game_components.unit_factory import UnitFactory
 
-UnitList = List[Unit]
-UnitDict = Dict[str, UnitList]
-Json = dict
+Json = Dict[str, any]
 
 
 class UnitCategory(Enum):
@@ -18,15 +17,25 @@ class UnitCategory(Enum):
 
 class GameDataExtractor:
     @staticmethod
-    def extract_game(json_file_content: Dict[str, str]) -> Game:
+    def extract_game(json_file_content: Json) -> Game:
         game = Game()
         game.id = json_file_content["id"]
         game.users = json_file_content["users"]
-        game.unit_dictionary = json_file_content["units"]   # TODO 7kia convert to dict[str, Unit]
+        game.game_units = GameDataExtractor._extract_game_unit(json_file_content["units"])
         return game
 
+    @classmethod
+    def _extract_game_unit(cls, unit_dictionary: Json) -> GameUnits:
+        own_units: UnitDict = GameDataExtractor._extract_unit_dictionary(
+            unit_dictionary["ownUnits"]
+        )
+        visible_enemy_units: UnitDict = GameDataExtractor._extract_unit_dictionary(
+            unit_dictionary["visibleEnemyUnits"]
+        )
+        return GameUnits(own_units, visible_enemy_units)
+
     @staticmethod
-    def extract_unit_dictionary(json_content: Json) -> UnitDict:
+    def _extract_unit_dictionary(json_content: Json) -> UnitDict:
         unit_dictionary: UnitDict = {}
         for unit_type in json_content.keys():
             unit_dictionary[unit_type] = []

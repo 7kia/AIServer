@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Dict
 
 from src.ai.game_components.position import Position
 from src.ai.game_components.unit_state import UnitState
@@ -61,3 +61,4 @@ class Unit:
 
 
 UnitList = List[Unit]
+UnitDict = Dict[str, UnitList]

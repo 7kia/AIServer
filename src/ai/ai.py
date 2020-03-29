@@ -1,10 +1,10 @@
 from .ai_commands import AiCommands, CommandName, Json
-from src.ai.game_components.unit import Unit
+from src.ai.game_components.unit import Unit, UnitList
 from src.ai.game_components.position import Position
 from src.ai.game_components.game import Game
 from typing import List, Dict, Callable
 
-from src.ai.game_components.game_data_extractor import UnitDict, UnitList
+from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.location import Location, Bounds
 from .game_components.position_generator import PositionGenerator
 

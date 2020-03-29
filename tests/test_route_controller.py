@@ -189,7 +189,18 @@ class TestRouteController(asynctest.TestCase):
             "users": {player_id: {}},
             "loserId": None,
             "status": None,
-            "units": {},
+            "units":  {
+                "ownUnits": {
+                    "regiments": {},
+                    "bases": {},
+                    "supports": {},
+                },
+                "visibleEnemyUnits": {
+                    "regiments": {},
+                    "bases": {},
+                    "supports": {},
+                }
+            },
             "currentGameTime": None,
             "battleMatrix": None,
         }

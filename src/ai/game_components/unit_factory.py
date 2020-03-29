@@ -1,7 +1,9 @@
+from typing import Dict
+
 from src.ai.game_components.unit import Unit
 from src.ai.game_components.unit_state_extractor import UnitStateExtractor
 
-Json = dict
+Json = Dict[str, any]
 
 
 class UnitFactory:

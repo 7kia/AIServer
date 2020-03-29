@@ -21,7 +21,7 @@ class UpdateAiRules:
         if not valid_player_id:
             message += "Posted user id={0} not content to game with id={1};\n".format(player_id, game_id)
 
-        exist_unit_list = game.unit_dictionary is not None
+        exist_unit_list = game.game_units is not None
         if not exist_unit_list:
             message += "Posted game id={0} not have unit dictionary;\n".format(game_id)
         return message

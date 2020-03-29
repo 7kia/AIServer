@@ -69,7 +69,8 @@ class CanGenerateCommands(unittest.TestCase):
 
     def test_generate_moveOrAttack_command(self):
         test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
-        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_STOP.value - 1]
+        own_units: UnitDict = test_data.game.game_units.own_units
+        unit: Unit = own_units["regiment"][UnitStatusFromJson.UNIT_STATUS_STOP.value - 1]
 
         command: Json = test_data.bot \
             .generate_move_or_attack_command(unit, test_data.game)
@@ -80,12 +81,13 @@ class CanGenerateCommands(unittest.TestCase):
         )
         self.assertEqual(
             True, TestsForCommandGenerationPrivateMethods
-                .check_unit_id(command, test_data.game.unit_dictionary)
+                .check_unit_id(command, own_units)
         )
 
     def test_generate_retreatOrStorm_command(self):
         test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
-        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_ATTACK.value - 1]
+        own_units: UnitDict = test_data.game.game_units.own_units
+        unit: Unit = own_units["regiment"][UnitStatusFromJson.UNIT_STATUS_ATTACK.value - 1]
 
         command: Json = test_data.bot \
             .generate_retreat_or_storm_command(unit, test_data.game)
@@ -96,19 +98,20 @@ class CanGenerateCommands(unittest.TestCase):
         )
         self.assertEqual(
             True, TestsForCommandGenerationPrivateMethods
-                .check_unit_id(command, test_data.game.unit_dictionary)
+                .check_unit_id(command, own_units)
         )
 
     def test_generate_stopOrDefence_command(self):
         test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
-        unit: Unit = test_data.game.unit_dictionary["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH.value - 1]
+        own_units: UnitDict = test_data.game.game_units.own_units
+        unit: Unit = test_data.game.game_units.own_units["regiment"][UnitStatusFromJson.UNIT_STATUS_MARCH.value - 1]
 
         command: Json = test_data.bot \
             .generate_stop_or_defence_command(unit, test_data.game)
         self.assertEqual(command["commandName"], CommandName.stop_or_defence.value.__str__())
         self.assertEqual(
             True, TestsForCommandGenerationPrivateMethods
-                .check_unit_id(command, test_data.game.unit_dictionary)
+                .check_unit_id(command, own_units)
         )
 
 
