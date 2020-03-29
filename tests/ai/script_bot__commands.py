@@ -3,15 +3,15 @@ from abc import ABC
 from typing import List
 
 from src.ai.ai_commands import Json, CommandName
-from src.ai.position import Position
+from src.ai.game_components.position import Position
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
-from src.game import Game
-from src.game_data_extractor import UnitDict
-from src.location import Location, Bounds
-from src.unit import UnitList, Unit
-from src.unit_state_extractor import UnitStatusFromJson
+from src.ai.game_components.game import Game
+from src.ai.game_components.game_data_extractor import UnitDict
+from src.ai.game_components.location import Location, Bounds
+from src.ai.game_components.unit import UnitList, Unit
+from src.ai.game_components.unit_state_extractor import UnitStatusFromJson
 
 
 class TestScriptBot(ScriptBot, ABC):

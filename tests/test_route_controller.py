@@ -1,8 +1,8 @@
 import asynctest
 import json
 
-from src.location_builder import LocationBuilder
-from src.location import Location
+from src.ai.game_components.location_builder import LocationBuilder
+from src.ai.game_components.location import Location
 from src.routeController import RouteController
 
 AI_SERVER_HOST = 'http://127.0.0.1'
@@ -114,6 +114,7 @@ class TestRouteController(asynctest.TestCase):
     @classmethod
     def create_template_controller_with_ai(cls, game_id, player_id, ai_type, ai_name):
         controller = RouteController()
+        controller.test_mode = True
         input_data = {
             "game_id": game_id,
             "player_id": player_id,
@@ -180,7 +181,7 @@ class TestRouteController(asynctest.TestCase):
         game_id = "4"
         player_id = "41"
         ai_type = "script-bot"
-        ai_name = "intellectual-000"
+        ai_name = "test-bot"
 
         controller = TestRouteController.create_template_controller_with_ai(game_id, player_id, ai_type, ai_name)
         json_object = {

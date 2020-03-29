@@ -1,11 +1,8 @@
-from flask import jsonify
-import json
-
-from .game_data_extractor import GameDataExtractor
+from src.ai.game_components.game_data_extractor import GameDataExtractor
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
 from .strategies.AiManagmentStrategies import AiManagmentStrategies
-from .game import Game
+from src.ai.game_components.game import Game
 from .ai.ai_manager import AiManager
 from typing import List, Dict
 
@@ -15,6 +12,7 @@ class RouteController:
         self.ai_managment_strategies = AiManagmentStrategies(self.ai_manager)
         self.create_ai_rules = CreateAiRules(self.ai_manager)
         self.update_ai_rules = UpdateAiRules(self.ai_manager)
+        self.test_mode: bool = False
 
     def generate_ai_address(self, game_info, ai_info):
         try:
@@ -96,7 +94,8 @@ class RouteController:
         self.ai_manager.create_ai(
             ai_info=[ai_type, ai_name],
             game_info=[game_id, player_id],
-            ai_data=[location, country]
+            ai_data=[location, country],
+            test_mode=self.test_mode
         )
         self.ai_manager.add_ai_socket_connection_info(game_id, player_id)
 

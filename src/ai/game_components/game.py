@@ -1,6 +1,6 @@
 from typing import Dict
 
-from src.unit import Unit, UnitList
+from src.ai.game_components.unit import UnitList
 
 
 class Game:

@@ -1,6 +1,6 @@
-from src.ai.position import Position
-from src.game_data_extractor import Json
-from src.location import Location
+from src.ai.game_components.position import Position
+from src.ai.game_components.game_data_extractor import Json
+from src.ai.game_components.location import Location
 
 
 # TODO 7kia протестировать класс

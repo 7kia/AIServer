@@ -1,7 +1,7 @@
-from src.game import Game
-from src.game_data_extractor import UnitDict
-from src.unit import RegimentType, BaseType, SupportType, Unit
-from src.unit_state_extractor import UnitStatusFromJson, unit_states
+from src.ai.game_components.game import Game
+from src.ai.game_components.game_data_extractor import UnitDict
+from src.ai.game_components.unit import RegimentType, BaseType, SupportType, Unit
+from src.ai.game_components.unit_state_extractor import UnitStatusFromJson, unit_states
 
 
 class TestDataGenerator:

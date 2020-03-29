@@ -1,5 +1,5 @@
 from typing import List
-from src.game import Game
+from src.ai.game_components.game import Game
 
 
 class UpdateAiRules:

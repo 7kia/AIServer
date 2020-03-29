@@ -1,13 +1,14 @@
 from .ai_commands import AiCommands, CommandName, Json
-from src.unit import Unit
-from .position import Position
-from ..game import Game
+from src.ai.game_components.unit import Unit
+from src.ai.game_components.position import Position
+from src.ai.game_components.game import Game
 from typing import List, Dict, Callable
 
-from ..game_data_extractor import UnitDict, UnitList
-from ..location import Location, Bounds
+from src.ai.game_components.game_data_extractor import UnitDict, UnitList
+from src.ai.game_components.location import Location, Bounds
 
 CommandList = List[dict]
+
 
 class Ai:
     id: int = None

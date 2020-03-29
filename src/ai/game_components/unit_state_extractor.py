@@ -1,5 +1,5 @@
 from enum import Enum
-from src.unit_state import UnitState
+from src.ai.game_components.unit_state import UnitState
 
 Json = dict
 

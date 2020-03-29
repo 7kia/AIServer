@@ -1,12 +1,12 @@
 import unittest
-from typing import Callable, List
+from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import CommandName
 from src.fortest.test_data_generator import TestDataGenerator
-from src.game_data_extractor import UnitDict, UnitList
-from src.unit import Unit, UnitType, RegimentType, BaseType, SupportType
-from src.unit_state_extractor import unit_states, UnitStatusFromJson
+from src.ai.game_components.game_data_extractor import UnitDict, UnitList
+from src.ai.game_components.unit import Unit, RegimentType, BaseType, SupportType
+from src.ai.game_components.unit_state_extractor import UnitStatusFromJson
 
 
 class CanChangeUnits(unittest.TestCase):

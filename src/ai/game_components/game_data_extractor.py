@@ -1,10 +1,9 @@
 from enum import Enum
 
-from src.game import Game
-from src.unit import Unit
+from src.ai.game_components.game import Game
+from src.ai.game_components.unit import Unit
 from typing import Dict, List
-from src.unit_factory import UnitFactory
-from src.unit_state import UnitState
+from src.ai.game_components.unit_factory import UnitFactory
 
 UnitList = List[Unit]
 UnitDict = Dict[str, UnitList]

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-from src.unit_state import UnitState
+from src.ai.game_components.unit_state import UnitState
 
 
 class BaseType(Enum):

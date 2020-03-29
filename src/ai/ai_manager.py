@@ -2,8 +2,8 @@ import json
 from typing import List
 
 from .ai_builder import AiBuilder
-from src.location_builder import LocationBuilder
-from ..game import Game
+from src.ai.game_components.location_builder import LocationBuilder
+from src.ai.game_components.game import Game
 
 
 class AiManager:
@@ -30,8 +30,13 @@ class AiManager:
     def generate_ai_address(game_id, player_id):
         return "/ai-server/{0}/{1}".format(game_id, player_id)
 
-    def create_ai(self, ai_info, game_info: List[any], ai_data: List[any]):
+    def create_ai(self, ai_info: List[str], game_info: List[any], ai_data: List[any],
+                  test_mode: bool = False):
         [game_id, player_id] = game_info
+
+        [ai_type, ai_name] = ai_info
+        if not test_mode and (ai_name == "test-bot"):
+            raise BaseException("In production mode try create test-bot")
 
         self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
@@ -91,7 +96,3 @@ class AiManager:
     @classmethod
     def get_succsess_delete_message(cls):
         return "Ai delete"
-
-
-
-

@@ -1,5 +1,5 @@
 from typing import List, Dict
-from src.ai.position import Position
+from src.ai.game_components.position import Position
 
 Bounds = Dict[str, Position]
 UnitAmounts = Dict[str, int]

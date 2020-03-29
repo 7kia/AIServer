@@ -5,9 +5,9 @@ from src.ai.ai_commands import Json, CommandName
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
-from src.game import Game
-from src.game_data_extractor import UnitList, UnitDict, GameDataExtractor
-from src.unit import Unit, RegimentType, BaseType, SupportType
+from src.ai.game_components.game import Game
+from src.ai.game_components.game_data_extractor import UnitList, UnitDict
+from src.ai.game_components.unit import Unit
 
 
 class CanChoiceRandomAmountUnits(unittest.TestCase):
@@ -32,7 +32,7 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
             game_id, player_id, bot_country
         )
         game: Game = TestDataGenerator.generate_test_game(
-            game_id, player_id
+            game_id, player_id, generate_unit_with_various_state=False
         )
         commands: List[Json] = script_bot.get_commands(game)
         self.assertEqual(True, self.is_the_commands_to(commands, self.generate_list_existing_commands()))

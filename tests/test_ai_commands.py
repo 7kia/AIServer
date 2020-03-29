@@ -1,7 +1,7 @@
 import asynctest
 
-from src.ai.position import Position
-from src.location import Bounds
+from src.ai.game_components.position import Position
+from src.ai.game_components.location import Bounds
 from src.routeController import RouteController
 from src.ai.ai_commands import AiCommands
 

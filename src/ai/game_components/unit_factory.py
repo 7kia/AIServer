@@ -1,5 +1,5 @@
-from src.unit import Unit
-from src.unit_state_extractor import UnitStateExtractor
+from src.ai.game_components.unit import Unit
+from src.ai.game_components.unit_state_extractor import UnitStateExtractor
 
 Json = dict
 

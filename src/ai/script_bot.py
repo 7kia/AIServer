@@ -3,10 +3,10 @@ from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import AiCommands, Json, CommandName
-from src.ai.position import Position
-from src.game import Game
-from src.game_data_extractor import UnitDict
-from src.unit import UnitList, Unit
+from src.ai.game_components.position import Position
+from src.ai.game_components.game import Game
+from src.ai.game_components.game_data_extractor import UnitDict
+from src.ai.game_components.unit import UnitList, Unit
 
 
 class ScriptBot(Ai):
@@ -30,11 +30,11 @@ class ScriptBot(Ai):
         access_commands: List[str] = self.generate_access_command_list(unit)
         choised_command: str = random_choice(access_commands)
         if choised_command == CommandName.stop_or_defence:
-            return self._generate_stop_or_defence_command(game)
+            return self._generate_stop_or_defence_command(unit, game)
         elif choised_command == CommandName.retreat_or_storm:
-            return self._generate_retreat_or_storm_command(game)
+            return self._generate_retreat_or_storm_command(unit, game)
         elif choised_command == CommandName.move_or_attack:
-            return self._generate_move_or_attack_command(game)
+            return self._generate_move_or_attack_command(unit, game)
         raise NotImplementedError("Incorrect command")
 
 

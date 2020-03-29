@@ -1,7 +1,7 @@
 from typing import List, Dict
 from enum import Enum
 
-from src.ai.position import Position
+from src.ai.game_components.position import Position
 
 Json = Dict[str, any]
 

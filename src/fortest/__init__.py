@@ -1,6 +1,6 @@
 from typing import List
 
-from src.location import Location
+from src.ai.game_components.location import Location
 
 
 def generate_mock_location_info():

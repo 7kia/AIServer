@@ -1,5 +1,4 @@
-from src.ai.ai_manager import AiManager
-from src.game import Game
+from src.ai.game_components.game import Game
 
 
 class AiManagmentStrategies:
