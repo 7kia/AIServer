@@ -27,15 +27,15 @@ class TestScriptBot(ScriptBot, ABC):
     def generate_stop_or_defence_command(self, unit: Unit, game: Game) -> Json:
         return self._generate_stop_or_defence_command(unit, game)
 
-    def choice_random_position(self) -> Position:
-        return self._choice_random_position()
+    def choice_random_position(self, unit_position: Position) -> Position:
+        return self._choice_random_position(unit_position)
 
 
 class CanGenerateCommandTestData:
     def __init__(self, bot: TestScriptBot, game_id: int, player_id: int):
-        self.bot = bot
-        self.game = TestDataGenerator.generate_test_game(
-            game_id, player_id, generate_unit_with_various_state=True
+        self.bot: TestScriptBot = bot
+        self.game: Game = TestDataGenerator.generate_test_game(
+            game_id, player_id, generate_unit_with_various_state=True, map_bounds=bot.get_location().bounds
         )
 
 
@@ -113,7 +113,8 @@ class CanGenerateCommands(unittest.TestCase):
 class TestsForCommandGenerationPrivateMethods(unittest.TestCase):
     def test_choice_random_position(self):
         test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
-        position: Position = test_data.bot.choice_random_position()
+        position: Position = test_data.bot.choice_random_position(
+            test_data.bot.generate_position(type_unit="", troop_size="", i=0, amount=1))
         self.assertEqual(True, self.isInside(test_data.bot.get_location().bounds, position))
 
     @staticmethod

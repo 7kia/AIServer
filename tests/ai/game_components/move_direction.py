@@ -6,6 +6,7 @@ from src.ai.game_components.move_direction import MoveDirection
 
 class MoveDirectionTests(unittest.TestCase):
     def test_equal_to_a_unit_vector(self):
+
         for direction in MoveDirection:
             with self.subTest(direction=direction):
                 self.assertEqual(

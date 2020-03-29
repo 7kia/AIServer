@@ -30,7 +30,7 @@ class Ai:
     def generate_command_for_unit(self, unit: Unit, game: Game) -> Json:
         return {}
 
-    def generate_position(self, type_unit, troop_size, i, amount) -> Position:
+    def generate_position(self, type_unit: str, troop_size: str, i: int, amount: int) -> Position:
         country_bound: Bounds = self.__location.bounds_country[self.__country]
         return Position(
             (country_bound["NE"].x + country_bound["SW"].x) / 2,

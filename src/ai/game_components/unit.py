@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List
 
+from src.ai.game_components.position import Position
 from src.ai.game_components.unit_state import UnitState
 
 
@@ -47,11 +48,15 @@ class Unit:
     id: int = None
     unit_type: str = None
     state: UnitState = None
+    position: Position = None
 
-    def set(self, unit_id: int, unit_type: str, state: UnitState = UnitState()):
+    def set(self, unit_id: int, unit_type: str,
+            state: UnitState = UnitState(),
+            position: Position = Position(0, 0)):
         self.id = unit_id
         self.unit_type = unit_type
         self.state = state
+        self.position = position
         return self
 
 

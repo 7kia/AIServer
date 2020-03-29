@@ -1,8 +1,10 @@
 from random import choice as random_choice
+from random import randint
 from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import AiCommands, Json, CommandName
+from src.ai.game_components.move_direction import MoveDirection, DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
 from src.ai.game_components.position import Position
 from src.ai.game_components.game import Game
 from src.ai.game_components.game_data_extractor import UnitDict
@@ -46,17 +48,23 @@ class ScriptBot(Ai):
         )
 
     def _generate_move_or_attack_command(self, unit: Unit, game: Game) -> Json:
-        return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position())
+        return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))
 
     def _generate_retreat_or_storm_command(self, unit: Unit, game: Game) -> Json:
-        return AiCommands.generate_retreat_or_storm_command(unit.id, self._choice_random_position())
+        return AiCommands.generate_retreat_or_storm_command(unit.id, self._choice_random_position(unit.position))
 
     def _generate_stop_or_defence_command(self, unit: Unit, game: Game) -> Json:
         return AiCommands.generate_stop_or_defence_command(unit.id)
 
-    def _choice_random_position(self) -> Position:
-        return Position(0.0, 0.0)
+    def _choice_random_position(self, unit_position: Position) -> Position:
+        changed_direction: Position = random_choice(DIRECTIONS).value
+        distance: float = self._change_distance()
+        return unit_position + (changed_direction * distance)
 
     @staticmethod
     def _get_random_units(unit: Unit) -> bool:
         return random_choice([True, False])
+
+    @staticmethod
+    def _change_distance() -> float:
+        return random_choice([SHORT_DISTANCE, LONG_DISTANCE])
