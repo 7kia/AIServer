@@ -1,23 +1,16 @@
 from random import choice as random_choice
-from random import randint
 from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import AiCommands, Json, CommandName
-from src.ai.game_components.move_direction import MoveDirection, DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
-from src.ai.game_components.position import Position
 from src.ai.game_components.game import Game
 from src.ai.game_components.game_data_extractor import UnitDict
+from src.ai.game_components.move_direction import DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
+from src.ai.game_components.position import Position
 from src.ai.game_components.unit import UnitList, Unit
 
 
 class ScriptBot(Ai):
-    # приватные и публичные методы
-    # тестируемые методы класса приватные. Как быть?
-
-    # - выбирает случайное подразделение
-    # - случайно выбирает одну из доступных, для выбранного подразделения, команду
-    # + генерирует команду
     def __init__(self):
         super().__init__()
 
@@ -39,7 +32,6 @@ class ScriptBot(Ai):
             return self._generate_move_or_attack_command(unit, game)
         raise NotImplementedError("Incorrect command")
 
-
     @staticmethod
     def choose_random_units(unit_dictionary: UnitDict) -> UnitList:
         return Ai.choose_units(
@@ -59,7 +51,10 @@ class ScriptBot(Ai):
     def _choice_random_position(self, unit_position: Position) -> Position:
         changed_direction: Position = random_choice(DIRECTIONS).value
         distance: float = self._change_distance()
-        return unit_position + (changed_direction * distance)
+        return self._generate_target_position(
+            unit_position, changed_direction, distance,
+            self._location.bounds
+        )
 
     @staticmethod
     def _get_random_units(unit: Unit) -> bool:

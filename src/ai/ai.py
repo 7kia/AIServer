@@ -6,14 +6,15 @@ from typing import List, Dict, Callable
 
 from src.ai.game_components.game_data_extractor import UnitDict, UnitList
 from src.ai.game_components.location import Location, Bounds
+from .game_components.position_generator import PositionGenerator
 
 CommandList = List[dict]
 
 
 class Ai:
     id: int = None
-    __location: Location = None
-    __country: str = None
+    _location: Location = None
+    _country: str = None
 
     def __init__(self):
         pass
@@ -31,11 +32,22 @@ class Ai:
         return {}
 
     def generate_position(self, type_unit: str, troop_size: str, i: int, amount: int) -> Position:
-        country_bound: Bounds = self.__location.bounds_country[self.__country]
+        country_bound: Bounds = self._location.bounds_country[self._country]
         return Position(
             (country_bound["NE"].x + country_bound["SW"].x) / 2,
             (country_bound["NE"].y + country_bound["SW"].y) / 2
         )
+
+    @staticmethod
+    def _generate_target_position(unit_position: Position,
+                                  changed_direction: Position, distance: float,
+                                  map_bounds: Bounds) -> Position:
+        result: Position = unit_position + (changed_direction * distance)
+        if PositionGenerator.is_inside(map_bounds, unit_position):
+            return result
+        else:
+            return PositionGenerator.move_to_map_border(unit_position, map_bounds)
+
 
     def generate_unit_positions(self, unit_counts: Dict[str, str]):
         unit_positions: List[Dict[str, str]] = []
@@ -45,7 +57,7 @@ class Ai:
                 for i in range(amount):
                     position: Position = self.generate_position(type_unit, troop_size, i, amount)
                     unit_positions.append({
-                        "country": self.__country,
+                        "country": self._country,
                         "type": type_unit,
                         "position": [position.x, position.y],
                         "troopSize": troop_size,
@@ -54,16 +66,16 @@ class Ai:
         return AiCommands.generate_create_units_command(unit_positions)
 
     def get_location(self) -> Location:
-        return self.__location
+        return self._location
 
     def set_location(self, location: Location):
-        self.__location = location
+        self._location = location
 
     def get_country(self) -> str:
-        return self.__country
+        return self._country
 
     def set_country(self, country: str):
-        self.__country = country
+        self._country = country
 
     @staticmethod
     def choose_units(
@@ -87,3 +99,4 @@ class Ai:
         else:
             access_command_list.append(CommandName.move_or_attack)
         return access_command_list
+

@@ -2,8 +2,10 @@ import unittest
 from abc import ABC
 from typing import List
 
+from src.ai.ai import Ai
 from src.ai.ai_commands import Json, CommandName
 from src.ai.game_components.position import Position
+from src.ai.game_components.position_generator import PositionGenerator
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
@@ -115,7 +117,7 @@ class TestsForCommandGenerationPrivateMethods(unittest.TestCase):
         test_data: CanGenerateCommandTestData = CanGenerateCommands.generate_test_data()
         position: Position = test_data.bot.choice_random_position(
             test_data.bot.generate_position(type_unit="", troop_size="", i=0, amount=1))
-        self.assertEqual(True, self.isInside(test_data.bot.get_location().bounds, position))
+        self.assertEqual(True, PositionGenerator.is_inside(test_data.bot.get_location().bounds, position))
 
     @staticmethod
     def check_unit_id(command: Json, unit_dictionary: UnitDict) -> bool:
@@ -129,12 +131,8 @@ class TestsForCommandGenerationPrivateMethods(unittest.TestCase):
     def check_position(command: Json, location: Location) -> bool:
         position: List[float] = command["arguments"]["position"]
         map_bounds: Bounds = location.bounds
-        return TestsForCommandGenerationPrivateMethods.isInside(map_bounds, Position(position[0], position[1]))
+        return PositionGenerator.is_inside(map_bounds, Position(position[0], position[1]))
 
-    @staticmethod
-    def isInside(map_bounds: Bounds, position: Position):
-        return ((position.x >= map_bounds["SW"].x) and (position.x <= map_bounds["NE"].x)) \
-               and ((position.y >= map_bounds["SW"].y) and (position.y <= map_bounds["NE"].y))
 
 
 if __name__ == '__main__':
