@@ -14,7 +14,7 @@ class PositionGenerator:
 
     @staticmethod
     def move_to_map_border(new_position: Position, map_bounds: Bounds) -> Position:
-        result: Position = new_position
+        result: Position = Position(new_position.x, new_position.y)
         result.x = PositionGenerator._set_border_coordinate(new_position.x, map_bounds["SW"].x, map_bounds["NE"].x)
         result.y = PositionGenerator._set_border_coordinate(new_position.y, map_bounds["SW"].y, map_bounds["NE"].y)
         return result

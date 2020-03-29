@@ -5,6 +5,7 @@ from typing import List
 from src.ai.game_components.position import Position
 
 
+# 7kia В качестве вектора был выбран единичный вектор
 class MoveDirection(Enum):
     up: Position = Position(0, 1)
     up_right: Position = Position(math.sqrt(0.5), math.sqrt(0.5))
