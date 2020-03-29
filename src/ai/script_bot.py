@@ -1,3 +1,4 @@
+import copy
 from random import choice as random_choice
 from typing import List
 
@@ -52,7 +53,7 @@ class ScriptBot(Ai):
         changed_direction: Position = random_choice(DIRECTIONS).value
         distance: float = self._change_distance()
         return self._generate_target_position(
-            unit_position, changed_direction, distance,
+            copy.copy(unit_position), changed_direction, distance,
             self._location.bounds
         )
 
