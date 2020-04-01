@@ -1,5 +1,6 @@
 #!flask/bin/python
 import eventlet
+
 eventlet.monkey_patch()
 
 from flask import Flask
@@ -10,6 +11,7 @@ from flask_socketio import send, emit
 
 from src.routeController import RouteController
 from src.ai.ai_manager import AiManager
+
 app = Flask(__name__)
 socketio = SocketIO(app, async_mode='eventlet', logger=True, engineio_logger=True)
 controller = RouteController()
@@ -26,20 +28,18 @@ def test_connect(data):
     address = AiManager.generate_ai_address(game_id, player_id)
     join_room(address)
     print('Open socket {0} socket info={1}'
-          .format(
-            address,
-            controller.ai_manager.get_ai_socket_connection_info(game_id, player_id)
-        )
+        .format(
+        address,
+        controller.ai_manager.get_ai_socket_connection_info(game_id, player_id)
+    )
     )
     print('Location={0}'
-          .format(
-            controller.ai_manager.get_ai(game_id, player_id).get_location()
-        )
+        .format(
+        controller.ai_manager.get_ai(game_id, player_id).get_location()
+    )
     )
     print("get_unit_count room={0}".format(address))
     emit("get_unit_count", "", room=address)
-
-
 
 
 @socketio.on('leave')
@@ -96,6 +96,16 @@ def generate_ai_address(ai_name, ai_type):
         [game_id, player_id],
         ai_info=[ai_type, ai_name]
     )
+
+
+@app.route('/get-ai-list', methods=['GET'])
+def generate_ai_list():
+    return controller.generate_ai_list()
+
+
+@app.route('/get-ai-type-list', methods=['GET'])
+def generate_ai_type_list():
+    return controller.generate_ai_type_list()
 
 
 if __name__ == '__main__':

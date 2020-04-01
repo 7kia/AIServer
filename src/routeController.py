@@ -1,10 +1,16 @@
+import json
+
 from src.ai.game_components.game_data_extractor import GameDataExtractor
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
-from .strategies.AiManagmentStrategies import AiManagmentStrategies
 from src.ai.game_components.game import Game
 from .ai.ai_manager import AiManager
 from typing import List, Dict
+
+from .strategies.AiManagmentStrategies import AiManagmentStrategies
+
+Json = Dict[str, any]
+
 
 class RouteController:
     def __init__(self):
@@ -79,8 +85,12 @@ class RouteController:
     @classmethod
     def generate_json_with_double_quotes(cls, commands):
         str_commands = str({"data": commands})
-        str_commands = str_commands.replace("\'", "\"")
+        str_commands = RouteController.replace_one_on_double_quotes(str_commands)
         return str_commands
+
+    @staticmethod
+    def replace_one_on_double_quotes(data: str):
+        return data.replace("\'", "\"")
 
     def create_ai(self, data):
         # print("data ={0}".format(data))
@@ -105,4 +115,12 @@ class RouteController:
             [ai.generate_unit_positions(unit_counts)]
         )
 
+    @staticmethod
+    def generate_ai_list() -> str:
+        result = json.load(open("src/ai/AI-list.json"))
+        return RouteController.replace_one_on_double_quotes(result.__str__())
 
+    @staticmethod
+    def generate_ai_type_list() -> str:
+        result = json.load(open("src/ai/AI-type-list.json"))
+        return RouteController.replace_one_on_double_quotes(result.__str__())
