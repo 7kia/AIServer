@@ -22,6 +22,17 @@ class ScriptBot(Ai):
             result.append(self._generate_command_for_unit(unit, game))
         return result
 
+    @staticmethod
+    def choose_random_units(unit_dictionary: UnitDict) -> UnitList:
+        return Ai.choose_units(
+            ScriptBot._get_random_units,
+            unit_dictionary
+        )
+
+    @staticmethod
+    def _get_random_units(unit: Unit) -> bool:
+        return random_choice([True, False])
+
     def _generate_command_for_unit(self, unit: Unit, game: Game) -> Json:
         access_commands: List[str] = self.generate_access_command_list(unit)
         choised_command: str = random_choice(access_commands)
@@ -33,12 +44,6 @@ class ScriptBot(Ai):
             return self._generate_move_or_attack_command(unit, game)
         raise NotImplementedError("Incorrect command")
 
-    @staticmethod
-    def choose_random_units(unit_dictionary: UnitDict) -> UnitList:
-        return Ai.choose_units(
-            ScriptBot._get_random_units,
-            unit_dictionary
-        )
 
     def _generate_move_or_attack_command(self, unit: Unit, game: Game) -> Json:
         return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))
@@ -56,10 +61,6 @@ class ScriptBot(Ai):
             copy.copy(unit_position), changed_direction, distance,
             self._location.bounds
         )
-
-    @staticmethod
-    def _get_random_units(unit: Unit) -> bool:
-        return random_choice([True, False])
 
     @staticmethod
     def _change_distance() -> float:

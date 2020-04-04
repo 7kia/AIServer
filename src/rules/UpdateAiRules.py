@@ -17,9 +17,10 @@ class UpdateAiRules:
         if not valid_id:
             message += "Posted game id={0} not equal ai game id ={1};\n".format(game.id, game_id)
 
-        valid_player_id = game.users[str(player_id)] is not None
-        if not valid_player_id:
-            message += "Posted user id={0} not content to game with id={1};\n".format(player_id, game_id)
+        # TODO 7kia ИИ имеет в users строковый а не числовой id (intelectual-000 вместо 99999)
+        # valid_player_id = game.users[str(player_id)] is not None
+        # if not valid_player_id:
+        #     message += "Posted user id={0} not content to game with id={1};\n".format(player_id, game_id)
 
         exist_unit_list = game.game_units is not None
         if not exist_unit_list:

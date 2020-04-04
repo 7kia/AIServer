@@ -5,7 +5,7 @@ from src.ai.game_components.game_units import GameUnits
 from src.ai.game_components.location import Bounds
 from src.ai.game_components.position import Position
 from src.ai.game_components.unit import RegimentType, BaseType, SupportType, Unit
-from src.ai.game_components.unit_state_extractor import UnitStatusFromJson, unit_states
+from src.ai.game_components.unit_state_extractor import UnitStatusFromJson, int_to_unit_states
 
 
 class TestDataGenerator:
@@ -36,22 +36,22 @@ class TestDataGenerator:
             {
                 "regiment": [
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_STOP, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_STOP],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_STOP],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_MARCH, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_DEFENCE, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_RETREAT, RegimentType.tank.__str__(),
-                               unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT],
                                positon),
                 ],
                 "base": [Unit().set(11, BaseType.land_base.__str__())],

@@ -48,7 +48,6 @@ class Ai:
         else:
             return PositionGenerator.move_to_map_border(unit_position, map_bounds)
 
-
     def generate_unit_positions(self, unit_counts: Dict[str, str]):
         unit_positions: List[Dict[str, str]] = []
         for type_unit in unit_counts:
@@ -58,7 +57,7 @@ class Ai:
                     position: Position = self.generate_position(type_unit, troop_size, i, amount)
                     unit_positions.append({
                         "country": self._country,
-                        "type": type_unit,
+                        "troopType": type_unit,
                         "position": [position.x, position.y],
                         "troopSize": troop_size,
                     })
@@ -99,4 +98,3 @@ class Ai:
         else:
             access_command_list.append(CommandName.move_or_attack)
         return access_command_list
-
