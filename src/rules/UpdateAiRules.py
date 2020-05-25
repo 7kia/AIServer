@@ -1,5 +1,5 @@
 from typing import List
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 
 
 class UpdateAiRules:
@@ -9,13 +9,13 @@ class UpdateAiRules:
         self.ai_manager = ai_manager
 
     @staticmethod
-    def validate_game(game: Game, param: List[str]):
+    def validate_game(game: GameState, param: List[str]):
         [game_id, player_id] = param
         message = ""
 
-        valid_id = game.id == game_id
-        if not valid_id:
-            message += "Posted game id={0} not equal ai game id ={1};\n".format(game.id, game_id)
+        # valid_id = game.id == game_id
+        # if not valid_id:
+        #     message += "Posted game id={0} not equal ai game id ={1};\n".format(game.id, game_id)
 
         # TODO 7kia ИИ имеет в users строковый а не числовой id (intelectual-000 вместо 99999)
         # valid_player_id = game.users[str(player_id)] is not None

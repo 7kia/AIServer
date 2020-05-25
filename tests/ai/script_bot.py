@@ -5,7 +5,7 @@ from src.ai.ai_commands import Json, CommandName
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from src.ai.game_components.unit import Unit, UnitList, UnitDict
 
 
@@ -30,7 +30,7 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
         script_bot: ScriptBot = self.generate_test_script_bot(
             game_id, player_id, bot_country
         )
-        game: Game = TestDataGenerator.generate_test_game(
+        game: GameState = TestDataGenerator.generate_test_game(
             game_id, player_id, generate_unit_with_various_state=False
         )
         commands: List[Json] = script_bot.get_commands(game)
@@ -49,6 +49,10 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
         script_bot: ScriptBot = ScriptBot()
         script_bot.set_location(input_data["location"])
         script_bot.set_country(input_data["country"])
+
+        game_state = {}
+        script_bot.set_current_game_state(game_state)
+        script_bot.set_last_game_state(game_state)
         return script_bot
 
 

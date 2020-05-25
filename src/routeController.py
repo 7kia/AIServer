@@ -3,7 +3,7 @@ import json
 from src.ai.game_components.game_data_extractor import GameDataExtractor
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from .ai.ai_manager import AiManager
 from typing import List, Dict
 
@@ -50,19 +50,20 @@ class RouteController:
     def update_ai(self, json_object: Dict[str, str], param: List[str]):
         try:
             [game_id, player_id] = param
-            game: Game = GameDataExtractor.extract_game(json_object)
 
-            error_message: str = UpdateAiRules.validate_game(game, param)
+            game_state: GameState = GameDataExtractor.extract_game(json_object)
+
+            error_message: str = UpdateAiRules.validate_game(game_state, param)
             if error_message != "":
                 return AiManagmentStrategies.send_error_message(error_message)
 
-            exist_ai: bool = self.update_ai_rules.exist_ai(game.id, player_id)
+            exist_ai: bool = self.update_ai_rules.exist_ai(game_id, player_id)
             if not exist_ai:
                 return AiManagmentStrategies.send_error_message(
                     "Ai with player_id={0} not found to game with id={1}".format(game_id, player_id)
                 )
 
-            commands = self.ai_managment_strategies.update_ai(game, game_id, player_id)
+            commands = self.ai_managment_strategies.update_ai(game_state, game_id, player_id)
             return RouteController.generate_json_with_double_quotes(commands)
         except Exception as e:
             print(e)
@@ -100,11 +101,12 @@ class RouteController:
         ai_name = data["ai_name"]
         location = data["location"]
         country = data["country"]
+        game_state = data["gameState"]
         # print("connect {0} {1}".format(game_id, player_id))
         self.ai_manager.create_ai(
             ai_info=[ai_type, ai_name],
             game_info=[game_id, player_id],
-            ai_data=[location, country],
+            ai_data=[location, country, game_state],
             test_mode=self.test_mode
         )
         self.ai_manager.add_ai_socket_connection_info(game_id, player_id)

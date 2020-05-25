@@ -67,18 +67,20 @@ def set_unit_count(data):
     player_id = str(room_info["player_id"])
 
     unit_positions = controller.generate_ai_unit_positions(game_id, player_id, data['message'])
+    print(unit_positions)
     print("place_units")
     emit("place_units", unit_positions, room=AiManager.generate_ai_address(game_id, player_id))
 
 
 @socketio.on('sendGame')
 def handle_json(data):
+    print(f"sendGame {data}")
     room_info = data['channel_info']
     game_id = room_info["game_id"]
     player_id = room_info["player_id"]
 
     commands = controller.update_ai(
-        data['game'],
+        data['gameState'],
         param=[game_id, player_id]
     )
     # print('received json: ' + str(commands))

@@ -4,7 +4,7 @@ from typing import List
 
 from src.ai.ai import Ai
 from src.ai.ai_commands import AiCommands, Json, CommandName
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.move_direction import DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
 from src.ai.game_components.position import Position
@@ -15,7 +15,7 @@ class ScriptBot(Ai):
     def __init__(self):
         super().__init__()
 
-    def get_commands(self, game: Game) -> List[Json]:
+    def get_commands(self, game: GameState) -> List[Json]:
         result: List[Json] = []
         choised_unit: UnitList = self.choose_random_units(game.game_units.own_units)
         for unit in choised_unit:
@@ -33,7 +33,7 @@ class ScriptBot(Ai):
     def _get_random_units(unit: Unit) -> bool:
         return random_choice([True, False])
 
-    def _generate_command_for_unit(self, unit: Unit, game: Game) -> Json:
+    def _generate_command_for_unit(self, unit: Unit, game: GameState) -> Json:
         access_commands: List[str] = self.generate_access_command_list(unit)
         choised_command: str = random_choice(access_commands)
         if choised_command == CommandName.stop_or_defence:
@@ -45,13 +45,13 @@ class ScriptBot(Ai):
         raise NotImplementedError("Incorrect command")
 
 
-    def _generate_move_or_attack_command(self, unit: Unit, game: Game) -> Json:
+    def _generate_move_or_attack_command(self, unit: Unit, game: GameState) -> Json:
         return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))
 
-    def _generate_retreat_or_storm_command(self, unit: Unit, game: Game) -> Json:
+    def _generate_retreat_or_storm_command(self, unit: Unit, game: GameState) -> Json:
         return AiCommands.generate_retreat_or_storm_command(unit.id, self._choice_random_position(unit.position))
 
-    def _generate_stop_or_defence_command(self, unit: Unit, game: Game) -> Json:
+    def _generate_stop_or_defence_command(self, unit: Unit, game: GameState) -> Json:
         return AiCommands.generate_stop_or_defence_command(unit.id)
 
     def _choice_random_position(self, unit_position: Position) -> Position:

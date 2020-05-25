@@ -12,7 +12,7 @@ class UnitStateExtractorTests(unittest.TestCase):
     def generate_test_json() -> List[Json]:
         result: List[Json] = []
         for i in range(1, 7):
-            result.append({"_status": str(i)})
+            result.append({"_status": i})
         return result
 
     def test_string_to_int_presentation_unit_state(self):
@@ -35,7 +35,7 @@ class UnitStateExtractorTests(unittest.TestCase):
         for enum_element in UnitStatusFromJson:
             with self.subTest(unit_status=enum_element):
                 unit_state: UnitState = UnitStateExtractor.extract_state(test_data[index])
-                self.assertEqual(unit_state, int_to_unit_states[enum_element])
+                self.assertEqual(unit_state, int_to_unit_states[enum_element.value])
                 index += 1
                 int_unit_state_presentation += 1
 

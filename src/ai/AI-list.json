@@ -12,5 +12,12 @@
     "name": "NeuronAITest",
     "address": "neuron-ai-test",
     "description": "Test neuron network. Not trained."
+  },
+  "ScoutLayer":
+  {
+    "type": "Neuron network",
+    "name": "ScoutLayer",
+    "address": "scout-layer",
+    "description": "Scout layer. Objective: find enemies."
   }
 }

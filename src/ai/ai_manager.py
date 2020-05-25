@@ -3,7 +3,7 @@ from typing import List
 
 from .ai_builder import AiBuilder
 from src.ai.game_components.location_builder import LocationBuilder
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 
 
 class AiManager:
@@ -41,9 +41,12 @@ class AiManager:
         self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
 
-        [location, country] = ai_data
+        [location, country, game_state] = ai_data
         self._ai_list[game_id][player_id].set_location(LocationBuilder.build(location))
         self._ai_list[game_id][player_id].set_country(country)
+        self._ai_list[game_id][player_id].set_current_game_state(game_state)
+        self._ai_list[game_id][player_id].set_last_game_state(game_state)
+        self._ai_list[game_id][player_id].set_graph_density(game_state.graphDensity)
 
     def add_ai_socket_connection_info(self, game_id, player_id):
         self._ai_socket_connection_info.update({game_id: {}})
@@ -64,9 +67,9 @@ class AiManager:
         except KeyError as e:
             raise ValueError('Undefined ai type: {0}'.format(e.args[0]))
 
-    def update_ai(self, game: Game, game_id: str, player_id: str):
+    def update_ai(self, game_state: GameState, game_id: str, player_id: str):
         ai = self.__find_ai(game_id, player_id)
-        command_list = ai.get_commands(game)
+        command_list = ai.get_commands(game_state)
         return command_list
 
     def delete_ai(self, game_id, player_id):

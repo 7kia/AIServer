@@ -9,7 +9,7 @@ from src.ai.game_components.position_generator import PositionGenerator
 from src.ai.script_bot import ScriptBot
 from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
 from src.fortest.test_data_generator import TestDataGenerator
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.location import Location, Bounds
 from src.ai.game_components.unit import UnitList, Unit
@@ -20,13 +20,13 @@ class TestScriptBot(ScriptBot, ABC):
     def __init__(self):
         super().__init__()
 
-    def generate_move_or_attack_command(self, unit: Unit, game: Game) -> Json:
+    def generate_move_or_attack_command(self, unit: Unit, game: GameState) -> Json:
         return self._generate_move_or_attack_command(unit, game)
 
-    def generate_retreat_or_storm_command(self, unit: Unit, game: Game) -> Json:
+    def generate_retreat_or_storm_command(self, unit: Unit, game: GameState) -> Json:
         return self._generate_retreat_or_storm_command(unit, game)
 
-    def generate_stop_or_defence_command(self, unit: Unit, game: Game) -> Json:
+    def generate_stop_or_defence_command(self, unit: Unit, game: GameState) -> Json:
         return self._generate_stop_or_defence_command(unit, game)
 
     def choice_random_position(self, unit_position: Position) -> Position:
@@ -36,7 +36,7 @@ class TestScriptBot(ScriptBot, ABC):
 class CanGenerateCommandTestData:
     def __init__(self, bot: TestScriptBot, game_id: int, player_id: int):
         self.bot: TestScriptBot = bot
-        self.game: Game = TestDataGenerator.generate_test_game(
+        self.game: GameState = TestDataGenerator.generate_test_game(
             game_id, player_id, generate_unit_with_various_state=True, map_bounds=bot.get_location().bounds
         )
 
@@ -65,6 +65,10 @@ class CanGenerateCommands(unittest.TestCase):
         script_bot: TestScriptBot = TestScriptBot()
         script_bot.set_location(input_data["location"])
         script_bot.set_country(input_data["country"])
+        game_state = {}
+        script_bot.set_current_game_state(game_state)
+        script_bot.set_last_game_state(game_state)
+
         return script_bot
 
     def test_generate_moveOrAttack_command(self):

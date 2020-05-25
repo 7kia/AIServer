@@ -1,5 +1,5 @@
 from src.ai.ai import Ai
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.game_units import GameUnits
 from src.ai.game_components.location import Bounds
@@ -36,22 +36,22 @@ class TestDataGenerator:
             {
                 "regiment": [
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_STOP, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_STOP],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_STOP.value],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_MARCH, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_MARCH.value],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK.value],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_DEFENCE, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_DEFENCE.value],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_ATTACK_DEFENCE.value],
                                positon),
                     Unit().set(UnitStatusFromJson.UNIT_STATUS_RETREAT, RegimentType.tank.__str__(),
-                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT],
+                               int_to_unit_states[UnitStatusFromJson.UNIT_STATUS_RETREAT.value],
                                positon),
                 ],
                 "base": [Unit().set(11, BaseType.land_base.__str__())],
@@ -68,8 +68,8 @@ class TestDataGenerator:
 
     @staticmethod
     def generate_test_game(game_id: int, player_id: int,
-                           generate_unit_with_various_state: bool, map_bounds: Bounds = None) -> Game:
-        game: Game = Game()
+                           generate_unit_with_various_state: bool, map_bounds: Bounds = None) -> GameState:
+        game: GameState = GameState()
         game.id = game_id
         game.users = {player_id: {}}
 

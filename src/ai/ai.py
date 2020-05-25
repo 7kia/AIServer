@@ -1,7 +1,7 @@
 from .ai_commands import AiCommands, CommandName, Json
 from src.ai.game_components.unit import Unit, UnitList
 from src.ai.game_components.position import Position
-from src.ai.game_components.game import Game
+from src.ai.game_components.game_state import GameState
 from typing import List, Dict, Callable
 
 from src.ai.game_components.game_data_extractor import UnitDict
@@ -15,20 +15,17 @@ class Ai:
     id: int = None
     _location: Location = None
     _country: str = None
+    _current_game_state: GameState = None
+    _last_game_state: GameState = None
+    _graph_density: List[List[int]] = None
 
     def __init__(self):
         pass
 
-    def get_commands(self, game: Game) -> List[Json]:
-        return [
-            AiCommands.generate_move_or_attack_command(1, self.generate_position(None, None, None, None)),
-            AiCommands.generate_retreat_or_storm_command(2, self.generate_position(None, None, None, None)),
-            AiCommands.generate_stop_or_defence_command(3),
-            # AiCommands.generate_take_train_command(4, 5),
-            # AiCommands.generate_unload_train_command(4),
-        ]
+    def get_commands(self, game: GameState) -> List[Json]:
+        return []
 
-    def generate_command_for_unit(self, unit: Unit, game: Game) -> Json:
+    def generate_command_for_unit(self, unit: Unit, game: GameState) -> Json:
         return {}
 
     def generate_position(self, type_unit: str, troop_size: str, i: int, amount: int) -> Position:
@@ -75,6 +72,15 @@ class Ai:
 
     def set_country(self, country: str):
         self._country = country
+
+    def set_current_game_state(self, game_state: GameState):
+        self._current_game_state = game_state
+
+    def set_last_game_state(self, game_state: GameState):
+        self._last_game_state = game_state
+
+    def set_graph_density(self, graph_density: List[List[int]]):
+        self._graph_density = graph_density
 
     @staticmethod
     def choose_units(

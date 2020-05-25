@@ -1,12 +1,15 @@
 from src.ai.ai import Ai
-from src.ai.neural_network.neuro_network import NeuroNetwork
+from src.ai.neural_network.neural_network import NeuralNetwork
+from src.ai.neural_network.scout_network import ScoutNetwork
 from src.ai.script_bot import ScriptBot
 
 AI_TYPES = {
     "test-bot": {"class": Ai},
     "intellectual-000": {"class": ScriptBot},
-    "neuron-network": {"class": NeuroNetwork},
+    "neuron-network": {"class": NeuralNetwork},
+    "scout-layer": {"class": ScoutNetwork},
 }
+
 
 # TODO 7kia Скорее всего это просто фабрика
 class AiBuilder:

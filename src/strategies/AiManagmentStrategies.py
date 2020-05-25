@@ -1,4 +1,8 @@
-from src.ai.game_components.game import Game
+from typing import Dict
+
+from src.ai.game_components.game_state import GameState
+
+Json = Dict[str, any]
 
 
 class AiManagmentStrategies:
@@ -8,8 +12,8 @@ class AiManagmentStrategies:
     def generate_ai_address(self, game_info):
         return self.ai_manager.generate_ai_adress(game_info)
 
-    def update_ai(self, game: Game, game_id: str, player_id: str):
-        return self.ai_manager.update_ai(game, game_id, player_id)
+    def update_ai(self, game_state: GameState, game_id: str, player_id: str):
+        return self.ai_manager.update_ai(game_state, game_id, player_id)
 
     @staticmethod
     def send_error_message(message):
