@@ -98,14 +98,15 @@ class RouteController:
         game_id = str(data["game_id"])
         player_id = str(data["player_id"])
         ai_type = data["ai_type"]
-        ai_name = data["ai_name"]
+        ai_address = data["ai_address"]
         location = data["location"]
         country = data["country"]
         game_state = data["gameState"]
+        ai_options = data["ai_options"]
         # print("connect {0} {1}".format(game_id, player_id))
         self.ai_manager.create_ai(
-            ai_info=[ai_type, ai_name],
-            game_info=[game_id, player_id],
+            ai_info=[ai_type, ai_address],
+            game_info=[game_id, player_id, ai_options],
             ai_data=[location, country, game_state],
             test_mode=self.test_mode
         )

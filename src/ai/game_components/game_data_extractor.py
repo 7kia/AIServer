@@ -1,3 +1,4 @@
+import traceback
 from enum import Enum
 from typing import Dict, List
 
@@ -20,12 +21,16 @@ class UnitCategory(Enum):
 class GameDataExtractor:
     @classmethod
     def extract_game(cls, json_file_content: Json) -> GameState:
-        game_state = GameState()
-        game_state.game_units = cls._extract_game_unit(json_file_content)
+        try:
+            game_state = GameState()
+            game_state.game_units = cls._extract_game_unit(json_file_content)
 
-        game_state.person_unit_params = cls._extract_person_unit_params(json_file_content)
-        game_state.sector_params = cls._extract_sector_params(json_file_content)
-        return game_state
+            game_state.person_unit_params = cls._extract_person_unit_params(json_file_content)
+            game_state.sector_params = cls._extract_sector_params(json_file_content)
+            return game_state
+        except Exception as e:
+            print("Unexpected error:", str(e))
+
 
     @classmethod
     def _extract_game_unit(cls, json_file_content: Json) -> GameUnits:
@@ -75,7 +80,7 @@ class GameDataExtractor:
         for y in range(0, len(matrix)):
             result.append([])
             for x in range(0, len(matrix[y])):
-                result.append([])
+                result[y].append([])
                 unit_list: List[Json] = matrix[y][x]
                 for unit_json in unit_list:
                     result[y][x].append(UnitFactory.create_unit(unit_json))

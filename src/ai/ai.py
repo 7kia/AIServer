@@ -74,6 +74,8 @@ class Ai:
         self._country = country
 
     def set_current_game_state(self, game_state: GameState):
+        if self._last_game_state is None:
+            self._last_game_state = game_state
         self._current_game_state = game_state
 
     def set_last_game_state(self, game_state: GameState):

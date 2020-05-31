@@ -10,7 +10,7 @@ class GameState:
     def __init__(self):
         # self.id: int = -1
         # self.users: Dict[str, str] = {}
-        self.game_units: GameUnits = None
-        self.person_unit_params: PersonUnitParams = None
-        self.sector_params: SectorParams = None
+        self.game_units: GameUnits = GameUnits()
+        self.person_unit_params: PersonUnitParams = PersonUnitParams()
+        self.sector_params: SectorParams = SectorParams()
 

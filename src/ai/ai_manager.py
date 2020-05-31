@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from .ai_builder import AiBuilder
+from .ai_builder_director import AiBuilderDirector
 from src.ai.game_components.location_builder import LocationBuilder
 from src.ai.game_components.game_state import GameState
 
@@ -32,21 +32,19 @@ class AiManager:
 
     def create_ai(self, ai_info: List[str], game_info: List[any], ai_data: List[any],
                   test_mode: bool = False):
-        [game_id, player_id] = game_info
+        [game_id, player_id, ai_options] = game_info
 
-        [ai_type, ai_name] = ai_info
-        if not test_mode and (ai_name == "test-bot"):
+        [ai_type, ai_address] = ai_info
+        if not test_mode and (ai_address == "test-bot"):
             raise BaseException("In production mode try create test-bot")
 
         self._ai_list.update({game_id: {}})
-        self._ai_list[game_id].update({player_id: AiBuilder.create_ai(ai_info, game_info)})
+        self._ai_list[game_id].update({player_id: AiBuilderDirector.create_ai(ai_info, game_info)})
 
         [location, country, game_state] = ai_data
         self._ai_list[game_id][player_id].set_location(LocationBuilder.build(location))
         self._ai_list[game_id][player_id].set_country(country)
-        self._ai_list[game_id][player_id].set_current_game_state(game_state)
-        self._ai_list[game_id][player_id].set_last_game_state(game_state)
-        self._ai_list[game_id][player_id].set_graph_density(game_state.graphDensity)
+        self._ai_list[game_id][player_id].set_graph_density(game_state["graphDensity"])
 
     def add_ai_socket_connection_info(self, game_id, player_id):
         self._ai_socket_connection_info.update({game_id: {}})

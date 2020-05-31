@@ -1,3 +1,5 @@
+from typing import List
+
 from src.ai.ai import Ai
 from src.ai.neural_network.neural_network import NeuralNetwork
 from src.ai.neural_network.scout_network import ScoutNetwork
@@ -12,14 +14,14 @@ AI_TYPES = {
 
 
 # TODO 7kia Скорее всего это просто фабрика
-class AiBuilder:
+class AiBuilderDirector:
     @staticmethod
-    def create_ai(ai_info, game_info):
+    def create_ai(ai_info: List[any], game_info: List[any]):
         try:
-            [ai_type, ai_name] = ai_info
-            [game_id, player_id] = game_info
+            [ai_type, ai_address] = ai_info
+            [game_id, player_id, ai_options] = game_info
 
-            new_ai = AI_TYPES[ai_name]["class"]()
+            new_ai = AI_TYPES[ai_address]["class"]()
             new_ai.id = player_id
             # TODO set AI
             return new_ai
