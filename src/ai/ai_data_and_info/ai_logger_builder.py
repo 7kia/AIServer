@@ -49,7 +49,7 @@ class AiLoggerBuilder:
 
     def _generate_time(self) -> str:
         time = datetime.datetime.now()
-        return time.strftime("%b_%d_%Y") + self._divider
+        return time.strftime("%b_%d_%Y__%H_%M") + self._divider
 
     def _generate_ai_info(self, ai_address: str, troop_type: str):
         return ai_address + self._divider + \
