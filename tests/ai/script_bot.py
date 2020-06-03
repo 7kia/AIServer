@@ -26,7 +26,7 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
     def test_return_random_command_list_with_random_parameters(self):
         game_id: int = 3
         player_id: int = 31
-        bot_country: str = "Ukraine"
+        bot_country: str = "NATO"
         script_bot: ScriptBot = self.generate_test_script_bot(
             game_id, player_id, bot_country
         )

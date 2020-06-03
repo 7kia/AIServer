@@ -107,7 +107,7 @@ class CanChangeCommandForUnit(unittest.TestCase):
 class CanGenerateCommandForUnits(unittest.TestCase):
     def test_return_test_commands(self):
         # TODO 7kia потом переделай, протестировано в другом месте
-        # see tests/test_route_controller.py
+        # see test/test_route_controller.py
         self.assertEqual(True, True)
 
 

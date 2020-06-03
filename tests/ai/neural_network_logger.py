@@ -1,22 +1,14 @@
 import json
 import unittest
-from typing import List
 
-from src.ai.ai_builder_director import AiBuilderDirector
-from src.ai.ai_commands import Json, CommandName
+from src.ai.ai_commands import Json
 from src.ai.ai_data_and_info.ai_awards import AiAwards
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.ai_data_and_info.ai_logger import AiLogger
 from src.ai.ai_data_and_info.ai_logger_builder_director import AiLoggerBuilderDirector
 from src.ai.ai_data_and_info.ai_option import AiOption
 from src.ai.ai_data_and_info.game_info import GameInfo
-from src.ai.script_bot import ScriptBot
-from src.fortest import generate_mock_location_info, convert_dictionary_values_to_list
-from src.fortest.test_data_generator import TestDataGenerator
 from src.ai.game_components.game_state import GameState
-from src.ai.game_components.unit import Unit, UnitList, UnitDict
-from chai import Chai
-from pocha import describe, it
 
 
 class TestLoggerCreator(unittest.TestCase):
@@ -38,65 +30,86 @@ class TestLoggerCreator(unittest.TestCase):
 
 class AiLoggerConstructor(TestLoggerCreator):
     def test_have_file_with_game_record(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.logger.get_game_log_file_path() != "", True)
 
     def test_have_file_with_end_game_state(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.logger.get_end_game_state_file_path() != "", True)
 
 
 class AiLoggerSaveToFileWithGameRecord(TestLoggerCreator):
     def setUp(self):
         super().setUp()
-        # awards: AiAwards = AiAwards()
-        # game_state: GameState = GameState()
-        # self.logger.save_current_state(awards, game_state)
-        # self.logger.save_current_state(awards, game_state)
-        #
-        # game_log = open(self.logger.get_game_log(), 'r')
-        # print(type(game_log))
-        # game_log_content: Json = json.load(game_log)
+        self.awards: AiAwards = AiAwards()
+        self.game_state: GameState = GameState()
+        self.game_state.current_time = "0"
+        self.logger.save_to_game_record_file(self.awards, self.game_state)
 
-        self.assertEqual(True, False)
+        self.game_state2: GameState = GameState()
+        self.game_state2.current_time = "1"
+        self.logger.save_to_game_record_file(self.awards, self.game_state2)
 
 
 class CanSaveToFileWithGameRecord(AiLoggerSaveToFileWithGameRecord):
     def setUp(self):
         super().setUp()
+        game_log = open(self.logger.get_game_log_file_path(), 'r')
+        print(type(game_log))  # TODO 7kia удалить позже
+        self.game_log_content: Json = json.load(game_log)
 
     def test_game_state(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].game_state, self.game_state)
+        self.assertEqual(self.game_log_content["1"].game_state, self.game_state2)
 
     def test_awards_for_the_state(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].awards, self.awards)
+        self.assertEqual(self.game_log_content["1"].awards, self.awards)
 
 
 class AiLoggerSaveToFileWithEndGameState(TestLoggerCreator):
     def setUp(self):
         super().setUp()
-        # awards: AiAwards = AiAwards()
-        # game_state: GameState = GameState()
-        # self.logger.save_current_state(awards, game_state)
-        # self.logger.save_current_state(awards, game_state)
-        #
-        # game_log = open(self.logger.get_game_log(), 'r')
-        # print(type(game_log))
-        # game_log_content: Json = json.load(game_log)
+        self.awards: AiAwards = AiAwards()
+        self.awards.troop_amount = 1
+        self.awards.experience = 2
+        self.awards.organization = 3
+        self.awards.overlap = 4
 
-        self.assertEqual(True, False)
+        self.game_state: GameState = GameState()
+        self.game_state.current_time = "0"
+        self.game_duration: int = 4
+
+        for i in range(self.game_duration - 1):
+            game_state: GameState = GameState()
+            game_state.current_time = str(i)
+            self.logger.save_to_game_record_file(self.awards, game_state)
+
+        self.logger.save_to_end_game_state_file(self.awards, self.game_state)
 
 
 class CanSaveToFileWithEndGameState(AiLoggerSaveToFileWithEndGameState):
+    def setUp(self):
+        super().setUp()
+        game_log = open(self.logger.get_end_game_state_file_path(), 'r')
+        print(type(game_log))  # TODO 7kia удалить позже
+        self.game_log_content: Json = json.load(game_log)
+
     def test_game_state(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].game_state, self.game_state)
 
     def test_awards_for_the_state(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].awards, self.awards)
 
     def test_game_duration(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].game_duration,
+                         str(self.game_duration))
 
     def test_awards_sum_for_whole_game(self):
-        self.assertEqual(True, False)
+        self.assertEqual(self.game_log_content["0"].awards_sum, {
+            "troop_amount": 1 * self.game_duration,
+            "experience": 2 * self.game_duration,
+            "organization": 3 * self.game_duration,
+            "overlap": 4 * self.game_duration,
+        })
 
 
 if __name__ == '__main__':

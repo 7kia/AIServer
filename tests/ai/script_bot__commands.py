@@ -46,7 +46,7 @@ class CanGenerateCommands(unittest.TestCase):
     def generate_test_data() -> CanGenerateCommandTestData:
         game_id: int = 31
         player_id: int = 32
-        bot_country: str = "Ukraine"
+        bot_country: str = "NATO"
         return CanGenerateCommandTestData(
             CanGenerateCommands.generate_test_script_bot(game_id, player_id, bot_country),
             game_id, player_id,
