@@ -6,5 +6,5 @@ class AiOptionExtractor:
     @classmethod
     def extract(cls, json: Json) -> AiOption:
         result: AiOption = AiOption()
-        result.troopType = json["json"]
+        result.troopType = json["troopType"]
         return result

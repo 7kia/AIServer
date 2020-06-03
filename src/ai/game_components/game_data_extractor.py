@@ -27,6 +27,7 @@ class GameDataExtractor:
 
             game_state.person_unit_params = cls._extract_person_unit_params(json_file_content)
             game_state.sector_params = cls._extract_sector_params(json_file_content)
+            game_state.current_time = cls._extract_current_time(json_file_content)
             return game_state
         except Exception as e:
             print("Unexpected error:", str(e))
@@ -85,3 +86,7 @@ class GameDataExtractor:
                 for unit_json in unit_list:
                     result[y][x].append(UnitFactory.create_unit(unit_json))
         return result
+
+    @classmethod
+    def _extract_current_time(cls, json_file_content):
+        return json_file_content["currentTime"]

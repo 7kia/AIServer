@@ -46,7 +46,7 @@ class AiLoggerSaveToFileWithGameRecord(TestLoggerCreator):
 
         self.game_state2: GameState = GameState()
         self.game_state2.current_time = "1"
-        self.logger.save_to_game_record_file(self.awards, self.game_state2)
+        self.logger.save_end_game_state(self.awards, self.game_state2)
 
 
 class CanSaveToFileWithGameRecord(AiLoggerSaveToFileWithGameRecord):
@@ -57,12 +57,12 @@ class CanSaveToFileWithGameRecord(AiLoggerSaveToFileWithGameRecord):
         self.game_log_content: Json = json.load(game_log)
 
     def test_game_state(self):
-        self.assertEqual(self.game_log_content["0"].game_state, self.game_state)
-        self.assertEqual(self.game_log_content["1"].game_state, self.game_state2)
+        self.assertEqual(self.game_log_content["data"][0]["game_state"], self.game_state.as_json())
+        self.assertEqual(self.game_log_content["data"][1]["game_state"], self.game_state2.as_json())
 
     def test_awards_for_the_state(self):
-        self.assertEqual(self.game_log_content["0"].awards, self.awards)
-        self.assertEqual(self.game_log_content["1"].awards, self.awards)
+        self.assertEqual(self.game_log_content["data"][0]["awards"], self.awards.as_json())
+        self.assertEqual(self.game_log_content["data"][1]["awards"], self.awards.as_json())
 
 
 class AiLoggerSaveToFileWithEndGameState(TestLoggerCreator):
@@ -75,15 +75,15 @@ class AiLoggerSaveToFileWithEndGameState(TestLoggerCreator):
         self.awards.overlap = 4
 
         self.game_state: GameState = GameState()
-        self.game_state.current_time = "0"
         self.game_duration: int = 4
+        self.game_state.current_time = str(self.game_duration)
 
         for i in range(self.game_duration - 1):
             game_state: GameState = GameState()
             game_state.current_time = str(i)
             self.logger.save_to_game_record_file(self.awards, game_state)
 
-        self.logger.save_to_end_game_state_file(self.awards, self.game_state)
+        self.logger.save_end_game_state(self.awards, self.game_state)
 
 
 class CanSaveToFileWithEndGameState(AiLoggerSaveToFileWithEndGameState):
@@ -93,18 +93,22 @@ class CanSaveToFileWithEndGameState(AiLoggerSaveToFileWithEndGameState):
         print(type(game_log))  # TODO 7kia удалить позже
         self.game_log_content: Json = json.load(game_log)
 
+        self.check_state: int = self.game_duration
+
     def test_game_state(self):
-        self.assertEqual(self.game_log_content["0"].game_state, self.game_state)
+        self.assertEqual(self.game_log_content["game_state"],
+                         self.game_state.as_json())
 
     def test_awards_for_the_state(self):
-        self.assertEqual(self.game_log_content["0"].awards, self.awards)
+        self.assertEqual(self.game_log_content["awards"],
+                         self.awards.as_json())
 
     def test_game_duration(self):
-        self.assertEqual(self.game_log_content["0"].game_duration,
+        self.assertEqual(self.game_log_content["game_duration"],
                          str(self.game_duration))
 
     def test_awards_sum_for_whole_game(self):
-        self.assertEqual(self.game_log_content["0"].awards_sum, {
+        self.assertEqual(self.game_log_content["awards_sum"], {
             "troop_amount": 1 * self.game_duration,
             "experience": 2 * self.game_duration,
             "organization": 3 * self.game_duration,

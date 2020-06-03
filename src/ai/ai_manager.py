@@ -1,11 +1,13 @@
 import json
 
+from .ai import Ai
 from .ai_builder_director import AiBuilderDirector
 from src.ai.game_components.location_builder import LocationBuilder
 from src.ai.game_components.game_state import GameState
 from src.ai.ai_data_and_info.ai_data import AiData
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.ai_data_and_info.game_info import GameInfo
+from .ai_data_and_info.ai_logger_builder_director import AiLoggerBuilderDirector
 
 
 class AiManager:
@@ -21,6 +23,7 @@ class AiManager:
         self.ai_info_list = ai_info_list
         self._ai_list = {}
         self._ai_socket_connection_info = {}
+        self.ai_logger_director = AiLoggerBuilderDirector()
 
     def get_ai(self, game_id, player_id):
         return self._ai_list[game_id][player_id]
@@ -39,12 +42,20 @@ class AiManager:
 
         game_id = game_info.game_id
         player_id = game_info.player_id
+        self._add_ai_to_list(game_id, player_id, ai_info, game_info)
+        self._set_new_ai(game_id, player_id, ai_data)
+        self.ai_logger_director.create_ai_logger(ai_info, game_info)
+
+    def _add_ai_to_list(self, game_id: int, player_id: int,
+                        ai_info: AiInfo, game_info: GameInfo):
         self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({
             player_id: AiBuilderDirector.create_ai(ai_info, game_info)
         })
 
-        ai = self._ai_list[game_id][player_id]
+    def _set_new_ai(self, game_id: int, player_id: int,
+                    ai_data: AiData):
+        ai: Ai = self._ai_list[game_id][player_id]
         ai.set_location(LocationBuilder.build(ai_data.location))
         ai.set_country(ai_data.country)
         ai.set_graph_density(ai_data.game_state["graphDensity"])
@@ -100,3 +111,4 @@ class AiManager:
     @classmethod
     def get_succsess_delete_message(cls):
         return "Ai delete"
+
