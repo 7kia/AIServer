@@ -1,29 +1,15 @@
-from typing import List
-
-from src.ai.ai import Ai
-from src.ai.neural_network.neural_network import NeuralNetwork
-from src.ai.neural_network.scout_network import ScoutNetwork
-from src.ai.script_bot import ScriptBot
-
-AI_TYPES = {
-    "test-bot": {"class": Ai},
-    "intellectual-000": {"class": ScriptBot},
-    "neuron-network": {"class": NeuralNetwork},
-    "scout-layer": {"class": ScoutNetwork},
-}
+from src.ai.ai_builder import AiBuilder
+from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.ai_data_and_info.game_info import GameInfo
 
 
 # TODO 7kia Скорее всего это просто фабрика
 class AiBuilderDirector:
     @staticmethod
-    def create_ai(ai_info: List[any], game_info: List[any]):
+    def create_ai(ai_info: AiInfo, game_info: GameInfo):
         try:
-            [ai_type, ai_address] = ai_info
-            [game_id, player_id, ai_options] = game_info
-
-            new_ai = AI_TYPES[ai_address]["class"]()
-            new_ai.id = player_id
-            # TODO set AI
-            return new_ai
+            return AiBuilder.create_ai(ai_info, game_info)
         except KeyError as e:
             raise ValueError('Undefined ai type: {}'.format(e.args[0]))
+        except Exception as e:
+            raise e

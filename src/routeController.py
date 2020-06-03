@@ -1,6 +1,10 @@
 import json
 
 from src.ai.game_components.game_data_extractor import GameDataExtractor
+from src.ai.ai_data_and_info.ai_data import AiData
+from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.ai_data_and_info.ai_option_extractor import AiOptionExtractor
+from src.ai.ai_data_and_info.game_info import GameInfo
 from .rules.CreateAiRules import CreateAiRules
 from .rules.UpdateAiRules import UpdateAiRules
 from src.ai.game_components.game_state import GameState
@@ -103,11 +107,15 @@ class RouteController:
         country = data["country"]
         game_state = data["gameState"]
         ai_options = data["ai_options"]
+
+        ai_info = AiInfo(ai_type, ai_address)
+        game_info = GameInfo(game_id, player_id, AiOptionExtractor.extract(ai_options))
+        ai_data = AiData(location, country, game_state)
         # print("connect {0} {1}".format(game_id, player_id))
         self.ai_manager.create_ai(
-            ai_info=[ai_type, ai_address],
-            game_info=[game_id, player_id, ai_options],
-            ai_data=[location, country, game_state],
+            ai_info=ai_info,
+            game_info=game_info,
+            ai_data=ai_data,
             test_mode=self.test_mode
         )
         self.ai_manager.add_ai_socket_connection_info(game_id, player_id)

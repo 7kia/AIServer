@@ -1,9 +1,11 @@
 import json
-from typing import List
 
 from .ai_builder_director import AiBuilderDirector
 from src.ai.game_components.location_builder import LocationBuilder
 from src.ai.game_components.game_state import GameState
+from src.ai.ai_data_and_info.ai_data import AiData
+from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.ai_data_and_info.game_info import GameInfo
 
 
 class AiManager:
@@ -30,21 +32,22 @@ class AiManager:
     def generate_ai_address(game_id, player_id):
         return "/ai-server/{0}/{1}".format(game_id, player_id)
 
-    def create_ai(self, ai_info: List[str], game_info: List[any], ai_data: List[any],
+    def create_ai(self, ai_info: AiInfo, game_info: GameInfo, ai_data: AiData,
                   test_mode: bool = False):
-        [game_id, player_id, ai_options] = game_info
-
-        [ai_type, ai_address] = ai_info
-        if not test_mode and (ai_address == "test-bot"):
+        if not test_mode and (ai_info.ai_address == "test-bot"):
             raise BaseException("In production mode try create test-bot")
 
+        game_id = game_info.game_id
+        player_id = game_info.player_id
         self._ai_list.update({game_id: {}})
-        self._ai_list[game_id].update({player_id: AiBuilderDirector.create_ai(ai_info, game_info)})
+        self._ai_list[game_id].update({
+            player_id: AiBuilderDirector.create_ai(ai_info, game_info)
+        })
 
-        [location, country, game_state] = ai_data
-        self._ai_list[game_id][player_id].set_location(LocationBuilder.build(location))
-        self._ai_list[game_id][player_id].set_country(country)
-        self._ai_list[game_id][player_id].set_graph_density(game_state["graphDensity"])
+        ai = self._ai_list[game_id][player_id]
+        ai.set_location(LocationBuilder.build(ai_data.location))
+        ai.set_country(ai_data.country)
+        ai.set_graph_density(ai_data.game_state["graphDensity"])
 
     def add_ai_socket_connection_info(self, game_id, player_id):
         self._ai_socket_connection_info.update({game_id: {}})
