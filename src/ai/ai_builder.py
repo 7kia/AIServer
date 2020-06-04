@@ -20,6 +20,7 @@ class AiBuilder:
         try:
             new_ai = AI_TYPES[ai_info.ai_address]["class"]()
             new_ai.id = game_info.player_id
+            new_ai.set_train_mode(game_info.ai_options.is_train)
             # TODO set AI
             return new_ai
         except KeyError as e:

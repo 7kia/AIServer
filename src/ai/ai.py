@@ -18,9 +18,7 @@ class Ai:
     _current_game_state: GameState = None
     _last_game_state: GameState = None
     _graph_density: List[List[int]] = None
-
-    def __init__(self):
-        pass
+    _is_train = False
 
     def get_commands(self, game: GameState) -> List[Json]:
         return []
@@ -78,11 +76,20 @@ class Ai:
             self._last_game_state = game_state
         self._current_game_state = game_state
 
+    def get_current_game_state(self) -> GameState:
+        return self._current_game_state
+
     def set_last_game_state(self, game_state: GameState):
         self._last_game_state = game_state
 
+    def get_last_game_state(self) -> GameState:
+        return self._last_game_state
+
     def set_graph_density(self, graph_density: List[List[int]]):
         self._graph_density = graph_density
+
+    def set_train_mode(self, value: bool):
+        self._is_train = value
 
     @staticmethod
     def choose_units(
@@ -106,3 +113,6 @@ class Ai:
         else:
             access_command_list.append(CommandName.move_or_attack)
         return access_command_list
+
+    def is_train(self) -> bool:
+        return self._is_train

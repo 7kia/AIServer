@@ -23,12 +23,15 @@ class AiLogger:
         self._game_state_log_file = file
 
     def save_to_game_record_file(self, awards: AiAwards, game_state: GameState):
-        if self._start_time == "":
+        if self._not_record_to_files():
             self._set_file_structure()
             self._start_time = game_state.current_time
         self._push_current_state(awards, game_state)
 
         self._awards_to_state.append(awards)
+
+    def _not_record_to_files(self) -> bool:
+        return self._start_time == ""
 
     def _set_file_structure(self):
         first_string: str = "{\"data\": [\n"
