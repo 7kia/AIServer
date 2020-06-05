@@ -20,8 +20,6 @@ class CanChoiceRandomAmountUnits(unittest.TestCase):
                 self.assertIn(unit, all_units)
 
 
-
-
 class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
     def test_return_random_command_list_with_random_parameters(self):
         game_id: int = 3
@@ -50,12 +48,7 @@ class CanReturnRandomCommandsWithRandomParameters(unittest.TestCase):
         script_bot.set_location(input_data["location"])
         script_bot.set_country(input_data["country"])
 
-        game_state = {}
-        script_bot.set_current_game_state(game_state)
-        script_bot.set_last_game_state(game_state)
         return script_bot
-
-
 
     @staticmethod
     def is_the_commands_to(commands: List[Json], expected_commands: List[str]) -> bool:

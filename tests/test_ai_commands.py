@@ -17,8 +17,8 @@ class TestAiCommands(asynctest.TestCase):
             "id": "win_mechanic_test",
             "name": "Win mechanic test",
             "countries": [
-                "Novorossia",
-                "Ukraine"
+                "Russia",
+                "NATO"
             ],
             "bounds": {
                 "NE": [
@@ -31,7 +31,7 @@ class TestAiCommands(asynctest.TestCase):
                 ]
             },
             "boundsCountry": {
-                "Novorossia": {
+                "Russia": {
                     "NE": [
                         48.12276619505541,
                         39.802849609375016
@@ -41,7 +41,7 @@ class TestAiCommands(asynctest.TestCase):
                         37.74839990234375
                     ]
                 },
-                "Ukraine": {
+                "NATO": {
                     "NE": [
                         49.767717668674585,
                         37.028801757812516
@@ -53,20 +53,20 @@ class TestAiCommands(asynctest.TestCase):
                 }
             },
             "resources": {
-                "Novorossia": {
+                "Russia": {
                     "ammo": 100,
                     "fuel": 0,
                     "food": 0,
                     "man": 0
                 },
-                "Ukraine": {
+                "NATO": {
                     "ammo": 300,
                     "fuel": 0,
                     "food": 0
                 }
             },
             "units": {
-                "Novorossia": {
+                "Russia": {
                     "tank": {
                         "regiment": 1
                     },
@@ -74,7 +74,7 @@ class TestAiCommands(asynctest.TestCase):
                         "tactic": 1
                     }
                 },
-                "Ukraine": {
+                "NATO": {
                     "landbase": {
                         "tactic": 1
                     }
@@ -98,7 +98,7 @@ class TestAiCommands(asynctest.TestCase):
             "ai_type": ai_type,
             "ai_name": ai_name,
             "location": TestAiCommands.generate_mock_location_info(),
-            "country": "Ukraine",
+            "country": "NATO",
         }
         controller.create_ai(input_data)
         return controller.ai_manager.get_ai(game_id, player_id)
