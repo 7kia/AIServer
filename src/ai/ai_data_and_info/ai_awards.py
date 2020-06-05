@@ -13,5 +13,5 @@ class AiAwards(ConvertSelfToJson):
             "troop_amount": self.troop_amount,
             "organization": self.organization,
             "experience": self.experience,
-            "overlap": self.overlap
+            "overlap": self.overlap,
         }
