@@ -61,6 +61,7 @@ class GameDataExtractor:
         person_unit_params.organization = json_file_content["organization"]
         person_unit_params.experience = json_file_content["experience"]
         person_unit_params.overlap = json_file_content["overlap"]
+        person_unit_params.speed = json_file_content["speed"]
         return person_unit_params
 
     @classmethod

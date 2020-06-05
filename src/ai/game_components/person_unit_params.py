@@ -7,6 +7,7 @@ class PersonUnitParams(ConvertSelfToJson):
         self.organization: float = 0
         self.experience: float = 0
         self.overlap: float = 0
+        self.speed: float = 0
 
     def as_json(self) -> Json:
         return {
@@ -14,4 +15,5 @@ class PersonUnitParams(ConvertSelfToJson):
             "organization": self.organization,
             "experience": self.experience,
             "overlap": self.overlap,
+            "speed": self.speed,
         }
