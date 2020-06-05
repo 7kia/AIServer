@@ -23,7 +23,8 @@ class ScoutLayerTrainer:
     @classmethod
     def _layer_params(cls, layer_name: str, troop_type: str) -> str:
         return f"layerName={layer_name}" \
-               f"&troopType={troop_type}"
+               f"&troopType={troop_type}" \
+               f"&isTrain={True}"
 
     @classmethod
     def _model_graph_options(cls, node_amount: int, distance_between_nodes: float) -> str:
