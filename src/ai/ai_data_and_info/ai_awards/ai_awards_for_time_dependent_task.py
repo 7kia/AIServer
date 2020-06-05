@@ -1,4 +1,4 @@
-from src.ai.ai_data_and_info.ai_awards import AiAwards
+from src.ai.ai_data_and_info.ai_awards.ai_awards import AiAwards
 from src.ai.game_components.convert_self_to_json import Json
 
 
@@ -13,3 +13,12 @@ class AiAwardsForTimeDependentTask(AiAwards):
         result["speed"] = self.speed
         result["spent_time"] = self.spent_time
         return result
+
+    def __iadd__(self, other):
+        super().__iadd__(other)
+        self.speed += other.speed
+        self.spent_time += other.spent_time
+        return self
+
+    def clone_empty(self):
+        return self.__init__()

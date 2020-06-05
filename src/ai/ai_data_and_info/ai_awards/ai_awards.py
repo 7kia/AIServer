@@ -15,3 +15,13 @@ class AiAwards(ConvertSelfToJson):
             "experience": self.experience,
             "overlap": self.overlap,
         }
+
+    def __iadd__(self, other):
+        self.troop_amount += other.troop_amount
+        self.organization += other.organization
+        self.experience += other.experience
+        self.overlap += other.overlap
+        return self
+
+    def clone_empty(self):
+        return self.__init__()
