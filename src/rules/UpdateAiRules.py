@@ -1,4 +1,6 @@
 from typing import List
+
+from src.ai.ai_data_and_info.game_info import GameInfo
 from src.ai.game_components.game_state import GameState
 
 
@@ -9,8 +11,7 @@ class UpdateAiRules:
         self.ai_manager = ai_manager
 
     @staticmethod
-    def validate_game(game: GameState, param: List[str]):
-        [game_id, player_id] = param
+    def validate_game(game: GameState, game_info: GameInfo):
         message = ""
 
         # valid_id = game.id == game_id
@@ -24,7 +25,7 @@ class UpdateAiRules:
 
         exist_unit_list = game.game_units is not None
         if not exist_unit_list:
-            message += "Posted game id={0} not have unit dictionary;\n".format(game_id)
+            message += "Posted game id={0} not have unit dictionary;\n".format(game_info.game_id)
         return message
 
     def exist_ai(self, game_id, player_id):

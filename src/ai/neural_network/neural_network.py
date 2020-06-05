@@ -8,7 +8,6 @@ from src.ai.game_components.game_state import GameState
 class NeuralNetwork(Ai):
     def __init__(self):
         super().__init__()
-        self._logger = None
 
     def get_commands(self, game_state: GameState) -> List[Json]:
         self.set_last_game_state(self._current_game_state)

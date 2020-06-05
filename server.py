@@ -1,6 +1,9 @@
 #!flask/bin/python
 import eventlet
 
+from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.ai_data_and_info.game_info import GameInfo
+
 eventlet.monkey_patch()
 
 from flask import Flask
@@ -47,7 +50,7 @@ def test_disconnect(data):
     game_id = str(data["game_id"])
     player_id = str(data["player_id"])
 
-    message = controller.delete_ai([game_id, player_id])
+    message = controller.delete_ai(GameInfo(game_id, player_id))
 
     if message != AiManager.get_succsess_delete_message():
         # TODO(7kis) not check work the code
@@ -81,7 +84,7 @@ def handle_json(data):
 
     commands = controller.update_ai(
         data['gameState'],
-        param=[game_id, player_id]
+        game_info=GameInfo(game_id, player_id)
     )
     # print('received json: ' + str(commands))
 
@@ -90,13 +93,13 @@ def handle_json(data):
     emit("accept_command", commands, room=address)
 
 
-@app.route('/ai-server/<string:ai_type>/<string:ai_name>/new', methods=['GET'])
-def generate_ai_address(ai_name, ai_type):
+@app.route('/ai-server/<string:ai_type>/<string:ai_address>/new', methods=['GET'])
+def generate_ai_address(ai_address, ai_type):
     game_id = int(request.args.get('gameId'))
     player_id = int(request.args.get('playerId'))
     return controller.generate_ai_address(
-        [game_id, player_id],
-        ai_info=[ai_type, ai_name]
+        game_info=GameInfo(game_id, player_id),
+        ai_info=AiInfo(ai_type, ai_address)
     )
 
 

@@ -1,7 +1,8 @@
 import json
 from typing import List
 
-from src.ai.ai_data_and_info.ai_awards import AiAwards
+from src.ai.ai_data_and_info.ai_awards.ai_awards import AiAwards
+from src.ai.ai_data_and_info.ai_awards.ai_awards_for_time_dependent_task import AiAwardsForTimeDependentTask
 from src.ai.game_components.game_state import GameState
 
 
@@ -84,13 +85,11 @@ class AiLogger:
     def _generate_awards_sum(self, awards: AiAwards) -> AiAwards:
         self._awards_to_state.append(awards)
 
-        result: AiAwards = AiAwards()
+        result: AiAwards = awards.clone_empty()
         for awards in self._awards_to_state:
-            result.troop_amount += awards.troop_amount
-            result.organization += awards.organization
-            result.experience += awards.experience
-            result.overlap += awards.overlap
+            result += awards
         return result
+
 
 
 

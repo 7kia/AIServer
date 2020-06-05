@@ -12,7 +12,7 @@ class ScoutLayerTrainer:
                + "/game-for-layer" \
                + "?" \
                + cls._layer_params("ScoutLayer", "motorized") \
-               + "&" + cls._model_graph_options(16, 4) \
+               + "&" + cls._model_graph_options(10, 5) \
                + "&" + cls._timer_params(tick_duration)
 
     @classmethod

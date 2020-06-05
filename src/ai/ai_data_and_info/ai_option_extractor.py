@@ -7,7 +7,7 @@ class AiOptionExtractor:
     def extract(cls, json: Json) -> AiOption:
         result: AiOption = AiOption()
         result.troopType = json["troopType"]
-        if hasattr(json, "isTrain"):
+        if "isTrain" in json:
             result.is_train = bool(json["isTrain"])
         else:
             result.is_train = False

@@ -6,7 +6,7 @@ Json = Dict[str, any]
 
 
 class GameInfo:
-    def __init__(self, game_id: int, player_id: int, ai_options: AiOption):
+    def __init__(self, game_id: int, player_id: int, ai_options: AiOption = None):
         self.game_id: int = game_id
         self.player_id: int = player_id
         self.ai_options: AiOption = ai_options
