@@ -23,6 +23,7 @@ class TestLoggerCreator(unittest.TestCase):
         player_id = 2
         ai_option = AiOption()
         ai_option.troopType = "motorized"
+        ai_option.is_train = True
         game_info = GameInfo(game_id, player_id, ai_option)
 
         return director.create_ai_logger(ai_info, game_info)
