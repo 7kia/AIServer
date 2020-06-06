@@ -6,6 +6,20 @@ from src.ai.game_components.game_state import GameState
 class AiAwardsDefiner:
     def __init__(self, awards_definer_params: AwardsDefinerParams):
         self.awards_definer_params: AwardsDefinerParams = awards_definer_params
+        self._coefficient_composition_generalization: float = 0
+        self._coefficient_organization_generalization: float = 0
+
+    def get_coefficient_composition_generalization(self) -> float:
+        return self._coefficient_composition_generalization
+
+    def set_coefficient_composition_generalization(self, value: float):
+        self._coefficient_composition_generalization = value
+
+    def get_coefficient_organization_generalization(self) -> float:
+        return self._coefficient_organization_generalization
+
+    def set_coefficient_organization_generalization(self, value: float):
+        self._coefficient_organization_generalization = value
 
     def get_awards(self, current_game_state: GameState,
                    last_game_state: GameState) -> AiAwards:
@@ -24,14 +38,32 @@ class AiAwardsDefiner:
     def generate_troop_amount_award(self,
                                     current_game_state: GameState,
                                     last_game_state: GameState) -> float:
-        result: float = 0
-        return result
+        own_composition_t_last: float = last_game_state.person_unit_params.troopAmount
+        own_composition_t: float = current_game_state.person_unit_params.troopAmount
+        own_composition_different: float = own_composition_t_last - own_composition_t
+
+        enemy_composition_t_last: float = last_game_state.person_unit_params.enemy_troop_amount
+        enemy_composition_t: float = current_game_state.person_unit_params.enemy_troop_amount
+        enemy_composition_different: float = enemy_composition_t_last - enemy_composition_t
+
+        return self._coefficient_composition_generalization * (
+            enemy_composition_different - own_composition_different
+        )
 
     def generate_organization_award(self,
                                     current_game_state: GameState,
                                     last_game_state: GameState) -> float:
-        result: float = 0
-        return result
+        own_organization_t_last: float = last_game_state.person_unit_params.organization
+        own_organization_t: float = current_game_state.person_unit_params.organization
+        own_organization_different: float = own_organization_t_last - own_organization_t
+
+        enemy_organization_t_last: float = last_game_state.person_unit_params.enemy_organization
+        enemy_organization_t: float = current_game_state.person_unit_params.enemy_organization
+        enemy_organization_different: float = enemy_organization_t_last - enemy_organization_t
+
+        return self._coefficient_organization_generalization * (
+            enemy_organization_different - own_organization_different
+        )
 
     def generate_experience_award(self,
                                   current_game_state: GameState,

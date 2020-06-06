@@ -8,6 +8,7 @@ from src.ai.ai_data_and_info.ai_awards.ai_awards_definer_director import AiAward
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer_for_time_dependent_task import \
     AiAwardsDefinerForTimeDependentTask
 from src.ai.ai_data_and_info.ai_awards.ai_awards_for_time_dependent_task import AiAwardsForTimeDependentTask
+from src.ai.ai_data_and_info.ai_awards.awards_definer_params_extractor import AwardsDefinerParamsExtractor
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.ai_data_and_info.ai_option import AiOption
 from src.ai.ai_data_and_info.game_info import GameInfo
@@ -21,7 +22,8 @@ class GenerateSimpleAiAwards(unittest.TestCase):
     def setUp(self) -> None:
         ai: Ai = self.create_test_ai()
         self.set_ai(ai)
-        ai_awards_definer: AiAwardsDefiner = AiAwardsDefinerDirector.create_for_ai(ai)
+        self._ai_awards_definer_director = AiAwardsDefinerDirector()
+        ai_awards_definer: AiAwardsDefiner = self._ai_awards_definer_director.create_for_ai(ai)
         self.awards: AiAwards = ai_awards_definer.get_awards(
             ai.get_current_game_state(),
             ai.get_last_game_state()
@@ -37,7 +39,14 @@ class GenerateSimpleAiAwards(unittest.TestCase):
         ai_option.troopType = "motorized"
         ai_option.is_train = True
         game_info = GameInfo(game_id, player_id, ai_option)
-        return AiBuilderDirector.create_ai(ai_info, game_info)
+        ai: Ai = AiBuilderDirector.create_ai(ai_info, game_info)
+        ai.set_awards_definer_params(AwardsDefinerParamsExtractor.extract({
+            "ownUnitAmount": 4,
+            "enemyUnitAmount": 3,
+            "ownUnitCompositionAmount": 10,
+            "enemyUnitCompositionAmount": 11
+        }))
+        return ai
 
     @classmethod
     def set_ai(cls, ai: Ai):
@@ -50,6 +59,8 @@ class GenerateSimpleAiAwards(unittest.TestCase):
         person_unit_params: PersonUnitParams = PersonUnitParams()
         person_unit_params.troop_amount = 2
         person_unit_params.organization = 3
+        person_unit_params.enemy_troop_amount = 3
+        person_unit_params.enemy_organization = 3
         person_unit_params.experience = 4
         person_unit_params.overlap = 5
 
@@ -62,6 +73,9 @@ class GenerateSimpleAiAwards(unittest.TestCase):
         person_unit_params: PersonUnitParams = PersonUnitParams()
         person_unit_params.troop_amount = 1
         person_unit_params.organization = 1
+        person_unit_params.enemy_troop_amount = 1
+        person_unit_params.enemy_organization = 1
+
         person_unit_params.experience = 1
         person_unit_params.overlap = 1
 
@@ -73,7 +87,7 @@ class GenerateSimpleAiAwards(unittest.TestCase):
     # имеется ввиду максимальное количество \/
     # ρ = Integral(enemy_hitpoint)/Integral(unit_hitpoint)
     def test_have_award_for_composition_or_health_points(self):
-        self.assertEqual(1, self.json_awards["troop_amount"])
+        self.assertEqual(3 / 4 * (11 - 10), self.json_awards["troop_amount"])
 
     def test_have_award_for_organization(self):
         self.assertEqual(2, self.json_awards["organization"])
@@ -114,7 +128,14 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         ai_option.troopType = "motorized"
         ai_option.is_train = True
         game_info = GameInfo(game_id, player_id, ai_option)
-        return AiBuilderDirector.create_ai(ai_info, game_info)
+        ai: Ai = AiBuilderDirector.create_ai(ai_info, game_info)
+        ai.set_awards_definer_params(AwardsDefinerParamsExtractor.extract({
+            "ownUnitAmount": 4,
+            "enemyUnitAmount": 3,
+            "ownUnitCompositionAmount": 10,
+            "enemyUnitCompositionAmount": 11
+        }))
+        return ai
 
     @classmethod
     def generate_current_state(cls) -> GameState:

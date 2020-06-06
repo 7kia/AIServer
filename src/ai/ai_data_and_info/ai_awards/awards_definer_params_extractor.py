@@ -6,8 +6,10 @@ class AwardsDefinerParamsExtractor:
     @classmethod
     def extract(cls, data: Json) -> AwardsDefinerParams:
         result: AwardsDefinerParams = AwardsDefinerParams()
-        result.ownUnitAmount = data["ownUnitAmount"]
-        result.enemyUnitAmount = data["enemyUnitAmount"]
-        result.ownUnitCompositionAmount = data["ownUnitCompositionAmount"]
-        result.enemyUnitCompositionAmount = data["enemyUnitCompositionAmount"]
+        result.own_unit_amount = data["ownUnitAmount"]
+        result.enemy_unit_amount = data["enemyUnitAmount"]
+        result.own_unit_composition_amount = data["ownUnitCompositionAmount"]
+        result.enemy_unit_composition_amount = data["enemyUnitCompositionAmount"]
+        result.own_unit_organization_amount = data["ownUnitOrganizationAmount"]
+        result.enemy_unit_organization_amount = data["enemyUnitOrganizationAmount"]
         return result

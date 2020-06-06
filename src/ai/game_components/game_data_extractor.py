@@ -59,6 +59,9 @@ class GameDataExtractor:
         person_unit_params = PersonUnitParams()
         person_unit_params.troopAmount = json_file_content["troopAmount"]
         person_unit_params.organization = json_file_content["organization"]
+        person_unit_params.enemy_troop_amount = json_file_content["enemyTroopAmount"]
+        person_unit_params.enemy_organization = json_file_content["enemyOrganization"]
+
         person_unit_params.experience = json_file_content["experience"]
         person_unit_params.overlap = json_file_content["overlap"]
         person_unit_params.speed = json_file_content["speed"]
