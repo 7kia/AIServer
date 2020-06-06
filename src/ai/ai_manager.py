@@ -12,6 +12,7 @@ from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from .ai_data_and_info.ai_awards.ai_awards_definer_director import AiAwardsDefinerDirector
 from .ai_data_and_info.ai_logger import AiLogger
 from .ai_data_and_info.ai_logger_builder_director import AiLoggerBuilderDirector
+from src.ai.ai_data_and_info.ai_awards.awards_definer_params_extractor import AwardsDefinerParamsExtractor
 
 
 class AiManager:
@@ -66,6 +67,7 @@ class AiManager:
         ai.set_location(LocationBuilder.build(ai_data.location))
         ai.set_country(ai_data.country)
         ai.set_graph_density(ai_data.game_state["graphDensity"])
+        ai.set_awards_definer_params(AwardsDefinerParamsExtractor.extract(ai_data.game_state))
 
         if ai.is_train():
             self._add_ai_logger_to_list(ai_info, game_info)

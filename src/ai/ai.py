@@ -6,6 +6,7 @@ from typing import List, Dict, Callable
 
 from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.location import Location, Bounds
+from .ai_data_and_info.ai_awards.awards_definer_params import AwardsDefinerParams
 from .game_components.position_generator import PositionGenerator
 
 CommandList = List[dict]
@@ -18,7 +19,8 @@ class Ai:
     _current_game_state: GameState = None
     _last_game_state: GameState = None
     _graph_density: List[List[int]] = None
-    _is_train = False
+    _is_train: bool = False
+    _awards_definer_params: AwardsDefinerParams = None
 
     def get_commands(self, game: GameState) -> List[Json]:
         return []
@@ -116,3 +118,6 @@ class Ai:
 
     def is_train(self) -> bool:
         return self._is_train
+
+    def set_awards_definer_params(self, awards_definer_params: AwardsDefinerParams):
+        self._awards_definer_params = awards_definer_params
