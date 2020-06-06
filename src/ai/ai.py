@@ -121,3 +121,6 @@ class Ai:
 
     def set_awards_definer_params(self, awards_definer_params: AwardsDefinerParams):
         self._awards_definer_params = awards_definer_params
+
+    def get_awards_definer_params(self) -> AwardsDefinerParams:
+        return self._awards_definer_params

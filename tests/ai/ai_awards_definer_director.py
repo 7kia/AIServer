@@ -67,16 +67,24 @@ class GenerateSimpleAiAwards(unittest.TestCase):
 
         game_state.person_unit_params = person_unit_params
         return game_state
-
+    
+    # r = ρ×((enemy_hitpoint__t−1 – enemy_hitpoint__t)
+    # - (unit_hitpoint__t−1 – unit_hitpoint__t))
+    # имеется ввиду максимальное количество \/
+    # ρ = Integral(enemy_hitpoint)/Integral(unit_hitpoint)
     def test_have_award_for_composition_or_health_points(self):
         self.assertEqual(1, self.json_awards["troop_amount"])
 
     def test_have_award_for_organization(self):
         self.assertEqual(2, self.json_awards["organization"])
 
+    # rt = (unit_experiencet – unit_experiencet−1) / (unit_experiencet * unit_amount)
     def test_have_award_for_experience(self):
         self.assertEqual(3, self.json_awards["experience"])
 
+    # rt = - m * (unit_overlapt – unit_overlapt−1) / (unit_overlapt * unit_amount) (3)
+    # m = коэффициент, который равен 3 если (unit_overlapt – unit_overlapt−1)
+    # больше 0, иначе равен 1
     def test_have_award_for_overlap(self):
         self.assertEqual(4, self.json_awards["overlap"])
 
@@ -142,9 +150,11 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         self.assertEqual(3, self.json_awards["experience"])
         self.assertEqual(4, self.json_awards["overlap"])
 
+    # rt = (relative_speedt – relative_speedt−1) / (relative_speedt * unit_amount)
     def test_have_award_for_speed(self):
         self.assertEqual(5, self.json_awards["speed"])
 
+    # r = (timet - timet-1) * 1.2
     def test_have_award_for_spent_time(self):
         self.assertEqual(6, self.json_awards["spent_time"])
 
@@ -155,7 +165,7 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         test_awards.experience = 1
         test_awards.overlap = 1
         test_awards.speed = 1
-        test_awards.spent_time = 1
+        test_awards.spent_time = 1  
         self.awards += test_awards
         awards = self.awards
         self.assertEqual(2, awards.troop_amount)

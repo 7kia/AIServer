@@ -8,5 +8,5 @@ class AiAwardsDefinerDirector:
     @staticmethod
     def create_for_ai(ai: Ai) -> AiAwardsDefiner:
         if type(ai) is ScoutNetwork:
-            return AiAwardsDefinerForTimeDependentTask()
-        return AiAwardsDefiner()
+            return AiAwardsDefinerForTimeDependentTask(ai.get_awards_definer_params())
+        return AiAwardsDefiner(ai.get_awards_definer_params())
