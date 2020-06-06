@@ -21,4 +21,15 @@ class AiAwardsForTimeDependentTask(AiAwards):
         return self
 
     def clone_empty(self):
-        return self.__init__()
+        return AiAwardsForTimeDependentTask()
+
+    def clone(self):
+        copy = AiAwardsForTimeDependentTask()
+        copy.troop_amount = self.troop_amount
+        copy.organization = self.organization
+        copy.experience = self.experience
+        copy.overlap = self.overlap
+
+        copy.speed = self.speed
+        copy.spent_time = self.spent_time
+        return copy

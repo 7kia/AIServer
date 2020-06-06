@@ -24,4 +24,12 @@ class AiAwards(ConvertSelfToJson):
         return self
 
     def clone_empty(self):
-        return self.__init__()
+        return AiAwards()
+
+    def clone(self):
+        copy = AiAwards()
+        copy.troop_amount = self.troop_amount
+        copy.organization = self.organization
+        copy.experience = self.experience
+        copy.overlap = self.overlap
+        return copy

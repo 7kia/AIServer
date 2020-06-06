@@ -27,10 +27,10 @@ class AiLogger:
     def save_to_game_record_file(self, awards: AiAwards, game_state: GameState):
         if self._not_record_to_files():
             self._set_file_structure()
-            self._start_time.set_string_presentation(game_state.current_time)
+            self._start_time.set_string_presentation(game_state.current_time.get_string_presentation())
         self._push_current_state(awards, game_state)
 
-        self._awards_to_state.append(awards)
+        self._awards_to_state.append(awards.clone())
 
     def _not_record_to_files(self) -> bool:
         return self._start_time.get_string_presentation() == ""
@@ -70,7 +70,7 @@ class AiLogger:
         self._end_game_state_file.close()
 
     def _generate_awards_sum(self, awards: AiAwards) -> AiAwards:
-        self._awards_to_state.append(awards)
+        self._awards_to_state.append(awards.clone())
 
         result: AiAwards = awards.clone_empty()
         for awards in self._awards_to_state:

@@ -2,7 +2,7 @@ import json
 import unittest
 
 from src.ai.ai_commands import Json
-from src.ai.ai_data_and_info.ai_awards import AiAwards
+from src.ai.ai_data_and_info.ai_awards.ai_awards import AiAwards
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.ai_data_and_info.ai_logger import AiLogger
 from src.ai.ai_data_and_info.ai_logger_builder_director import AiLoggerBuilderDirector
@@ -42,11 +42,11 @@ class AiLoggerSaveToFileWithGameRecord(TestLoggerCreator):
         super().setUp()
         self.awards: AiAwards = AiAwards()
         self.game_state: GameState = GameState()
-        self.game_state.current_time = "0"
+        self.game_state.current_time.set_string_presentation("0")
         self.logger.save_to_game_record_file(self.awards, self.game_state)
 
         self.game_state2: GameState = GameState()
-        self.game_state2.current_time = "1"
+        self.game_state2.current_time.set_string_presentation("1")
         self.logger.save_end_game_state(self.awards, self.game_state2)
 
 
@@ -77,11 +77,11 @@ class AiLoggerSaveToFileWithEndGameState(TestLoggerCreator):
 
         self.game_state: GameState = GameState()
         self.game_duration: int = 4
-        self.game_state.current_time = str(self.game_duration)
+        self.game_state.current_time.set_string_presentation(str(self.game_duration))
 
         for i in range(self.game_duration - 1):
             game_state: GameState = GameState()
-            game_state.current_time = str(i)
+            game_state.current_time.set_string_presentation(str(i))
             self.logger.save_to_game_record_file(self.awards, game_state)
 
         self.logger.save_end_game_state(self.awards, self.game_state)

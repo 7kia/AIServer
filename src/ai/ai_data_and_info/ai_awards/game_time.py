@@ -8,11 +8,11 @@ class GameTime:
     def set_string_presentation(self, value: str):
         self._string_presentation = value
 
-    def get_different_as_string(self, current_time: str) -> str:
-        if self._represents_int(current_time):
-            return str(int(current_time) - int(self._string_presentation))
+    def get_different_as_string(self, current_time) -> str:
+        if self._represents_int(current_time.get_string_presentation()):
+            return str(int(current_time.get_string_presentation()) - int(self._string_presentation))
         # TODO 7kia Date не парсится
-        return current_time + " - " + self._string_presentation
+        return current_time.get_string_presentation() + " - " + self._string_presentation
 
     def get_different_as_float(self, current_time: str) -> float:
         if self._represents_int(current_time):
