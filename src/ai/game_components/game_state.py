@@ -1,3 +1,4 @@
+from src.ai.ai_data_and_info.ai_awards.game_time import GameTime
 from src.ai.game_components.convert_self_to_json import Json, ConvertSelfToJson
 from src.ai.game_components.game_units import GameUnits
 from src.ai.game_components.person_unit_params import PersonUnitParams
@@ -12,12 +13,12 @@ class GameState(ConvertSelfToJson):
         self.person_unit_params: PersonUnitParams = PersonUnitParams()
         self.sector_params: SectorParams = SectorParams()
         # Строка потому что время измеряется либо в тиках, либо секундах
-        self.current_time: str = ""
+        self.current_time: GameTime = GameTime()
 
     def as_json(self) -> Json:
         return {
             "game_units": self.game_units.as_json(),
             "person_unit_params": self.person_unit_params.as_json(),
             "sector_params": self.sector_params.as_json(),
-            "current_time": self.current_time
+            "current_time": self.current_time.get_string_presentation()
         }

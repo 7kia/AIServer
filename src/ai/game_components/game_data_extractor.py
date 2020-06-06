@@ -27,7 +27,7 @@ class GameDataExtractor:
 
             game_state.person_unit_params = cls._extract_person_unit_params(json_file_content)
             game_state.sector_params = cls._extract_sector_params(json_file_content)
-            game_state.current_time = cls._extract_current_time(json_file_content)
+            game_state.current_time.set_string_presentation(cls._extract_current_time(json_file_content))
             return game_state
         except Exception as e:
             print("Unexpected error:", str(e))
@@ -57,7 +57,7 @@ class GameDataExtractor:
     @classmethod
     def _extract_person_unit_params(cls, json_file_content: Json):
         person_unit_params = PersonUnitParams()
-        person_unit_params.troopAmount = json_file_content["troopAmount"]
+        person_unit_params.troop_amount = json_file_content["troopAmount"]
         person_unit_params.organization = json_file_content["organization"]
         person_unit_params.enemy_troop_amount = json_file_content["enemyTroopAmount"]
         person_unit_params.enemy_organization = json_file_content["enemyOrganization"]

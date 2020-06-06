@@ -3,6 +3,7 @@ from typing import List
 
 from src.ai.ai_data_and_info.ai_awards.ai_awards import AiAwards
 from src.ai.ai_data_and_info.ai_awards.ai_awards_for_time_dependent_task import AiAwardsForTimeDependentTask
+from src.ai.ai_data_and_info.ai_awards.game_time import GameTime
 from src.ai.game_components.game_state import GameState
 
 
@@ -10,7 +11,7 @@ class AiLogger:
     def __init__(self):
         self._end_game_state_file = None
         self._game_state_log_file = None
-        self._start_time: str = ""
+        self._start_time: GameTime = GameTime()
         self._awards_to_state: List[AiAwards] = []
 
     def __del__(self):
@@ -26,13 +27,13 @@ class AiLogger:
     def save_to_game_record_file(self, awards: AiAwards, game_state: GameState):
         if self._not_record_to_files():
             self._set_file_structure()
-            self._start_time = game_state.current_time
+            self._start_time.set_string_presentation(game_state.current_time)
         self._push_current_state(awards, game_state)
 
         self._awards_to_state.append(awards)
 
     def _not_record_to_files(self) -> bool:
-        return self._start_time == ""
+        return self._start_time.get_string_presentation() == ""
 
     def _set_file_structure(self):
         first_string: str = "{\"data\": [\n"
@@ -63,24 +64,10 @@ class AiLogger:
         json.dump({
             "game_state": game_state.as_json(),
             "awards": awards.as_json(),
-            "game_duration": self._get_game_duration(game_state.current_time),
+            "game_duration": self._start_time.get_different_as_string(game_state.current_time),
             "awards_sum": self._generate_awards_sum(awards).as_json(),
         }, self._end_game_state_file, indent=4)
         self._end_game_state_file.close()
-
-    def _get_game_duration(self, current_time: str) -> str:
-        if self._represents_int(current_time):
-            return str(int(current_time) - int(self._start_time))
-        # TODO 7kia Data не парсится
-        return current_time + " - " + self._start_time
-
-    @staticmethod
-    def _represents_int(number: str):
-        try:
-            int(number)
-            return True
-        except ValueError:
-            return False
 
     def _generate_awards_sum(self, awards: AiAwards) -> AiAwards:
         self._awards_to_state.append(awards)
@@ -89,7 +76,3 @@ class AiLogger:
         for awards in self._awards_to_state:
             result += awards
         return result
-
-
-
-

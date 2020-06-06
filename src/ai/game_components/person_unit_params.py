@@ -3,7 +3,7 @@ from src.ai.game_components.convert_self_to_json import ConvertSelfToJson, Json
 
 class PersonUnitParams(ConvertSelfToJson):
     def __init__(self):
-        self.troopAmount: float = 0
+        self.troop_amount: float = 0
         self.organization: float = 0
         self.enemy_troop_amount: float = 0
         self.enemy_organization: float = 0
@@ -13,7 +13,7 @@ class PersonUnitParams(ConvertSelfToJson):
 
     def as_json(self) -> Json:
         return {
-            "troopAmount": self.troopAmount,
+            "troopAmount": self.troop_amount,
             "organization": self.organization,
             "enemyTroopAmount": self.enemy_troop_amount,
             "enemyOrganization": self.enemy_organization,

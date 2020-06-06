@@ -38,16 +38,16 @@ class AiAwardsDefiner:
     def generate_troop_amount_award(self,
                                     current_game_state: GameState,
                                     last_game_state: GameState) -> float:
-        own_composition_t_last: float = last_game_state.person_unit_params.troopAmount
-        own_composition_t: float = current_game_state.person_unit_params.troopAmount
-        own_composition_different: float = own_composition_t_last - own_composition_t
+        own_composition_t_last: float = last_game_state.person_unit_params.troop_amount
+        own_composition_t: float = current_game_state.person_unit_params.troop_amount
+        own_composition_different: float = own_composition_t - own_composition_t_last
 
         enemy_composition_t_last: float = last_game_state.person_unit_params.enemy_troop_amount
         enemy_composition_t: float = current_game_state.person_unit_params.enemy_troop_amount
-        enemy_composition_different: float = enemy_composition_t_last - enemy_composition_t
+        enemy_composition_different: float = enemy_composition_t - enemy_composition_t_last
 
         return self._coefficient_composition_generalization * (
-            enemy_composition_different - own_composition_different
+            own_composition_different - enemy_composition_different
         )
 
     def generate_organization_award(self,
@@ -55,24 +55,42 @@ class AiAwardsDefiner:
                                     last_game_state: GameState) -> float:
         own_organization_t_last: float = last_game_state.person_unit_params.organization
         own_organization_t: float = current_game_state.person_unit_params.organization
-        own_organization_different: float = own_organization_t_last - own_organization_t
+        own_organization_different: float = own_organization_t - own_organization_t_last
 
         enemy_organization_t_last: float = last_game_state.person_unit_params.enemy_organization
         enemy_organization_t: float = current_game_state.person_unit_params.enemy_organization
-        enemy_organization_different: float = enemy_organization_t_last - enemy_organization_t
+        enemy_organization_different: float = enemy_organization_t - enemy_organization_t_last
 
         return self._coefficient_organization_generalization * (
-            enemy_organization_different - own_organization_different
+            own_organization_different - enemy_organization_different
         )
 
+    # rt = (unit_experiencet – unit_experiencet−1) / (unit_experiencet * unit_amount)
     def generate_experience_award(self,
                                   current_game_state: GameState,
                                   last_game_state: GameState) -> float:
-        result: float = 0
-        return result
+        own_experience_t_last: float = last_game_state.person_unit_params.experience
+        own_experience_t: float = current_game_state.person_unit_params.experience
+        own_experience_different: float = own_experience_t - own_experience_t_last
+        return own_experience_different / (own_experience_t * self.awards_definer_params.own_unit_amount)
 
+    # rt = - m * (unit_overlapt – unit_overlapt−1) / (unit_overlapt * unit_amount) (3)
+    # m = коэффициент, который равен 3 если (unit_overlapt – unit_overlapt−1)
+    # больше 0, иначе равен 1
     def generate_overlap_award(self,
                                current_game_state: GameState,
                                last_game_state: GameState) -> float:
-        result: float = 0
+        own_overlap_t_last: float = last_game_state.person_unit_params.overlap
+        own_overlap_t: float = current_game_state.person_unit_params.overlap
+        own_overlap_different: float = own_overlap_t - own_overlap_t_last
+
+        overlap_coefficient: float = self._generate_overlap_coefficient(own_overlap_different)
+        return overlap_coefficient * own_overlap_different \
+            / (own_overlap_t * self.awards_definer_params.own_unit_amount)
+
+    @staticmethod
+    def _generate_overlap_coefficient(own_overlap_different: float) -> float:
+        result: float = 1
+        if own_overlap_different > 0:
+            return -3
         return result
