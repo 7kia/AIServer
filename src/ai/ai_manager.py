@@ -69,10 +69,14 @@ class AiManager:
         ai.set_country(ai_data.country)
         ai.set_graph_density(ai_data.game_state["graphDensity"])
         ai.set_awards_definer_params(AwardsDefinerParamsExtractor.extract(ai_data.game_state))
-        self._add_ai_awards_definer_to_list(ai, game_info)
+        ai_awards_definer: AiAwardsDefiner = self._add_ai_awards_definer_to_list(ai, game_info)
 
-        ai.set_network_adapter(self._network_technology_adapter_director
-                                .generate_scout_network_adapter(ai_info))
+        ai.set_network_adapter(
+            self._network_technology_adapter_director
+            .generate_scout_network_adapter(
+                ai_info, ai_awards_definer
+            )
+        )
         if ai.is_train():
             self._add_ai_logger_to_list(ai_info, game_info)
 
@@ -81,6 +85,7 @@ class AiManager:
         self._ai_awards_definer_list[game_info.game_id].update({
             game_info.player_id: self._ai_awards_definer_director.create_for_ai(ai)
         })
+        return self._ai_awards_definer_list[game_info.game_id][game_info.player_id]
 
     def _add_ai_logger_to_list(self, ai_info: AiInfo, game_info: GameInfo):
         self._ai_logger_list.update({game_info.game_id: {}})
