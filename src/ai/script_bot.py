@@ -10,7 +10,6 @@ from src.ai.game_components.move_direction import DIRECTIONS, SHORT_DISTANCE, LO
 from src.ai.game_components.position import Position
 from src.ai.game_components.unit import UnitList, Unit
 
-
 class ScriptBot(Ai):
     def __init__(self):
         super().__init__()
@@ -43,7 +42,6 @@ class ScriptBot(Ai):
         elif choised_command == CommandName.move_or_attack:
             return self._generate_move_or_attack_command(unit, game)
         raise NotImplementedError("Incorrect command")
-
 
     def _generate_move_or_attack_command(self, unit: Unit, game: GameState) -> Json:
         return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))

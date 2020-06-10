@@ -9,14 +9,14 @@ from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_network_adap
 
 class NetworkTechnologyAdapterDirector:
     def __init__(self):
-        self.builder: NetworkTechnologyAdapterBuilder = TensorflowNetworkAdapterBuilder()
+        self._builder: NetworkTechnologyAdapterBuilder = TensorflowNetworkAdapterBuilder()
     
     def generate_scout_network_adapter(self, ai_info: AiInfo) -> ScoutNetworkAdapter:
-        result: ScoutNetworkAdapter = self.builder.generate_scout_network_adapter(ai_info)
-        result.set_layer_1(self.builder.generate_layer_1())
+        result: ScoutNetworkAdapter = self._builder.generate_scout_network_adapter(ai_info)
+        result.set_layer_1(self._builder.generate_layer_1())
 
-        error_function: ErrorFunction = self.builder.generate_error_function()
-        optimizer: Optimizer = self.builder.generate_optimizer()
-        result = self.builder.compile_model(error_function, optimizer)
+        error_function: ErrorFunction = self._builder.generate_error_function()
+        optimizer: Optimizer = self._builder.generate_optimizer()
+        result = self._builder.compile_model(error_function, optimizer)
         return result
 

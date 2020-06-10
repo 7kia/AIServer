@@ -5,7 +5,7 @@ from src.ai.neural_network.technology_adapter.network_technology_adapter_builder
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 from src.ai.neural_network.technology_adapter.tensorflow.error_function import TensorflowErrorFunction
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
-from src.ai.neural_network.technology_adapter.tensorflow.tensorflowoptimizer import TensorflowOptimizer
+from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_optimizer import TensorflowOptimizer
 from src.ai.neural_network.technology_adapter.tensorflow.scout_network_adapter import ScoutNetworkAdapter
 
 

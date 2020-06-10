@@ -49,14 +49,19 @@ class Unit:
     unit_type: str = None
     state: UnitState = None
     position: Position = None
+    organization: float = 0
+    composition: float = 0
 
     def set(self, unit_id: int, unit_type: str,
             state: UnitState = UnitState(),
-            position: Position = Position(0, 0)):
+            position: Position = Position(0, 0),
+            organization: float = 0, composition: float = 0):
         self.id = unit_id
         self.unit_type = unit_type
         self.state = state
         self.position = position
+        self.organization = organization
+        self.composition = composition
         return self
 
 

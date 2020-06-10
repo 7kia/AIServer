@@ -32,7 +32,6 @@ class GameDataExtractor:
         except Exception as e:
             print("Unexpected error:", str(e))
 
-
     @classmethod
     def _extract_game_unit(cls, json_file_content: Json) -> GameUnits:
         unit_dictionary = json_file_content["units"]
@@ -73,10 +72,10 @@ class GameDataExtractor:
         sector_params.ownUnitToSectors = cls._extract_units_from_sectors(json_file_content["ownUnitToSectors"])
         sector_params.enemyUnitToSectors = cls._extract_units_from_sectors(json_file_content["enemyUnitToSectors"])
 
-        sector_params.ownSumInfo = json_file_content["ownSumInfo"]
-        sector_params.ownMaxInfo = json_file_content["ownMaxInfo"]
-        sector_params.enemySumInfo = json_file_content["enemySumInfo"]
-        sector_params.enemyMaxInfo = json_file_content["enemyMaxInfo"]
+        sector_params.own_sum_info = json_file_content["ownSumInfo"]
+        sector_params.own_max_info = json_file_content["ownMaxInfo"]
+        sector_params.enemy_sum_info = json_file_content["enemySumInfo"]
+        sector_params.enemy_max_info = json_file_content["enemyMaxInfo"]
         return sector_params
 
     @classmethod

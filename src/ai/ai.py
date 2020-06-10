@@ -8,6 +8,7 @@ from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.location import Location, Bounds
 from .ai_data_and_info.ai_awards.awards_definer_params import AwardsDefinerParams
 from .game_components.position_generator import PositionGenerator
+from .neural_network.technology_adapter.network_adapter import NetworkAdapter
 
 CommandList = List[dict]
 
@@ -34,16 +35,6 @@ class Ai:
             (country_bound["NE"].x + country_bound["SW"].x) / 2,
             (country_bound["NE"].y + country_bound["SW"].y) / 2
         )
-
-    @staticmethod
-    def _generate_target_position(unit_position: Position,
-                                  changed_direction: Position, distance: float,
-                                  map_bounds: Bounds) -> Position:
-        result: Position = unit_position + (changed_direction * distance)
-        if PositionGenerator.is_inside(map_bounds, unit_position):
-            return result
-        else:
-            return PositionGenerator.move_to_map_border(unit_position, map_bounds)
 
     def generate_unit_positions(self, unit_counts: Dict[str, str]):
         unit_positions: List[Dict[str, str]] = []
@@ -116,6 +107,16 @@ class Ai:
             access_command_list.append(CommandName.move_or_attack)
         return access_command_list
 
+    @staticmethod
+    def _generate_target_position(unit_position: Position,
+                                  changed_direction: Position, distance: float,
+                                  map_bounds: Bounds) -> Position:
+        result: Position = unit_position + (changed_direction * distance)
+        if PositionGenerator.is_inside(map_bounds, unit_position):
+            return result
+        else:
+            return PositionGenerator.move_to_map_border(unit_position, map_bounds)
+
     def is_train(self) -> bool:
         return self._is_train
 
@@ -124,3 +125,7 @@ class Ai:
 
     def get_awards_definer_params(self) -> AwardsDefinerParams:
         return self._awards_definer_params
+
+    def set_network_adapter(self, network_adapter: NetworkAdapter):
+        # TODO 7kia настройку ИИ нужно было в AiDirector из AiManager вынести
+        pass

@@ -13,6 +13,7 @@ from .ai_data_and_info.ai_awards.ai_awards_definer_director import AiAwardsDefin
 from .ai_data_and_info.ai_logger import AiLogger
 from .ai_data_and_info.ai_logger_builder_director import AiLoggerBuilderDirector
 from src.ai.ai_data_and_info.ai_awards.awards_definer_params_extractor import AwardsDefinerParamsExtractor
+from .neural_network.technology_adapter.network_technology_adapter_director import NetworkTechnologyAdapterDirector
 
 
 class AiManager:
@@ -32,7 +33,7 @@ class AiManager:
         self._ai_logger_list = {}
         self._ai_awards_definer_director = AiAwardsDefinerDirector()
         self._ai_awards_definer_list = {}
-
+        self._network_technology_adapter_director = NetworkTechnologyAdapterDirector()
 
     def get_ai(self, game_id, player_id):
         return self._ai_list[game_id][player_id]
@@ -68,21 +69,23 @@ class AiManager:
         ai.set_country(ai_data.country)
         ai.set_graph_density(ai_data.game_state["graphDensity"])
         ai.set_awards_definer_params(AwardsDefinerParamsExtractor.extract(ai_data.game_state))
+        self._add_ai_awards_definer_to_list(ai, game_info)
 
+        ai.set_network_adapter(self._network_technology_adapter_director
+                                .generate_scout_network_adapter(ai_info))
         if ai.is_train():
             self._add_ai_logger_to_list(ai_info, game_info)
-            self._add_ai_awards_definer_to_list(ai, game_info)
-
-    def _add_ai_logger_to_list(self, ai_info: AiInfo, game_info: GameInfo):
-        self._ai_logger_list.update({game_info.game_id: {}})
-        self._ai_logger_list[game_info.game_id].update({
-            game_info.player_id: self.ai_logger_director.create_ai_logger(ai_info, game_info)
-        })
 
     def _add_ai_awards_definer_to_list(self, ai: Ai, game_info: GameInfo):
         self._ai_awards_definer_list.update({game_info.game_id: {}})
         self._ai_awards_definer_list[game_info.game_id].update({
             game_info.player_id: self._ai_awards_definer_director.create_for_ai(ai)
+        })
+
+    def _add_ai_logger_to_list(self, ai_info: AiInfo, game_info: GameInfo):
+        self._ai_logger_list.update({game_info.game_id: {}})
+        self._ai_logger_list[game_info.game_id].update({
+            game_info.player_id: self.ai_logger_director.create_ai_logger(ai_info, game_info)
         })
 
     def add_ai_socket_connection_info(self, game_id, player_id):
@@ -172,5 +175,3 @@ class AiManager:
     @classmethod
     def get_succsess_delete_message(cls):
         return "Ai delete"
-
-

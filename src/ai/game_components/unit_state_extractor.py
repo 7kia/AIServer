@@ -2,6 +2,7 @@ import sys
 from enum import Enum
 from typing import Dict
 
+from src.ai.game_components.unit_composition import UnitComposition
 from src.ai.game_components.unit_state import UnitState
 
 Json = dict
@@ -40,3 +41,16 @@ class UnitStateExtractor:
         except Exception as e:
             print("Unexpected error:", str(e))
             raise BaseException(f"Not the status {json_content['_status']}")
+
+    @classmethod
+    def extract_composition(cls, json_content: Json) -> UnitComposition:
+        composition_json: Json = json_content["composition"]
+        result: UnitComposition = UnitComposition()
+        for key in composition_json.keys():
+            current_element = composition_json[key]
+            if isinstance(current_element, float):
+                result.amount += current_element
+            else:
+                result.amount += current_element.quantity
+                result.properties[key] = current_element
+        return result
