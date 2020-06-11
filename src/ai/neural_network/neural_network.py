@@ -31,7 +31,7 @@ class NeuralNetwork(Ai):
                 command = self._network_adapter.train(
                     CommandDataGeneration(unit.id, unit.position),
                     unit_observation,
-                    self.get_current_game_state(), self.get_last_game_state()
+                    self.get_current_game_state()
                 )
             else:
                 command = self._network_adapter.test(

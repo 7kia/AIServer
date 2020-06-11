@@ -1,3 +1,5 @@
+from tensorflow.python.keras import Input
+
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
@@ -38,6 +40,7 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
 
     def generate_input_layer(self) -> NetworkLayer:
         result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        result.value = Input(shape=(150, 150, 3))
         return result
 
     def generate_input_param_cost_definer(self, input_layer: NetworkLayer) -> NetworkLayer:

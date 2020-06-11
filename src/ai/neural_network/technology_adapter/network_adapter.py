@@ -16,7 +16,7 @@ class NetworkAdapter:
     def train(self,
               command_data_generation: CommandDataGeneration,
               unit_observation: UnitObservation,
-              current_game_state: GameState, last_game_state: GameState) -> Json:
+              current_game_state: GameState) -> Json:
         pass
 
     def test(self,

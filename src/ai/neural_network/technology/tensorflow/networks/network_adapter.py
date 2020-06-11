@@ -1,3 +1,5 @@
+from typing import List
+
 from tensorflow import constant
 from tensorflow.python.layers.base import Layer
 
@@ -17,19 +19,16 @@ class NetworkAdapter:
         pass
 
     def train(self,
-              command_data_generation: constant,
               unit_observation: constant,
-              current_game_state: constant,
-              last_game_state: constant) -> AiCommand:
+              current_game_state: constant) -> AiCommand:
         pass
 
     def test(self,
-             command_data_generation: constant,
              unit_observation: constant,
              current_game_state: constant,) -> AiCommand:
         pass
 
-    def set_input_layer(self, input_layer: NetworkLayer):
+    def set_input_layers(self, input_layer: List[NetworkLayer]):
         layer: TensorflowNetworkLayer = input_layer
         self._input_layer = layer.value
 
