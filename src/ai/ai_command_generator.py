@@ -15,7 +15,7 @@ class CommandName(Enum):
     stop_or_defence: str = "stop_or_defence"
 
 
-class AiCommands:
+class AiCommandGenerator:
     @classmethod
     def generate_create_unit_data(cls,
                                   country: str, troop_type: str,

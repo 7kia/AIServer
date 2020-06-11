@@ -1,7 +1,8 @@
 from typing import List
 
 from src.ai.ai import Ai
-from src.ai.ai_commands import Json
+from src.ai.ai_command_generator import Json
+from src.ai.game_components.command_data_generation import CommandDataGeneration
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.unit import UnitList
 from src.ai.game_components.unit_observation import UnitObservation
@@ -22,16 +23,24 @@ class NeuralNetwork(Ai):
         # TODO 7kia дальше нужно выбрать конкретный тип подразделений в зависимости
         # от подтипа слоя
 
-        units: UnitList = game_state.game_units["regiments"]
+        units: UnitList = game_state.game_units.own_units["regiments"]
         for unit in units:
             unit_observation: UnitObservation = UnitObservation()
             unit_observation.set(game_state.sector_params, unit)
-            commands: List[Json] = []
+            command: Json = {}
             if self.is_train():
-                commands = self._network_adapter.train(unit_observation, self.get_current_game_state(), self.get_last_game_state())
+                command = self._network_adapter.train(
+                    CommandDataGeneration(unit.id, unit.position),
+                    unit_observation,
+                    self.get_current_game_state(), self.get_last_game_state()
+                )
             else:
-                commands = self._network_adapter.test(unit_observation, self.get_current_game_state())
-            result += commands
+                command = self._network_adapter.test(
+                    CommandDataGeneration(unit.id, unit.position),
+                    unit_observation,
+                    self.get_current_game_state()
+                )
+            result += command
         return result
 
     def _generate_commands(self) -> List[Json]:

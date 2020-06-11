@@ -1,6 +1,6 @@
 from typing import List
 
-from src.ai.ai_commands import Json
+from src.ai.ai_command_generator import Json
 from src.ai.game_components.game_state import GameState
 from src.ai.neural_network.neural_network import NeuralNetwork
 

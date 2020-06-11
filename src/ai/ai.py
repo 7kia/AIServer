@@ -1,4 +1,4 @@
-from .ai_commands import AiCommands, CommandName, Json
+from .ai_command_generator import AiCommandGenerator, CommandName, Json
 from src.ai.game_components.unit import Unit, UnitList
 from src.ai.game_components.position import Position
 from src.ai.game_components.game_state import GameState
@@ -50,7 +50,7 @@ class Ai:
                         "troopSize": troop_size,
                     })
 
-        return AiCommands.generate_create_units_command(unit_positions)
+        return AiCommandGenerator.generate_create_units_command(unit_positions)
 
     def get_location(self) -> Location:
         return self._location

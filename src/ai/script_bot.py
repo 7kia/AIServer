@@ -3,7 +3,7 @@ from random import choice as random_choice
 from typing import List
 
 from src.ai.ai import Ai
-from src.ai.ai_commands import AiCommands, Json, CommandName
+from src.ai.ai_command_generator import AiCommandGenerator, Json, CommandName
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.game_data_extractor import UnitDict
 from src.ai.game_components.move_direction import DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
@@ -44,13 +44,13 @@ class ScriptBot(Ai):
         raise NotImplementedError("Incorrect command")
 
     def _generate_move_or_attack_command(self, unit: Unit, game: GameState) -> Json:
-        return AiCommands.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))
+        return AiCommandGenerator.generate_move_or_attack_command(unit.id, self._choice_random_position(unit.position))
 
     def _generate_retreat_or_storm_command(self, unit: Unit, game: GameState) -> Json:
-        return AiCommands.generate_retreat_or_storm_command(unit.id, self._choice_random_position(unit.position))
+        return AiCommandGenerator.generate_retreat_or_storm_command(unit.id, self._choice_random_position(unit.position))
 
     def _generate_stop_or_defence_command(self, unit: Unit, game: GameState) -> Json:
-        return AiCommands.generate_stop_or_defence_command(unit.id)
+        return AiCommandGenerator.generate_stop_or_defence_command(unit.id)
 
     def _choice_random_position(self, unit_position: Position) -> Position:
         changed_direction: Position = random_choice(DIRECTIONS).value
