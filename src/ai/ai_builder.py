@@ -22,6 +22,7 @@ class AiBuilder:
             new_ai.id = game_info.player_id
             if game_info.ai_options is not None:
                 new_ai.set_train_mode(game_info.ai_options.is_train)
+                new_ai.set_troop_type(game_info.ai_options.troop_type)
             # TODO set AI
             return new_ai
         except KeyError as e:

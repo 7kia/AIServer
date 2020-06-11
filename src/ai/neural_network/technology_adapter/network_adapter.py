@@ -12,7 +12,7 @@ from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 class NetworkAdapter:
     def __init__(self):
         pass
-    
+
     def train(self,
               command_data_generation: CommandDataGeneration,
               unit_observation: UnitObservation,

@@ -35,3 +35,19 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
         # TODO 7kia обновить ErrorFunction и Optimizer
         adapter.compile(optimizer=optimizer, loss=error_function)
         return adapter
+
+    def generate_input_layer(self) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_input_param_cost_definer(self, input_layer: NetworkLayer) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_command_cost_definer(self, input_param_cost_definer: NetworkLayer) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_output_layer(self, command_cost_definer_layer: NetworkLayer) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result

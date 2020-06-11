@@ -29,6 +29,18 @@ class NetworkTechnologyAdapterBuilder:
                       error_function: ErrorFunction, optimizer: Optimizer) -> NetworkAdapter:
         pass
 
+    def generate_input_layer(self) -> NetworkLayer:
+        pass
+
+    def generate_input_param_cost_definer(self, input_layer: NetworkLayer) -> NetworkLayer:
+        pass
+
+    def generate_command_cost_definer(self, input_param_cost_definer: NetworkLayer) -> NetworkLayer:
+        pass
+
+    def generate_output_layer(self, command_cost_definer_layer: NetworkLayer) -> NetworkLayer:
+        pass
+
 
 
 

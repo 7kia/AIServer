@@ -1,5 +1,7 @@
 from typing import List
 
+from tensorflow.python.layers.base import Layer
+
 from src.ai.game_components.command_data_generation import CommandDataGeneration
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.unit_observation import UnitObservation
@@ -8,7 +10,9 @@ from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.ai_command_generator import Json
+from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
+from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 from src.ai.neural_network.technology_adapter.tensorflow.tensor_generator import TensorGenerator
 
 
@@ -46,5 +50,15 @@ class ScoutNetworkAdapter(NetworkAdapter):
     def compile(self, optimizer: Optimizer, loss: ErrorFunction):
         self._network.compile(optimizer, loss)
 
-    def set_layer_1(self, param):
-        pass
+    # TODO 7kia должен быть IAiAdapter и IAiAdapterSetter
+    def set_input_layer(self, layer: NetworkLayer):
+        self._network.set_input_layer(layer)
+
+    def set_output_layer(self, layer: NetworkLayer):
+        self._network.set_output_layer(layer)
+
+    def set_command_cost_definer(self, layer: NetworkLayer):
+        self._network.set_command_cost_definer(layer)
+
+    def set_input_param_cost_definer(self, layer: NetworkLayer):
+        self._network.set_input_param_cost_definer(layer)

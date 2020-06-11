@@ -13,10 +13,10 @@ class AiLoggerBuilderDirector:
         try:
             ai_logger: AiLogger = self._builder.create_ai_logger()
             ai_logger.set_end_game_state_file(self._builder.create_end_game_state_file(
-                ai_info.ai_address, game_info.ai_options.troopType
+                ai_info.ai_address, game_info.ai_options.troop_type
             ))
             ai_logger.set_game_state_log_file(self._builder.create_game_state_log_file(
-                ai_info.ai_address, game_info.ai_options.troopType
+                ai_info.ai_address, game_info.ai_options.troop_type
             ))
             return ai_logger
         except KeyError as e:

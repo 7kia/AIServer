@@ -129,3 +129,6 @@ class Ai:
     def set_network_adapter(self, network_adapter: NetworkAdapter):
         # TODO 7kia настройку ИИ нужно было в AiDirector из AiManager вынести
         pass
+
+    def set_troop_type(self, troop_type: str):
+        raise IOError("troop_type can set only for neural networks")

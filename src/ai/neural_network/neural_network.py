@@ -9,8 +9,10 @@ from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 import numpy as np
 
+
 class NeuralNetwork(Ai):
     _network_adapter: NetworkAdapter = None
+    _troop_type: str = ""
 
     def __init__(self):
         super().__init__()
@@ -20,10 +22,7 @@ class NeuralNetwork(Ai):
         self.set_current_game_state(game_state)
 
         result: List[Json] = []
-        # TODO 7kia дальше нужно выбрать конкретный тип подразделений в зависимости
-        # от подтипа слоя
-
-        units: UnitList = game_state.game_units.own_units["regiments"]
+        units: UnitList = self._generate_access_unit_list(game_state)
         for unit in units:
             unit_observation: UnitObservation = UnitObservation()
             unit_observation.set(game_state.sector_params, unit)
@@ -52,3 +51,9 @@ class NeuralNetwork(Ai):
 
     def set_network_adapter(self, network_adapter: NetworkAdapter):
         self._network_adapter = network_adapter
+
+    def _generate_access_unit_list(self, game_state: GameState) -> UnitList:
+        return game_state.game_units.own_units["regiments"]
+
+    def set_troop_type(self, troop_type: str):
+        self._troop_type = troop_type
