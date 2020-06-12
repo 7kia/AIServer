@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Dict
 
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
@@ -82,8 +82,8 @@ class NetworkTechnologyAdapterDirector:
         optimizer: Optimizer = self._builder.generate_optimizer()
         return self._builder.compile_model(result, error_function, optimizer)
 
-    def _build_input_layers(self) -> NetworkLayers:
-        result: NetworkLayers = {
+    def _build_input_layers(self) -> Dict[str, NetworkLayers]:
+        result: Dict[str, NetworkLayers] = {
             InputLayerNames.unit_observation.__str__(): self._builder.generate_input_unit_observation_layer(),
             InputLayerNames.sector_params.__str__(): self._builder.generate_input_sector_params_layer(),
             InputLayerNames.person_unit_params.__str__(): self._builder.generate_input_person_unit_params_layer(),
@@ -91,10 +91,14 @@ class NetworkTechnologyAdapterDirector:
         return result
 
     def _build_input_param_cost_definer_layers(self, input_layers: NetworkLayers) -> NetworkLayers:
+        builder: InputParamCostDefinerLayerBuilder = self._input_param_cost_definer_builder
         result: NetworkLayers = {
-            InputParamCostDefinerLayerNames.unit_observation.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_unit_observation_layer(input_layers),
-            InputParamCostDefinerLayerNames.sector_params.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_sector_params_layer(input_layers),
-            InputParamCostDefinerLayerNames.person_unit_params.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_unit_params_layer(input_layers),
+            InputParamCostDefinerLayerNames.unit_observation.__str__():
+                builder.generate_unit_observation_layer(input_layers),
+            InputParamCostDefinerLayerNames.sector_params.__str__():
+                builder.generate_sector_params_layer(input_layers),
+            InputParamCostDefinerLayerNames.person_unit_params.__str__():
+                builder.generate_person_unit_params_layer(input_layers),
         }
         return result
 

@@ -26,13 +26,13 @@ class NetworkTechnologyAdapterBuilder:
                       error_function: ErrorFunction, optimizer: Optimizer) -> NetworkAdapter:
         pass
 
-    def generate_input_unit_observation_layer(self) -> NetworkLayer:
+    def generate_input_unit_observation_layer(self) -> NetworkLayers:
         pass
 
-    def generate_input_sector_params_layer(self) -> NetworkLayer:
+    def generate_input_sector_params_layer(self) -> NetworkLayers:
         pass
 
-    def generate_input_person_unit_params_layer(self) -> NetworkLayer:
+    def generate_input_person_unit_params_layer(self) -> NetworkLayers:
         pass
 
     def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:

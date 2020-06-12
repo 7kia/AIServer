@@ -11,6 +11,7 @@ from tensorflow.python.keras.optimizers import Optimizer
 from tensorflow.python.layers.base import Layer
 
 from src.ai.game_components.command_data_generation import CommandDataGeneration
+from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.move_direction import MoveDirection
 from src.ai.game_components.unit_observation import UnitObservation
@@ -18,6 +19,7 @@ from src.ai.neural_network.technology.tensorflow.networks.network_adapter import
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
+from src.ai.neural_network.technology_adapter.network_technology_adapter_director import InputLayerNames
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer as MyOptimizer
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 
@@ -62,6 +64,7 @@ class ScoutNetwork(NetworkAdapter):
             batch_size=1
         )
         print('\nhistory dict:', history.history)
+        self._final_model.save('model/scout_network.model')
         return self.test(unit_observation, current_game_state)
 
     def test(self,
@@ -69,38 +72,45 @@ class ScoutNetwork(NetworkAdapter):
              current_game_state: TfConstant) -> AiCommand:
         self._set_current_and_last_game_state(current_game_state)
 
-        unit_observation_data: UnitObservation = unit_observation.read_value()
+        unit_observation_data: Json = unit_observation.read_value().as_json()
         current_game_state: GameState = current_game_state.read_value()
-
-        unit_observation_data.own_organization
-        unit_observation_data.own_composition
-        unit_observation_data.sector
-        unit_observation_data.own_sum_info
-        unit_observation_data.own_max_info
-        unit_observation_data.enemy_sum_info
-        unit_observation_data.enemy_max_info
-
-        current_game_state.person_unit_params.troop_amount
-        current_game_state.person_unit_params.organization
-        current_game_state.person_unit_params.enemy_troop_amount
-        current_game_state.person_unit_params.enemy_organization
-        current_game_state.person_unit_params.experience
-        current_game_state.person_unit_params.overlap
-        current_game_state.person_unit_params.speed
-
-        current_game_state.sector_params.own_sum_info
-        current_game_state.sector_params.own_max_info
-        current_game_state.sector_params.enemy_sum_info
-        current_game_state.sector_params.enemy_max_info
-
-        direction: MoveDirection = None
-        command_name: str = ""
-        return AiCommand(direction, command_name)
+        person_unit_params_data: Json = current_game_state.person_unit_params.as_json()
+        sector_params_data: Json = current_game_state.sector_params.as_json()
+        input_data: Json = {}
+        for data_set in [unit_observation_data, person_unit_params_data, sector_params_data]:
+            for key in data_set.keys():
+                input_data[key] = unit_observation_data[key]
+        # unit_observation_data.own_organization
+        # unit_observation_data.own_composition
+        # unit_observation_data.sector
+        # unit_observation_data.own_sum_info
+        # unit_observation_data.own_max_info
+        # unit_observation_data.enemy_sum_info
+        # unit_observation_data.enemy_max_info
+        #
+        # current_game_state.person_unit_params.troop_amount
+        # current_game_state.person_unit_params.organization
+        # current_game_state.person_unit_params.enemy_troop_amount
+        # current_game_state.person_unit_params.enemy_organization
+        # current_game_state.person_unit_params.experience
+        # current_game_state.person_unit_params.overlap
+        # current_game_state.person_unit_params.speed
+        #
+        # current_game_state.sector_params.own_sum_info
+        # current_game_state.sector_params.own_max_info
+        # current_game_state.sector_params.enemy_sum_info
+        # current_game_state.sector_params.enemy_max_info
+        #
+        # direction: MoveDirection = None
+        # command_name: str = ""
+        # return AiCommand(direction, command_name)
+        return self._final_model.predict(input_data).read_value()
 
     def compile(self, optimizer: MyOptimizer, loss: MyErrorFunction):
         new_optimizer: Optimizer = self._create_optimizer(optimizer)
         new_loss: Loss = self._create_loss(loss)
         self._final_model = keras.Model(inputs=self._input_layer, outputs=self._output_layer)
+        # TODO 7kia загрузка модели
         self._final_model.compile(
             optimizer=new_optimizer,
             loss=new_loss,

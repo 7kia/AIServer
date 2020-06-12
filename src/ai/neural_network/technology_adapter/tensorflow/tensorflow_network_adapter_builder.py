@@ -1,7 +1,14 @@
+from typing import Dict, List
+
+from tensorflow.keras import layers
 from tensorflow.python.keras import Input
 
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.game_components.convert_self_to_json import Json
+from src.ai.game_components.person_unit_params import PersonUnitParams
+from src.ai.game_components.sector_params import SectorParams
+from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
@@ -51,16 +58,50 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
         result: TensorflowNetworkLayer = TensorflowNetworkLayer()
         return result
 
-    def generate_input_unit_observation_layer(self) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+    def generate_input_unit_observation_layer(self) -> NetworkLayers:
+        unit_observation: UnitObservation = UnitObservation()
+        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
+            unit_observation.as_json()
+        )
         return result
 
-    def generate_input_sector_params_layer(self) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+    def _generate_dict_input_layer_from_json(self, json: Json) -> Dict[str, TensorflowNetworkLayer]:
+        result: Dict[str, TensorflowNetworkLayer] = {}
+        for key in json:
+            value: any = json[key]
+            new_layer: TensorflowNetworkLayer = TensorflowNetworkLayer()
+            if isinstance(value, (float, int)):
+                new_layer.value = Input(shape=(1,), name=key)
+            elif isinstance(value, (List[int], List[float])):
+                new_layer.value = Input(shape=(2,), name=key)
+            else:
+                raise TypeError(f"_generate_dict_input_layer_from_json: {value} have incorrect type")
+            result[key] = new_layer
         return result
 
-    def generate_input_person_unit_params_layer(self) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+    def _generate_dict_layer_from_json(self, json: Json, activation: str) -> Dict[str, TensorflowNetworkLayer]:
+        result: Dict[str, TensorflowNetworkLayer] = {}
+        size: int = 0
+        for key in json:
+            value: any = json[key]
+            new_layer: TensorflowNetworkLayer = TensorflowNetworkLayer()
+            if isinstance(value, (float, int)):
+                new_layer.value = layers.Dense(64, activation=activation, name=key)(self._input_layer)
+            elif isinstance(value, (List[int], List[float])):
+                new_layer.value = Input(shape=(2,), name=key)
+            else:
+                raise TypeError(f"_generate_dict_layer_from_json: {value} have incorrect type")
+            result[key] = new_layer
+        return result
+
+    def generate_input_sector_params_layer(self) -> NetworkLayers:
+        sector_params: SectorParams = SectorParams()
+        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(sector_params.as_json())
+        return result
+
+    def generate_input_person_unit_params_layer(self) -> NetworkLayers:
+        person_unit_params: PersonUnitParams = PersonUnitParams()
+        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(person_unit_params.as_json())
         return result
 
     def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:
