@@ -50,6 +50,22 @@ class CommandCostDefinerTensorNames(Enum):
     up_left: str = "up_left_command_cost_definer"
 
 
+command_cost_definer_tensor_names: List[CommandCostDefinerTensorNames] = []
+for name in CommandCostDefinerTensorNames:
+    command_cost_definer_tensor_names.append(name)
+
+
+class CommandCostDefinerTensorId(Enum):
+    up: int = 0
+    up_right: int = 1
+    right: int = 2
+    down_right: int = 3
+    down: int = 4
+    down_left: int = 5
+    left: int = 6
+    up_left: int = 7
+
+
 class NetworkTechnologyAdapterDirector:
     def __init__(self):
         self._builder: NetworkTechnologyAdapterBuilder = TensorflowNetworkAdapterBuilder()
@@ -103,13 +119,20 @@ class NetworkTechnologyAdapterDirector:
         return result
 
     def _build_command_cost_definer_layers(self, input_layers: NetworkLayers) -> NetworkLayers:
+        builder: TensorflowCommandCostDefinerLayerBuilder = self._command_cost_definer_builder
         result: NetworkLayers = {
-            CommandCostDefinerLayerNames.unit_observation.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_unit_observation_layer(
-                input_layers),
-            CommandCostDefinerLayerNames.sector_params.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_sector_params_layer(
-                input_layers),
-            CommandCostDefinerLayerNames.person_unit_params.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_unit_params_layer(
-                input_layers),
+            CommandCostDefinerLayerNames.unit_observation.__str__():
+                builder.generate_for_unit_observation_layer(
+                    input_layers
+                ),
+            CommandCostDefinerLayerNames.sector_params.__str__():
+                builder.generate_for_sector_params_layer(
+                    input_layers
+                ),
+            CommandCostDefinerLayerNames.person_unit_params.__str__():
+                builder.generate_for_person_unit_params_layer(
+                    input_layers
+                ),
         }
         return result
 
@@ -120,5 +143,3 @@ class NetworkTechnologyAdapterDirector:
     def _build_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
         result: NetworkLayer = self._builder.generate_output_layer(input_layer)
         return result
-
-
