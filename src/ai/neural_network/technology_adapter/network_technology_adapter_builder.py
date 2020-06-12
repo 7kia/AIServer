@@ -2,7 +2,7 @@ from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
-from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer
+from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 from src.ai.neural_network.technology_adapter.scout_network_adapter import ScoutNetworkAdapter
 
@@ -15,9 +15,6 @@ class NetworkTechnologyAdapterBuilder:
     def generate_scout_network_adapter(ai_info: AiInfo) -> ScoutNetworkAdapter:
         return ScoutNetworkAdapter()
 
-    def generate_layer_1(self) -> NetworkLayer:
-        return NetworkLayer()
-
     def generate_error_function(self, ai_awards_definer: AiAwardsDefiner) -> ErrorFunction:
         return ErrorFunction()
 
@@ -29,17 +26,22 @@ class NetworkTechnologyAdapterBuilder:
                       error_function: ErrorFunction, optimizer: Optimizer) -> NetworkAdapter:
         pass
 
-    def generate_input_layer(self) -> NetworkLayer:
+    def generate_input_unit_observation_layer(self) -> NetworkLayer:
         pass
 
-    def generate_input_param_cost_definer(self, input_layer: NetworkLayer) -> NetworkLayer:
+    def generate_input_sector_params_layer(self) -> NetworkLayer:
         pass
 
-    def generate_command_cost_definer(self, input_param_cost_definer: NetworkLayer) -> NetworkLayer:
+    def generate_input_person_unit_params_layer(self) -> NetworkLayer:
         pass
 
-    def generate_output_layer(self, command_cost_definer_layer: NetworkLayer) -> NetworkLayer:
+    def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:
         pass
+
+    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
+        pass
+
+
 
 
 

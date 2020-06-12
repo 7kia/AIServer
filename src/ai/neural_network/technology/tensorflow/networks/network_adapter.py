@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from tensorflow import constant
 from tensorflow.python.layers.base import Layer
@@ -11,7 +11,7 @@ from src.ai.neural_network.technology_adapter.tensorflow.network_layer import Te
 
 
 class NetworkAdapter:
-    _input_layer: Layer = None
+    _input_layer: Dict[str, Layer] = None
     _output_layer: Layer = None
     _final_model: Model = None
 
@@ -28,10 +28,8 @@ class NetworkAdapter:
              current_game_state: constant,) -> AiCommand:
         pass
 
-    def set_input_layers(self, input_layer: List[NetworkLayer]):
-        layer: TensorflowNetworkLayer = input_layer
-        self._input_layer = layer.value
+    def set_input_layers(self, input_layer: Dict[str, Layer]):
+        self._input_layer = input_layer
 
-    def set_output_layer(self, output_layer: NetworkLayer):
-        layer: TensorflowNetworkLayer = output_layer
-        self._output_layer = layer.value
+    def set_output_layer(self, output_layer: Layer):
+        self._output_layer = output_layer

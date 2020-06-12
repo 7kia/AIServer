@@ -4,7 +4,7 @@ from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
-from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer
+from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.network_technology_adapter_builder import NetworkTechnologyAdapterBuilder
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_error_function import TensorflowErrorFunction
@@ -20,10 +20,6 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
     @staticmethod
     def generate_scout_network_adapter(ai_info: AiInfo) -> ScoutNetworkAdapter:
         return ScoutNetworkAdapter()
-
-    def generate_layer_1(self) -> NetworkLayer:
-        result: TensorflowNetworkLayer() = TensorflowNetworkLayer()
-        return result
 
     def generate_error_function(self, ai_awards_definer: AiAwardsDefiner) -> ErrorFunction:
         return TensorflowErrorFunction(ai_awards_definer)
@@ -52,5 +48,25 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
         return result
 
     def generate_output_layer(self, command_cost_definer_layer: NetworkLayer) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_input_unit_observation_layer(self) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_input_sector_params_layer(self) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_input_person_unit_params_layer(self) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:
+        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+        return result
+
+    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
         result: TensorflowNetworkLayer = TensorflowNetworkLayer()
         return result

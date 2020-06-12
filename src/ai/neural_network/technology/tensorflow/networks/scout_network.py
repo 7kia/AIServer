@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from tensorflow import keras
 from tensorflow import constant as TfConstant
@@ -17,16 +17,18 @@ from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
-from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer
+from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer as MyOptimizer
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 
 
 class ScoutNetwork(NetworkAdapter):
     # слой определения ценности параметров
-    __input_param_cost_definer: Layer = None
+    __input_param_cost_definer: Dict[str, Layer] = None
     # слой определения ценности конкретной команды
-    __command_cost_definer: Layer = None
+    __command_cost_definer: Dict[str, Layer] = None
+    # слой объединения значений и определения выходной окманды
+    __command_definer: Layer = None
 
     _current_game_state: TfVariable = None
     _last_game_state: TfVariable = None
@@ -105,16 +107,17 @@ class ScoutNetwork(NetworkAdapter):
             metrics=['accuracy'],
         )
 
-    def set_input_param_cost_definer(self, layers: List[NetworkLayer]):
-        source_layer: List[TensorflowNetworkLayer] = layers
-        self.__input_param_cost_definer = source_layer.value
+    def set_input_param_cost_definer(self, layer: Dict[str, Layer]):
+        self.__input_param_cost_definer = layer
 
-    def set_command_cost_definer(self, layers: List[NetworkLayer]):
-        source_layer: List[TensorflowNetworkLayer] = layers
-        self.__command_cost_definer = source_layer.value
+    def set_command_cost_definer(self, layer: Dict[str, Layer]):
+        self.__command_cost_definer = layer
 
     def _set_current_and_last_game_state(self, current_game_state: TfConstant):
         if self._current_game_state is None:
             self._current_game_state = current_game_state
         self._last_game_state = self._current_game_state
         self._current_game_state = current_game_state
+
+    def set_command_definer(self, layer: Layer):
+        self.__command_definer = layer

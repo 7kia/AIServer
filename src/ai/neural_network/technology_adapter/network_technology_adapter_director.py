@@ -3,11 +3,19 @@ from typing import List
 
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
+from src.ai.neural_network.technology_adapter.builder.command_cost_definer_layer_builder import \
+    CommandCostDefinerLayerBuilder
+from src.ai.neural_network.technology_adapter.builder.input_param_cost_definer_layer_builder import \
+    InputParamCostDefinerLayerBuilder
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.network_technology_adapter_builder import NetworkTechnologyAdapterBuilder
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
+from src.ai.neural_network.technology_adapter.tensorflow.builder.command_cost_definer_layer_builder import \
+    TensorflowCommandCostDefinerLayerBuilder
+from src.ai.neural_network.technology_adapter.tensorflow.builder.input_param_cost_definer_layer_builder import \
+    TensorflowInputParamCostDefinerLayerBuilder
 from src.ai.neural_network.technology_adapter.tensorflow.scout_network_adapter import ScoutNetworkAdapter
 from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_network_adapter_builder import \
     TensorflowNetworkAdapterBuilder
@@ -25,6 +33,12 @@ class InputParamCostDefinerLayerNames(Enum):
     sector_params: str = "sector_params__cost_definer"
 
 
+class CommandCostDefinerLayerNames(Enum):
+    unit_observation: str = "unit_observation__command_cost_definer"
+    person_unit_params: str = "person_unit_params__command_cost_definer"
+    sector_params: str = "sector_params__command_cost_definer"
+
+
 class CommandCostDefinerTensorNames(Enum):
     up: str = "up_command_cost_definer"
     up_right: str = "up_right_command_cost_definer"
@@ -39,6 +53,10 @@ class CommandCostDefinerTensorNames(Enum):
 class NetworkTechnologyAdapterDirector:
     def __init__(self):
         self._builder: NetworkTechnologyAdapterBuilder = TensorflowNetworkAdapterBuilder()
+        self._input_param_cost_definer_builder: InputParamCostDefinerLayerBuilder \
+            = TensorflowInputParamCostDefinerLayerBuilder()
+        self._command_cost_definer_builder: CommandCostDefinerLayerBuilder \
+            = TensorflowCommandCostDefinerLayerBuilder()
 
     def generate_scout_network_adapter(self,
                                        ai_info: AiInfo,
@@ -48,16 +66,16 @@ class NetworkTechnologyAdapterDirector:
         input_layers: NetworkLayers = self._build_input_layers()
         result.set_input_layers(input_layers)
 
-        input_param_cost_definer: NetworkLayer = self._builder \
-            .generate_input_param_cost_definer(input_layer)
+        input_param_cost_definer: NetworkLayers = self._build_input_param_cost_definer_layers(input_layers)
         result.set_input_param_cost_definer(input_param_cost_definer)
 
-        command_cost_definer_layer: NetworkLayer = self._builder \
-            .generate_command_cost_definer(input_param_cost_definer)
+        command_cost_definer_layer: NetworkLayers = self._build_command_cost_definer_layers(input_param_cost_definer)
         result.set_command_cost_definer(command_cost_definer_layer)
 
-        output_layer: NetworkLayer = self._builder \
-            .generate_output_layer(command_cost_definer_layer)
+        command_definer_layer: NetworkLayer = self._build_command_definer_layers(command_cost_definer_layer)
+        result.set_command_definer(command_definer_layer)
+
+        output_layer: NetworkLayer = self._build_output_layer(command_definer_layer)
         result.set_output_layer(output_layer)
 
         error_function: ErrorFunction = self._builder.generate_error_function(ai_awards_definer)
@@ -72,10 +90,31 @@ class NetworkTechnologyAdapterDirector:
         }
         return result
 
-    def _build_hidden_layers(self) -> NetworkLayers:
-        result: NetworkLayers = {}
+    def _build_input_param_cost_definer_layers(self, input_layers: NetworkLayers) -> NetworkLayers:
+        result: NetworkLayers = {
+            InputParamCostDefinerLayerNames.unit_observation.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_unit_observation_layer(input_layers),
+            InputParamCostDefinerLayerNames.sector_params.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_sector_params_layer(input_layers),
+            InputParamCostDefinerLayerNames.person_unit_params.__str__(): self._input_param_cost_definer_builder.generate_input_param_cost_definer_unit_params_layer(input_layers),
+        }
         return result
 
-    def _build_output_layer(self) -> NetworkLayer:
-        result: NetworkLayer = NetworkLayer()
+    def _build_command_cost_definer_layers(self, input_layers: NetworkLayers) -> NetworkLayers:
+        result: NetworkLayers = {
+            CommandCostDefinerLayerNames.unit_observation.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_unit_observation_layer(
+                input_layers),
+            CommandCostDefinerLayerNames.sector_params.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_sector_params_layer(
+                input_layers),
+            CommandCostDefinerLayerNames.person_unit_params.__str__(): self._command_cost_definer_builder.generate_command_cost_definer_unit_params_layer(
+                input_layers),
+        }
         return result
+
+    def _build_command_definer_layers(self, input_layers: NetworkLayers) -> NetworkLayer:
+        result: NetworkLayer = self._builder.generate_command_definer_layer(input_layers)
+        return result
+
+    def _build_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
+        result: NetworkLayer = self._builder.generate_output_layer(input_layer)
+        return result
+
+

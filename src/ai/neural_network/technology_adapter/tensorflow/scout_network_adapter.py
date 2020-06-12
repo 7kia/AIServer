@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 from tensorflow.python.layers.base import Layer
 
@@ -48,13 +48,29 @@ class ScoutNetworkAdapter(NetworkAdapter):
 
     # TODO 7kia должен быть IAiAdapter и IAiAdapterSetter
     def set_input_layers(self, layers: NetworkLayers):
-        self._network.set_input_layers(layers)
+        self._network.set_input_layers(self._extract_tensor_dict(layers))
 
-    def set_output_layer(self, layer: NetworkLayer):
-        self._network.set_output_layer(layer)
+    def set_input_param_cost_definer(self, layers: NetworkLayers):
+        self._network.set_input_param_cost_definer(self._extract_tensor_dict(layers))
 
-    def set_command_cost_definer(self, layer: NetworkLayers):
-        self._network.set_command_cost_definer(layer)
+    def set_command_cost_definer(self, layers: NetworkLayers):
+        self._network.set_command_cost_definer(self._extract_tensor_dict(layers))
 
-    def set_input_param_cost_definer(self, layer: NetworkLayers):
-        self._network.set_input_param_cost_definer(layer)
+    def set_command_definer(self, layers: NetworkLayer):
+        self._network.set_command_definer(self._extract_tensor(layers))
+
+    def set_output_layer(self, layers: NetworkLayer):
+        self._network.set_output_layer(self._extract_tensor(layers))
+
+    @staticmethod
+    def _extract_tensor_dict(layers: NetworkLayers) -> Dict[str, Layer]:
+        result: Dict[str, Layer] = {}
+        for key in layers.keys():
+            tensor: TensorflowNetworkLayer = layers[key]
+            result[key] = tensor.value
+        return result
+
+    @staticmethod
+    def _extract_tensor(layer: NetworkLayer) -> Layer:
+        tensor: TensorflowNetworkLayer = layer
+        return tensor.value
