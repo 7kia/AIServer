@@ -47,20 +47,30 @@ class ScoutNetworkAdapter(NetworkAdapter):
         self._network.compile(optimizer, loss)
 
     # TODO 7kia должен быть IAiAdapter и IAiAdapterSetter
-    def set_input_layers(self, layers: NetworkLayers):
-        self._network.set_input_layers(self._extract_tensor_dict(layers))
+    def set_input_layers(self, layers: Dict[str, NetworkLayers]):
+        self._network.set_input_layers(self._convert_to_tensor_dict(layers))
 
     def set_input_param_cost_definer(self, layers: NetworkLayers):
         self._network.set_input_param_cost_definer(self._extract_tensor_dict(layers))
 
-    def set_command_cost_definer(self, layers: NetworkLayers):
-        self._network.set_command_cost_definer(self._extract_tensor_dict(layers))
+    def set_command_cost_definer(self, layers: Dict[str, NetworkLayers]):
+        self._network.set_command_cost_definer(self._convert_to_tensor_dict(layers))
 
     def set_command_definer(self, layers: NetworkLayer):
         self._network.set_command_definer(self._extract_tensor(layers))
 
-    def set_output_layer(self, layers: NetworkLayer):
-        self._network.set_output_layer(self._extract_tensor(layers))
+    def set_output_layer(self, layers: NetworkLayers):
+        self._network.set_output_layer(self._extract_tensor_dict(layers))
+
+    @classmethod
+    def _convert_to_tensor_dict(cls, layers: Dict[str, NetworkLayers]) -> Dict[str, Layer]:
+        result: Dict[str, Layer] = {}
+        for key in layers.keys():
+            layer_list: NetworkLayers = layers[key]
+            tensor_dict: Dict[str, Layer] = cls._extract_tensor_dict(layer_list)
+            for tensor_key in tensor_dict:
+                result[tensor_key] = tensor_dict[tensor_key].value
+        return result
 
     @staticmethod
     def _extract_tensor_dict(layers: NetworkLayers) -> Dict[str, Layer]:

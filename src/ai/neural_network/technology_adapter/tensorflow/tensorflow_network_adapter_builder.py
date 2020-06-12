@@ -1,7 +1,9 @@
 from typing import Dict, List
 
+import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.python.keras import Input
+from tensorflow.python.layers.base import Layer
 
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
@@ -9,10 +11,13 @@ from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.person_unit_params import PersonUnitParams
 from src.ai.game_components.sector_params import SectorParams
 from src.ai.game_components.unit_observation import UnitObservation
+from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.network_technology_adapter_builder import NetworkTechnologyAdapterBuilder
+from src.ai.neural_network.technology_adapter.network_technology_adapter_director import \
+    command_cost_definer_layer_names, CommandDefinerLevel
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_error_function import TensorflowErrorFunction
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
@@ -101,13 +106,58 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
 
     def generate_input_person_unit_params_layer(self) -> NetworkLayers:
         person_unit_params: PersonUnitParams = PersonUnitParams()
-        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(person_unit_params.as_json())
+        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
+            person_unit_params.as_json())
         return result
 
-    def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:
+    def generate_command_definer_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:
         result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+
+        input_for_new_layers: Dict[str, tf.constant] = {}
+        for layer_name in command_cost_definer_layer_names:
+            current_layer: NetworkLayers = input_layers[layer_name.value]
+            input_for_new_layers[layer_name.value] = self._convert_as_array(current_layer)
+
+        result.value = layers.Dense(
+            len(command_cost_definer_layer_names),
+            activation='softmax',
+            name=f"command_definer_layer"
+        )(
+            self._convert_as_array(input_for_new_layers)
+        )
         return result
 
-    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
+    @staticmethod
+    def _convert_as_array(dictionary: NetworkLayers) -> tf.constant:
+        array: List[Layer] = []
+        for layer in dictionary.values():
+            tensor: TensorflowNetworkLayer = layer
+            array.append(tensor.value)
+        return tf.constant(array)
+
+    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayers:
+        result: Dict[str, TensorflowNetworkLayer] = {}
+
+        input_tensor: TensorflowNetworkLayer = input_layer
+        command_cost_summation_layer_name: str = CommandDefinerLevel.command_cost_summation_layer.__str__()
+        result[command_cost_summation_layer_name].value = layers.Dense(
+            1,
+            activation='softmax',
+            name=command_cost_summation_layer_name
+        )(
+            input_tensor.value
+        )
+
+        result_layer_name: str = CommandDefinerLevel.result.__str__()
+        result[result_layer_name].value = layers.Dense(
+            1,
+            activation='softmax',
+            name=result_layer_name
+        )(
+            result[command_cost_summation_layer_name].value
+        )
         return result
+
+    def _get_ai_command(self) -> AiCommand:
+
+        return AiCommand(direction=None, command_name=None)

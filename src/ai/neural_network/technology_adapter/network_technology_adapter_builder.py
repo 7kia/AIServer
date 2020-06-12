@@ -1,3 +1,5 @@
+from typing import Dict
+
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
@@ -35,10 +37,10 @@ class NetworkTechnologyAdapterBuilder:
     def generate_input_person_unit_params_layer(self) -> NetworkLayers:
         pass
 
-    def generate_command_definer_layer(self, input_layers: NetworkLayers) -> NetworkLayer:
+    def generate_command_definer_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:
         pass
 
-    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayer:
+    def generate_output_layer(self, input_layer: NetworkLayer) -> NetworkLayers:
         pass
 
 
