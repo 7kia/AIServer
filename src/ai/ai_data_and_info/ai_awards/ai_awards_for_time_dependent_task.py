@@ -33,3 +33,6 @@ class AiAwardsForTimeDependentTask(AiAwards):
         copy.speed = self.speed
         copy.spent_time = self.spent_time
         return copy
+
+    def get_sum_award(self) -> float:
+        return super().get_sum_award() + self.speed + self.spent_time

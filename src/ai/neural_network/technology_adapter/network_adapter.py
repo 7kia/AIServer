@@ -31,7 +31,7 @@ class NetworkAdapter:
     @staticmethod
     def _convert_to_json(command_numbers: AiCommand,
                          command_data: CommandDataGeneration) -> Json:
-        choised_command: str = command_numbers.command_name.value
+        choised_command: str = command_numbers.command_name
         if choised_command == CommandName.stop_or_defence:
             return AiCommandGenerator.generate_stop_or_defence_command(
                 command_data.id

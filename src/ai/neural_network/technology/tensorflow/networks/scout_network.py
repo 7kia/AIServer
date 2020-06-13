@@ -7,7 +7,7 @@ from tensorflow.keras import layers
 from tensorflow.python.keras import Input
 from tensorflow.python.keras.callbacks import History
 from tensorflow.python.keras.losses import Loss
-from tensorflow.python.keras.optimizers import Optimizer
+from tensorflow.python.keras.optimizers import Optimizer, Adam
 from tensorflow.python.layers.base import Layer
 
 from src.ai.game_components.command_data_generation import CommandDataGeneration
@@ -16,12 +16,15 @@ from src.ai.game_components.game_state import GameState
 from src.ai.game_components.move_direction import MoveDirection
 from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter
+from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
-from src.ai.neural_network.technology_adapter.network_technology_adapter_director import InputLayerNames
+from src.ai.neural_network.technology_adapter.network_technology_adapter_director import InputLayerNames, \
+    CommandDefinerLevel
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer as MyOptimizer
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
+from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_error_function import TensorflowErrorFunction
 
 
 class ScoutNetwork(NetworkAdapter):
@@ -80,6 +83,9 @@ class ScoutNetwork(NetworkAdapter):
         for data_set in [unit_observation_data, person_unit_params_data, sector_params_data]:
             for key in data_set.keys():
                 input_data[key] = unit_observation_data[key]
+        # 7kia Используемые входные значения. Оставлены в качестве напоминания
+        # для разработчика. Не удалять
+
         # unit_observation_data.own_organization
         # unit_observation_data.own_composition
         # unit_observation_data.sector
@@ -100,16 +106,15 @@ class ScoutNetwork(NetworkAdapter):
         # current_game_state.sector_params.own_max_info
         # current_game_state.sector_params.enemy_sum_info
         # current_game_state.sector_params.enemy_max_info
-        #
-        # direction: MoveDirection = None
-        # command_name: str = ""
-        # return AiCommand(direction, command_name)
         return self._final_model.predict(input_data).read_value()
 
     def compile(self, optimizer: MyOptimizer, loss: MyErrorFunction):
         new_optimizer: Optimizer = self._create_optimizer(optimizer)
         new_loss: Loss = self._create_loss(loss)
-        self._final_model = keras.Model(inputs=self._input_layer, outputs=self._output_layer)
+        self._final_model = keras.Model(
+            inputs=self._input_layer,
+            outputs=self._output_layer[CommandDefinerLevel.result.__str__()]
+        )
         # TODO 7kia загрузка модели
         self._final_model.compile(
             optimizer=new_optimizer,
@@ -131,3 +136,14 @@ class ScoutNetwork(NetworkAdapter):
 
     def set_command_definer(self, layer: Layer):
         self.__command_definer = layer
+
+    # TODO 7kia используется стандартный алгоритм обучения
+    @staticmethod
+    def _create_optimizer(optimizer: MyOptimizer) -> Optimizer:
+        return Adam()
+
+    def _create_loss(self, loss: MyErrorFunction) -> Loss:
+        error_function: TensorflowErrorFunction = loss
+        result = ScoutNetworkLossFunction(error_function)
+        result.set_game_states(self._current_game_state, self._last_game_state)
+        return result

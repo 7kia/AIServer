@@ -5,6 +5,6 @@ from src.ai.game_components.move_direction import MoveDirection
 
 
 class AiCommand:
-    def __init__(self, direction: MoveDirection, command_name: CommandName):
+    def __init__(self, direction: MoveDirection, command_name: str):
         self.direction: MoveDirection = direction
-        self.command_name: CommandName = command_name
+        self.command_name: str = command_name

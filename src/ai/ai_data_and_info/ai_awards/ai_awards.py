@@ -33,3 +33,6 @@ class AiAwards(ConvertSelfToJson):
         copy.experience = self.experience
         copy.overlap = self.overlap
         return copy
+
+    def get_sum_award(self) -> float:
+        return self.troop_amount + self.organization + self.experience + self.overlap

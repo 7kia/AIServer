@@ -5,9 +5,11 @@ from tensorflow.keras import layers
 from tensorflow.python.keras import Input
 from tensorflow.python.layers.base import Layer
 
+from src.ai.ai_command_generator import CommandName
 from src.ai.ai_data_and_info.ai_awards.ai_awards_definer import AiAwardsDefiner
 from src.ai.ai_data_and_info.ai_info import AiInfo
 from src.ai.game_components.convert_self_to_json import Json
+from src.ai.game_components.move_direction import MoveDirection, DIRECTIONS
 from src.ai.game_components.person_unit_params import PersonUnitParams
 from src.ai.game_components.sector_params import SectorParams
 from src.ai.game_components.unit_observation import UnitObservation
@@ -151,13 +153,18 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
         result_layer_name: str = CommandDefinerLevel.result.__str__()
         result[result_layer_name].value = layers.Dense(
             1,
-            activation='softmax',
+            activation=self._get_ai_command,
             name=result_layer_name
         )(
             result[command_cost_summation_layer_name].value
         )
         return result
 
-    def _get_ai_command(self) -> AiCommand:
-
-        return AiCommand(direction=None, command_name=None)
+    # TODO 7kia выдаёт только для слоя разведки
+    def _get_ai_command(self, tensor) -> AiCommand:
+        command_probability: List[float] = tensor.read_value()
+        index: int = command_probability.index(max(command_probability))
+        return AiCommand(
+            direction=DIRECTIONS[index],
+            command_name=CommandName.move_or_attack
+        )
