@@ -158,8 +158,9 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
 
     # TODO 7kia выдаёт только для слоя разведки
     def _get_ai_command(self, tensor) -> AiCommand:
-        command_probability: List[float] = tensor.read_value()
-        index: int = command_probability.index(max(command_probability))
+        index: int = tf.keras.backend.get_value(
+            tf.argmax(tensor)
+        )
         return AiCommand(
             direction=DIRECTIONS[index],
             command_name=CommandName.move_or_attack
