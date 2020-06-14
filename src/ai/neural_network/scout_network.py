@@ -3,10 +3,12 @@ from typing import List
 from src.ai.ai_command_generator import Json
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.unit import UnitList, Unit
-from src.ai.neural_network.neural_network import NeuralNetwork
+from src.ai.neural_network.neural_network import NeuralNetwork, SHOOTS_TO_SECOND
 
 
 class ScoutNetwork(NeuralNetwork):
+    _TRAIN_TIME: int = 25   # в секундах
+
     def __init__(self):
         super().__init__()
 
@@ -27,3 +29,6 @@ class ScoutNetwork(NeuralNetwork):
 
     def _check_unit_state(self, unit: Unit) -> bool:
         return not unit.state.attack
+
+    def time_end(self) -> bool:
+        return self._time_to_tick >= (self._TRAIN_TIME * SHOOTS_TO_SECOND)

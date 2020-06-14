@@ -9,6 +9,8 @@ from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 import numpy as np
 
+SHOOTS_TO_SECOND: int = 25
+
 
 class NeuralNetwork(Ai):
     _network_adapter: NetworkAdapter = None

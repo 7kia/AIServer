@@ -22,6 +22,7 @@ class Ai:
     _graph_density: List[List[int]] = None
     _is_train: bool = False
     _awards_definer_params: AwardsDefinerParams = None
+    _time_to_tick: float = 0
 
     def get_commands(self, game: GameState) -> List[Json]:
         return []
@@ -132,3 +133,10 @@ class Ai:
 
     def set_troop_type(self, troop_type: str):
         raise IOError("troop_type can set only for neural networks")
+
+    def update_timer(self):
+        self._time_to_tick = self._current_game_state.current_time\
+            .get_different_as_float(self._last_game_state.current_time.get_string_presentation())
+
+    def time_end(self) -> bool:
+        raise Exception("Ai not have timer")

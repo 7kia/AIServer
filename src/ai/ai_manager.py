@@ -116,6 +116,13 @@ class AiManager:
                 ai.get_last_game_state()
             )
             ai_logger.save_to_game_record_file(ai_awards, game_state)
+
+            ai.update_timer()
+            if ai.time_end():
+                command_list += {
+                    "commandName": "train_end"
+                }
+
         return command_list
 
     def __find_ai(self, game_id: str, player_id: str) -> Ai:
