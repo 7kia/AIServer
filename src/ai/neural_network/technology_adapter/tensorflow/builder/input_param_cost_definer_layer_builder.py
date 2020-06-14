@@ -4,11 +4,11 @@ from tensorflow.keras import layers
 from tensorflow.python.layers.base import Layer
 import tensorflow as tf
 
+from src.ai.neural_network.technology.tensorflow.networks.network_adapter import InputLayerNames, \
+    InputParamCostDefinerLayerNames
 from src.ai.neural_network.technology_adapter.builder.input_param_cost_definer_layer_builder import \
     InputParamCostDefinerLayerBuilder
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayers, NetworkLayer
-from src.ai.neural_network.technology_adapter.network_technology_adapter_director import InputLayerNames, \
-    InputParamCostDefinerLayerNames
 from src.ai.neural_network.technology_adapter.tensorflow.builder.tensorflow_layer_builder import TensorflowLayerBuilder
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 

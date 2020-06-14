@@ -1,29 +1,21 @@
-from typing import List, Dict
+from typing import Dict
 
-from tensorflow import keras
-from tensorflow import constant as TfConstant
+import tensorflow as tf
 from tensorflow import Variable as TfVariable
-from tensorflow.keras import layers
-from tensorflow.python.keras import Input
-from tensorflow.python.keras.callbacks import History
+from tensorflow import constant as TfConstant
+from tensorflow import keras
+from tensorflow.python.keras.callbacks import History, ModelCheckpoint
 from tensorflow.python.keras.losses import Loss
 from tensorflow.python.keras.optimizers import Optimizer, Adam
 from tensorflow.python.layers.base import Layer
 
-from src.ai.game_components.command_data_generation import CommandDataGeneration
 from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
-from src.ai.game_components.move_direction import MoveDirection
-from src.ai.game_components.unit_observation import UnitObservation
-from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter
+from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel
 from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
-from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
-from src.ai.neural_network.technology_adapter.network_technology_adapter_director import InputLayerNames, \
-    CommandDefinerLevel
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer as MyOptimizer
-from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_error_function import TensorflowErrorFunction
 
 
@@ -37,15 +29,22 @@ class ScoutNetwork(NetworkAdapter):
 
     _current_game_state: TfVariable = None
     _last_game_state: TfVariable = None
+    _model_weight_path: str = 'model/scout_network.weight'
+    _model_path: str = 'model/scout_network.model'
+    _callback_save_weight: ModelCheckpoint = None
+
     def __init__(self):
         super().__init__()
+        self._callback_save_weight = tf.keras.callbacks.ModelCheckpoint(
+            filepath=self._model_weight_path,
+            save_weights_only=True,
+            verbose=1
+        )
         # https://github.com/maurock/snake-ga/blob/master/DQN.py
-        # self._input_layer = Input(shape=(150, 150, 3))
-        #
-        # # для каждого поля из примитивных типов по 1 relu
-        # x = layers.Dense(64, activation='relu', name='dense_1')(self._input_layer)
-        #
-        # self._output_layer: Layer = layers.Dense(10, name='predictions')(x)
+
+    def __del__(self):
+        self._final_model.save(self._model_path)
+
 
     # def __init__(self):
     #     super(MyModel, self).__init__()
@@ -64,10 +63,10 @@ class ScoutNetwork(NetworkAdapter):
               current_game_state: TfConstant) -> AiCommand:
         history: History = self._final_model.fit(
             unit_observation, current_game_state,
-            batch_size=1
+            batch_size=1,
+            callbacks=[self._callback_save_weight]
         )
         print('\nhistory dict:', history.history)
-        self._final_model.save('model/scout_network.model')
         return self.test(unit_observation, current_game_state)
 
     def test(self,
@@ -121,6 +120,7 @@ class ScoutNetwork(NetworkAdapter):
             loss=new_loss,
             metrics=['accuracy'],
         )
+        self._final_model.load_weights(self._model_weight_path)
 
     def set_input_param_cost_definer(self, layer: Dict[str, Layer]):
         self.__input_param_cost_definer = layer

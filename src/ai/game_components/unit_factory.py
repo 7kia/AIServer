@@ -1,10 +1,9 @@
 from typing import Dict
 
+from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.position import Position
 from src.ai.game_components.unit import Unit
 from src.ai.game_components.unit_state_extractor import UnitStateExtractor
-
-Json = Dict[str, any]
 
 
 class UnitFactory:

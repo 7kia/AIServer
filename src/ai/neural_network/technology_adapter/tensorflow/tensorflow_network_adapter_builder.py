@@ -13,13 +13,13 @@ from src.ai.game_components.move_direction import MoveDirection, DIRECTIONS
 from src.ai.game_components.person_unit_params import PersonUnitParams
 from src.ai.game_components.sector_params import SectorParams
 from src.ai.game_components.unit_observation import UnitObservation
+from src.ai.neural_network.technology.tensorflow.networks.network_adapter import command_cost_definer_layer_names, \
+    CommandDefinerLevel
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.network_technology_adapter_builder import NetworkTechnologyAdapterBuilder
-from src.ai.neural_network.technology_adapter.network_technology_adapter_director import \
-    command_cost_definer_layer_names, CommandDefinerLevel
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
 from src.ai.neural_network.technology_adapter.tensorflow.tensorflow_error_function import TensorflowErrorFunction
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer

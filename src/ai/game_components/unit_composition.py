@@ -1,6 +1,6 @@
 from typing import Dict
 
-from src.ai.game_components.unit_factory import Json
+from src.ai.game_components.convert_self_to_json import Json
 
 
 class UnitComposition:

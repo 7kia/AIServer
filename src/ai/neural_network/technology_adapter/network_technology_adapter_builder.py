@@ -6,7 +6,7 @@ from src.ai.neural_network.technology_adapter.error_function import ErrorFunctio
 from src.ai.neural_network.technology_adapter.network_adapter import NetworkAdapter
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer, NetworkLayers
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer
-from src.ai.neural_network.technology_adapter.scout_network_adapter import ScoutNetworkAdapter
+from src.ai.neural_network.technology_adapter.tensorflow.scout_network_adapter import ScoutNetworkAdapter
 
 
 class NetworkTechnologyAdapterBuilder:

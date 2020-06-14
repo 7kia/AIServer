@@ -2,11 +2,11 @@ from typing import Dict
 
 from tensorflow.keras import layers
 
+from src.ai.neural_network.technology.tensorflow.networks.network_adapter import InputParamCostDefinerLayerNames, \
+    CommandCostDefinerLayerNames
 from src.ai.neural_network.technology_adapter.builder.command_cost_definer_layer_builder import \
     CommandCostDefinerLayerBuilder
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayers, NetworkLayer
-from src.ai.neural_network.technology_adapter.network_technology_adapter_director import CommandCostDefinerLayerNames, \
-    InputParamCostDefinerLayerNames, CommandCostDefinerTensorNames, command_cost_definer_tensor_names
 from src.ai.neural_network.technology_adapter.tensorflow.builder.tensorflow_layer_builder import TensorflowLayerBuilder
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 

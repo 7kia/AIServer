@@ -2,10 +2,9 @@ import sys
 from enum import Enum
 from typing import Dict
 
+from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.unit_composition import UnitComposition
 from src.ai.game_components.unit_state import UnitState
-
-Json = dict
 
 
 class UnitStatusFromJson(Enum):
@@ -51,6 +50,6 @@ class UnitStateExtractor:
             if isinstance(current_element, float):
                 result.amount += current_element
             else:
-                result.amount += current_element.quantity
+                result.amount += current_element["quantity"]
                 result.properties[key] = current_element
         return result

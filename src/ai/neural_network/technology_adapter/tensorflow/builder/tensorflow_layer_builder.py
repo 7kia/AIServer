@@ -10,10 +10,7 @@ import tensorflow as tf
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
 
 
-class TensorflowLayerBuilder(InputParamCostDefinerLayerBuilder):
-    def __init__(self):
-        super().__init__()
-
+class TensorflowLayerBuilder:
     def _convert_as_array(self, dictionary: NetworkLayers) -> tf.constant:
         array: List[Layer] = []
         for layer in dictionary.values():
