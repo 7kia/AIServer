@@ -111,26 +111,26 @@ class NetworkTechnologyAdapterDirector:
 
     def _build_input_layers(self) -> Dict[str, NetworkLayers]:
         result: Dict[str, NetworkLayers] = {
-            InputLayerNames.unit_observation.__str__(): self._builder.generate_input_unit_observation_layer(),
-            InputLayerNames.sector_params.__str__(): self._builder.generate_input_sector_params_layer(),
-            InputLayerNames.person_unit_params.__str__(): self._builder.generate_input_person_unit_params_layer(),
+            InputLayerNames.unit_observation.value: self._builder.generate_input_unit_observation_layer(),
+            InputLayerNames.sector_params.value: self._builder.generate_input_sector_params_layer(),
+            InputLayerNames.person_unit_params.value: self._builder.generate_input_person_unit_params_layer(),
         }
         return result
 
     def _build_input_param_cost_definer_layers(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayers:
         builder: InputParamCostDefinerLayerBuilder = self._input_param_cost_definer_builder
         result: NetworkLayers = {
-            InputParamCostDefinerLayerNames.unit_observation.__str__():
+            InputParamCostDefinerLayerNames.unit_observation.value:
                 builder.generate_unit_observation_layer(
-                    input_layers[InputLayerNames.unit_observation.__str__()]
+                    input_layers
                 ),
-            InputParamCostDefinerLayerNames.sector_params.__str__():
+            InputParamCostDefinerLayerNames.sector_params.value:
                 builder.generate_sector_params_layer(
-                    input_layers[InputLayerNames.sector_params.__str__()]
+                    input_layers
                 ),
-            InputParamCostDefinerLayerNames.person_unit_params.__str__():
+            InputParamCostDefinerLayerNames.person_unit_params.value:
                 builder.generate_person_unit_params_layer(
-                    input_layers[InputLayerNames.person_unit_params.__str__()]
+                    input_layers
                 ),
         }
         return result
@@ -138,15 +138,15 @@ class NetworkTechnologyAdapterDirector:
     def _build_command_cost_definer_layers(self, input_layers: NetworkLayers) -> Dict[str, NetworkLayers]:
         builder: CommandCostDefinerLayerBuilder = self._command_cost_definer_builder
         result: Dict[str, NetworkLayers] = {
-            CommandCostDefinerLayerNames.unit_observation.__str__():
+            CommandCostDefinerLayerNames.unit_observation.value:
                 builder.generate_for_unit_observation_layer(
                     input_layers
                 ),
-            CommandCostDefinerLayerNames.sector_params.__str__():
+            CommandCostDefinerLayerNames.sector_params.value:
                 builder.generate_for_sector_params_layer(
                     input_layers
                 ),
-            CommandCostDefinerLayerNames.person_unit_params.__str__():
+            CommandCostDefinerLayerNames.person_unit_params.value:
                 builder.generate_for_person_unit_params_layer(
                     input_layers
                 ),

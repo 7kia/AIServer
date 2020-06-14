@@ -69,7 +69,7 @@ class ScoutNetworkAdapter(NetworkAdapter):
             layer_list: NetworkLayers = layers[key]
             tensor_dict: Dict[str, Layer] = cls._extract_tensor_dict(layer_list)
             for tensor_key in tensor_dict:
-                result[tensor_key] = tensor_dict[tensor_key].value
+                result[tensor_key] = tensor_dict[tensor_key]
         return result
 
     @staticmethod

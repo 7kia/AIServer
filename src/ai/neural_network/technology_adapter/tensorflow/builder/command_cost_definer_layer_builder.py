@@ -3,7 +3,7 @@ from typing import Dict
 from tensorflow.keras import layers
 
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import InputParamCostDefinerLayerNames, \
-    CommandCostDefinerLayerNames
+    CommandCostDefinerLayerNames, command_cost_definer_tensor_names
 from src.ai.neural_network.technology_adapter.builder.command_cost_definer_layer_builder import \
     CommandCostDefinerLayerBuilder
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayers, NetworkLayer
@@ -17,18 +17,18 @@ class TensorflowCommandCostDefinerLayerBuilder(CommandCostDefinerLayerBuilder, T
 
     def generate_for_unit_observation_layer(self, input_layers: NetworkLayers) -> Dict[str, NetworkLayer]:
         return self._generate_from(input_layers,
-                                   InputParamCostDefinerLayerNames.unit_observation,
-                                   CommandCostDefinerLayerNames.unit_observation)
+                                   InputParamCostDefinerLayerNames.unit_observation.value,
+                                   CommandCostDefinerLayerNames.unit_observation.value)
 
     def generate_for_sector_params_layer(self, input_layers: NetworkLayers) -> Dict[str, NetworkLayer]:
         return self._generate_from(input_layers,
-                                   InputParamCostDefinerLayerNames.sector_params,
-                                   CommandCostDefinerLayerNames.sector_params)
+                                   InputParamCostDefinerLayerNames.sector_params.value,
+                                   CommandCostDefinerLayerNames.sector_params.value)
 
     def generate_for_person_unit_params_layer(self, input_layers: NetworkLayers) -> Dict[str, NetworkLayer]:
         return self._generate_from(input_layers,
-                                   InputParamCostDefinerLayerNames.person_unit_params,
-                                   CommandCostDefinerLayerNames.person_unit_params)
+                                   InputParamCostDefinerLayerNames.person_unit_params.value,
+                                   CommandCostDefinerLayerNames.person_unit_params.value)
 
     def _generate_from(self,
                        input_layers: NetworkLayers,
@@ -36,14 +36,14 @@ class TensorflowCommandCostDefinerLayerBuilder(CommandCostDefinerLayerBuilder, T
                        new_layer_name: str) -> Dict[str, TensorflowNetworkLayer]:
         result: Dict[str, TensorflowNetworkLayer] = {}
         current_layer: TensorflowNetworkLayer = input_layers[input_layer_key]
-        size: int = len(current_layer.value.units)
+        # size: int = len(current_layer.value.units)
         for tensor_name in command_cost_definer_tensor_names:
             result[tensor_name.value] = TensorflowNetworkLayer()
             result[tensor_name.value].value = layers.Dense(
-                size,
+                1,
                 activation='relu',
                 name=f"{new_layer_name}__{tensor_name}"
             )(
-                self._convert_as_array(current_layer)
+                current_layer.value
             )
         return result

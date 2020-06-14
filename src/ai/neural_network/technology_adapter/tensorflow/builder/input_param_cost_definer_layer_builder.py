@@ -19,18 +19,18 @@ class TensorflowInputParamCostDefinerLayerBuilder(InputParamCostDefinerLayerBuil
 
     def generate_unit_observation_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:
         return self._generate_from(input_layers,
-                                   InputLayerNames.unit_observation,
-                                   InputParamCostDefinerLayerNames.unit_observation)
+                                   InputLayerNames.unit_observation.value,
+                                   InputParamCostDefinerLayerNames.unit_observation.value)
 
     def generate_sector_params_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:
         return self._generate_from(input_layers,
-                                   InputLayerNames.sector_params,
-                                   InputParamCostDefinerLayerNames.sector_params)
+                                   InputLayerNames.sector_params.value,
+                                   InputParamCostDefinerLayerNames.sector_params.value)
 
     def generate_person_unit_params_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:
         return self._generate_from(input_layers,
-                                   InputLayerNames.person_unit_params,
-                                   InputParamCostDefinerLayerNames.person_unit_params)
+                                   InputLayerNames.person_unit_params.value,
+                                   InputParamCostDefinerLayerNames.person_unit_params.value)
 
     def _generate_from(self,
                        input_layers: Dict[str, NetworkLayers],
@@ -44,7 +44,7 @@ class TensorflowInputParamCostDefinerLayerBuilder(InputParamCostDefinerLayerBuil
             activation='relu',
             name=new_layer_name
         )(
-            self._convert_as_array(current_layer)
+            TensorflowLayerBuilder.convert_as_array(current_layer)
         )
         return result
 

@@ -120,7 +120,8 @@ class RouteController:
 
     def _extract_ai_options(self, data: Json) -> AiOption or None:
         if "ai_options" in data:
-            return AiOptionExtractor.extract(data["ai_options"])
+            if data["ai_options"] != {}:
+                return AiOptionExtractor.extract(data["ai_options"])
         return None
 
     def generate_ai_unit_positions(self, game_id, player_id, unit_counts):
