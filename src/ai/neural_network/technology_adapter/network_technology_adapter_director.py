@@ -89,6 +89,8 @@ class NetworkTechnologyAdapterDirector:
                                        ai_awards_definer: AiAwardsDefiner) -> NetworkAdapter:
         result: ScoutNetworkAdapter = self._builder.generate_scout_network_adapter(ai_info)
 
+        if result.exist_model():
+            return result
         input_layers: Dict[str, NetworkLayers] = self._build_input_layers()
         result.set_input_layers(input_layers)
 

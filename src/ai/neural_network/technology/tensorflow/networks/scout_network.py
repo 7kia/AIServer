@@ -45,7 +45,13 @@ class ScoutNetwork(NetworkAdapter):
             save_weights_only=True,
             verbose=1
         )
+
+        if not self.exist_model():
+            self._final_model = keras.models.load_model(self._model_path)
         # https://github.com/maurock/snake-ga/blob/master/DQN.py
+
+    def exist_model(self) -> bool:
+        return os.path.isdir(self._model_path)
 
     def __del__(self):
         self._final_model.save(self._model_path)
@@ -156,5 +162,6 @@ class ScoutNetwork(NetworkAdapter):
         result = ScoutNetworkLossFunction(error_function)
         result.set_game_states(self._current_game_state, self._last_game_state)
         return result
+
 
 

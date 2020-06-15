@@ -84,3 +84,6 @@ class ScoutNetworkAdapter(NetworkAdapter):
     def _extract_tensor(layer: NetworkLayer) -> Layer:
         tensor: TensorflowNetworkLayer = layer
         return tensor.value
+
+    def exist_model(self) -> bool:
+        return self._network.exist_model()
