@@ -15,6 +15,6 @@ class ScoutNetworkLossFunction(Loss):
 
     def set_game_states(self, current_game_state: TfVariable, last_game_state: TfVariable):
         self.error_function.set_game_states(
-            current_game_state.read_value(),
-            last_game_state.read_value()
+            current_game_state,
+            last_game_state
         )

@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 
 import tensorflow as tf
@@ -6,11 +7,14 @@ from tensorflow import constant as TfConstant
 from tensorflow import keras
 from tensorflow.python.keras.callbacks import History, ModelCheckpoint
 from tensorflow.python.keras.losses import Loss
+from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
 from tensorflow.python.keras.optimizers import Optimizer, Adam
 from tensorflow.python.layers.base import Layer
 
+from src.ai.ai_command_generator import CommandName
 from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
+from src.ai.game_components.move_direction import DIRECTIONS
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel
 from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
@@ -35,6 +39,7 @@ class ScoutNetwork(NetworkAdapter):
 
     def __init__(self):
         super().__init__()
+        checkpoint_dir = os.path.dirname(self._model_weight_path)
         self._callback_save_weight = tf.keras.callbacks.ModelCheckpoint(
             filepath=self._model_weight_path,
             save_weights_only=True,
@@ -45,19 +50,6 @@ class ScoutNetwork(NetworkAdapter):
     def __del__(self):
         self._final_model.save(self._model_path)
 
-
-    # def __init__(self):
-    #     super(MyModel, self).__init__()
-    #     self.conv1 = Conv2D(32, 3, activation='relu')
-    #     self.flatten = Flatten()
-    #     self.d1 = Dense(128, activation='relu')
-    #     self.d2 = Dense(10, activation='softmax')
-    #
-    # def call(self, x):
-    #     x = self.conv1(x)
-    #     x = self.flatten(x)
-    #     x = self.d1(x)
-    #     return self.d2(x)
     def train(self,
               unit_observation: TfConstant,
               current_game_state: TfConstant) -> AiCommand:
@@ -105,22 +97,39 @@ class ScoutNetwork(NetworkAdapter):
         # current_game_state.sector_params.own_max_info
         # current_game_state.sector_params.enemy_sum_info
         # current_game_state.sector_params.enemy_max_info
-        return self._final_model.predict(input_data).read_value()
+
+        result_tensor = self._final_model.predict(input_data).read_value()
+        index: int = tf.keras.backend.get_value(
+            result_tensor
+        )
+        return AiCommand(
+            direction=DIRECTIONS[index],
+            command_name=CommandName.move_or_attack
+        )
 
     def compile(self, optimizer: MyOptimizer, loss: MyErrorFunction):
-        new_optimizer: Optimizer = self._create_optimizer(optimizer)
+        new_optimizer: OptimizerV2 = self._create_optimizer(optimizer)
         new_loss: Loss = self._create_loss(loss)
         self._final_model = keras.Model(
             inputs=self._input_layer,
-            outputs=self._output_layer[CommandDefinerLevel.result.__str__()]
+            outputs=self._output_layer[CommandDefinerLevel.result.value]
         )
         # TODO 7kia загрузка модели
         self._final_model.compile(
             optimizer=new_optimizer,
             loss=new_loss,
-            metrics=['accuracy'],
+            # metrics=['accuracy'],
         )
-        self._final_model.load_weights(self._model_weight_path)
+        self._load_weight()
+
+    def _load_weight(self):
+        if self._exist_file(self._model_weight_path):
+            self._final_model.load_weights(self._model_weight_path)
+        else:
+            self._final_model.save_weights(self._model_weight_path)
+
+    def _exist_file(self, path: str) -> bool:
+        return os.path.isfile(path)
 
     def set_input_param_cost_definer(self, layer: Dict[str, Layer]):
         self.__input_param_cost_definer = layer
@@ -139,11 +148,13 @@ class ScoutNetwork(NetworkAdapter):
 
     # TODO 7kia используется стандартный алгоритм обучения
     @staticmethod
-    def _create_optimizer(optimizer: MyOptimizer) -> Optimizer:
-        return Adam()
+    def _create_optimizer(optimizer: MyOptimizer) -> OptimizerV2:
+        return tf.keras.optimizers.Adam(learning_rate=1e-3)
 
     def _create_loss(self, loss: MyErrorFunction) -> Loss:
         error_function: TensorflowErrorFunction = loss
         result = ScoutNetworkLossFunction(error_function)
         result.set_game_states(self._current_game_state, self._last_game_state)
         return result
+
+
