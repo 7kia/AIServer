@@ -4,6 +4,8 @@ from typing import List, Dict
 from tensorflow import constant
 from tensorflow.python.layers.base import Layer
 
+from src.ai.game_components.game_state import GameState
+from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from tensorflow.python.keras.models import Model
 
@@ -75,13 +77,13 @@ class NetworkAdapter:
         pass
 
     def train(self,
-              unit_observation: constant,
-              current_game_state: constant) -> AiCommand:
+              unit_observation: UnitObservation,
+              current_game_state: GameState) -> AiCommand:
         pass
 
     def test(self,
-             unit_observation: constant,
-             current_game_state: constant,) -> AiCommand:
+             unit_observation: UnitObservation,
+             current_game_state: GameState) -> AiCommand:
         pass
 
     def set_input_layers(self, input_layer: Dict[str, Layer]):

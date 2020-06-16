@@ -26,8 +26,8 @@ class ScoutNetworkAdapter(NetworkAdapter):
               unit_observation: UnitObservation,
               current_game_state: GameState) -> Json:
         command_numbers: AiCommand = self._network.train(
-            TensorGenerator.generate_for_unit_observation(unit_observation),
-            TensorGenerator.generate_for_game_state(current_game_state),
+            unit_observation,
+            current_game_state,
         )
         result: Json = self._convert_to_json(command_numbers, command_data_generation)
         return result
@@ -37,8 +37,8 @@ class ScoutNetworkAdapter(NetworkAdapter):
              unit_observation: UnitObservation,
              current_game_state: GameState) -> Json:
         command_numbers: AiCommand = self._network.test(
-            TensorGenerator.generate_for_unit_observation(unit_observation),
-            TensorGenerator.generate_for_game_state(current_game_state),
+            unit_observation,
+            current_game_state,
         )
         result: Json = self._convert_to_json(command_numbers, command_data_generation)
         return result

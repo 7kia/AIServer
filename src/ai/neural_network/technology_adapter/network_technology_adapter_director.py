@@ -87,10 +87,14 @@ class NetworkTechnologyAdapterDirector:
     def generate_scout_network_adapter(self,
                                        ai_info: AiInfo,
                                        ai_awards_definer: AiAwardsDefiner) -> NetworkAdapter:
+        if ai_info.ai_type != "neuron-network":
+            return NetworkAdapter()
         result: ScoutNetworkAdapter = self._builder.generate_scout_network_adapter(ai_info)
 
-        if result.exist_model():
-            return result
+        # if result.exist_model():
+        #     error_function: ErrorFunction = self._builder.generate_error_function(ai_awards_definer)
+        #     optimizer: Optimizer = self._builder.generate_optimizer()
+        #     return self._builder.compile_model(result, error_function, optimizer)
         input_layers: Dict[str, NetworkLayers] = self._build_input_layers()
         result.set_input_layers(input_layers)
 

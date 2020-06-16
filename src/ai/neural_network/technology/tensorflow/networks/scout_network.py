@@ -15,6 +15,7 @@ from src.ai.ai_command_generator import CommandName
 from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.move_direction import DIRECTIONS
+from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel
 from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
@@ -46,8 +47,8 @@ class ScoutNetwork(NetworkAdapter):
             verbose=1
         )
 
-        if not self.exist_model():
-            self._final_model = keras.models.load_model(self._model_path)
+        # if self.exist_model():
+        #     self._final_model = keras.models.load_model(self._model_path)
         # https://github.com/maurock/snake-ga/blob/master/DQN.py
 
     def exist_model(self) -> bool:
@@ -57,10 +58,11 @@ class ScoutNetwork(NetworkAdapter):
         self._final_model.save(self._model_path)
 
     def train(self,
-              unit_observation: TfConstant,
-              current_game_state: TfConstant) -> AiCommand:
+              unit_observation: UnitObservation,
+              current_game_state: GameState) -> AiCommand:
+        input_data: Json = self._generate_input_data(unit_observation, current_game_state)
         history: History = self._final_model.fit(
-            unit_observation, current_game_state,
+            input_data,
             batch_size=1,
             callbacks=[self._callback_save_weight]
         )
@@ -68,18 +70,11 @@ class ScoutNetwork(NetworkAdapter):
         return self.test(unit_observation, current_game_state)
 
     def test(self,
-             unit_observation: TfConstant,
-             current_game_state: TfConstant) -> AiCommand:
+             unit_observation: UnitObservation,
+             current_game_state: GameState) -> AiCommand:
         self._set_current_and_last_game_state(current_game_state)
 
-        unit_observation_data: Json = unit_observation.read_value().as_json()
-        current_game_state: GameState = current_game_state.read_value()
-        person_unit_params_data: Json = current_game_state.person_unit_params.as_json()
-        sector_params_data: Json = current_game_state.sector_params.as_json()
-        input_data: Json = {}
-        for data_set in [unit_observation_data, person_unit_params_data, sector_params_data]:
-            for key in data_set.keys():
-                input_data[key] = unit_observation_data[key]
+        input_data: Json = self._generate_input_data(unit_observation, current_game_state)
         # 7kia Используемые входные значения. Оставлены в качестве напоминания
         # для разработчика. Не удалять
 
@@ -163,5 +158,15 @@ class ScoutNetwork(NetworkAdapter):
         result.set_game_states(self._current_game_state, self._last_game_state)
         return result
 
+    def _generate_input_data(self,
+                             unit_observation: UnitObservation,
+                             current_game_state: GameState) -> Json:
 
-
+        unit_observation_data: Json = unit_observation.as_json()
+        person_unit_params_data: Json = current_game_state.person_unit_params.as_json()
+        sector_params_data: Json = current_game_state.sector_params.as_json()
+        input_data: Json = {}
+        for data_set in [unit_observation_data, person_unit_params_data, sector_params_data]:
+            for key in data_set.keys():
+                input_data[key] = data_set[key]
+        return input_data

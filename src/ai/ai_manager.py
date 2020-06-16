@@ -57,7 +57,8 @@ class AiManager:
 
     def _add_ai_to_list(self, game_id: int, player_id: int,
                         ai_info: AiInfo, game_info: GameInfo):
-        self._ai_list.update({game_id: {}})
+        if str(game_id) not in self._ai_list:
+            self._ai_list.update({game_id: {}})
         self._ai_list[game_id].update({
             player_id: AiBuilderDirector.create_ai(ai_info, game_info)
         })
@@ -81,20 +82,23 @@ class AiManager:
             self._add_ai_logger_to_list(ai_info, game_info)
 
     def _add_ai_awards_definer_to_list(self, ai: Ai, game_info: GameInfo):
-        self._ai_awards_definer_list.update({game_info.game_id: {}})
+        if str(game_info.game_id) not in self._ai_list:
+            self._ai_awards_definer_list.update({game_info.game_id: {}})
         self._ai_awards_definer_list[game_info.game_id].update({
             game_info.player_id: self._ai_awards_definer_director.create_for_ai(ai)
         })
         return self._ai_awards_definer_list[game_info.game_id][game_info.player_id]
 
     def _add_ai_logger_to_list(self, ai_info: AiInfo, game_info: GameInfo):
-        self._ai_logger_list.update({game_info.game_id: {}})
+        if str(game_info.game_id) not in self._ai_list:
+            self._ai_logger_list.update({game_info.game_id: {}})
         self._ai_logger_list[game_info.game_id].update({
             game_info.player_id: self.ai_logger_director.create_ai_logger(ai_info, game_info)
         })
 
     def add_ai_socket_connection_info(self, game_id, player_id):
-        self._ai_socket_connection_info.update({game_id: {}})
+        if str(game_id) not in self._ai_list:
+            self._ai_socket_connection_info.update({game_id: {}})
         self._ai_socket_connection_info[game_id].update({player_id: AiManager.generate_ai_address(game_id, player_id)})
 
     def delete_ai_socket_connection_info(self, game_id, player_id):
