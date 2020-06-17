@@ -69,7 +69,7 @@ class CommandDefinerLevel(Enum):
     result: str = "result_layer"
 
 class NetworkAdapter:
-    _input_layer: Dict[str, Layer] = None
+    _input_layer: List[Layer] = None
     _output_layer: Dict[str, Layer] = None
     _final_model: Model = None
 
@@ -86,8 +86,15 @@ class NetworkAdapter:
              current_game_state: GameState) -> AiCommand:
         pass
 
-    def set_input_layers(self, input_layer: Dict[str, Layer]):
+    def set_input_layers(self, input_layer: List[Layer]):
         self._input_layer = input_layer
 
     def set_output_layer(self, output_layer: Dict[str, Layer]):
         self._output_layer = output_layer
+
+    def _convert_dict_array(self, input_layer: Dict[str, Layer]) -> List[Layer]:
+        result: List[Layer] = []
+        for value in input_layer.values():
+            result.append(value)
+        return result
+

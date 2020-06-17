@@ -15,7 +15,7 @@ class UnitFactory:
         unit.state = UnitStateExtractor.extract_state(json)
         unit.position = Position(json["latlng"][0], json["latlng"][1])
         unit.organization = float(json["organization"])
-        unit.composition = UnitStateExtractor.extract_composition(json)
+        unit.composition = UnitStateExtractor.extract_composition(json).amount
 
         # # this.lastElevation = 0; // предыдущая высота
         # # this.elevation = 0; // высота точки нахождения юнита

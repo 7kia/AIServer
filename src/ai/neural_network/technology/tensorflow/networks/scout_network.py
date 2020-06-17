@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, List
 
 import tensorflow as tf
 from tensorflow import Variable as TfVariable
@@ -16,6 +16,7 @@ from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.move_direction import DIRECTIONS
 from src.ai.game_components.unit_observation import UnitObservation
+from src.ai.neural_network.technology.tensorflow.input_network_data_generator import InputNetworkDataGenerator
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel
 from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
@@ -60,11 +61,11 @@ class ScoutNetwork(NetworkAdapter):
     def train(self,
               unit_observation: UnitObservation,
               current_game_state: GameState) -> AiCommand:
-        input_data: Json = self._generate_input_data(unit_observation, current_game_state)
+        input_data: Json = InputNetworkDataGenerator.generate_input_data(unit_observation, current_game_state)
         history: History = self._final_model.fit(
             input_data,
             batch_size=1,
-            callbacks=[self._callback_save_weight]
+            # callbacks=[self._callback_save_weight]
         )
         print('\nhistory dict:', history.history)
         return self.test(unit_observation, current_game_state)
@@ -74,7 +75,7 @@ class ScoutNetwork(NetworkAdapter):
              current_game_state: GameState) -> AiCommand:
         self._set_current_and_last_game_state(current_game_state)
 
-        input_data: Json = self._generate_input_data(unit_observation, current_game_state)
+        input_data: Json = InputNetworkDataGenerator.generate_input_data(unit_observation, current_game_state)
         # 7kia Используемые входные значения. Оставлены в качестве напоминания
         # для разработчика. Не удалять
 
@@ -111,6 +112,7 @@ class ScoutNetwork(NetworkAdapter):
     def compile(self, optimizer: MyOptimizer, loss: MyErrorFunction):
         new_optimizer: OptimizerV2 = self._create_optimizer(optimizer)
         new_loss: Loss = self._create_loss(loss)
+
         self._final_model = keras.Model(
             inputs=self._input_layer,
             outputs=self._output_layer[CommandDefinerLevel.result.value]
@@ -156,17 +158,6 @@ class ScoutNetwork(NetworkAdapter):
         error_function: TensorflowErrorFunction = loss
         result = ScoutNetworkLossFunction(error_function)
         result.set_game_states(self._current_game_state, self._last_game_state)
-        return result
+        return result.__call__
 
-    def _generate_input_data(self,
-                             unit_observation: UnitObservation,
-                             current_game_state: GameState) -> Json:
 
-        unit_observation_data: Json = unit_observation.as_json()
-        person_unit_params_data: Json = current_game_state.person_unit_params.as_json()
-        sector_params_data: Json = current_game_state.sector_params.as_json()
-        input_data: Json = {}
-        for data_set in [unit_observation_data, person_unit_params_data, sector_params_data]:
-            for key in data_set.keys():
-                input_data[key] = data_set[key]
-        return input_data

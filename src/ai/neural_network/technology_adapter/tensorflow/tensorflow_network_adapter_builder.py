@@ -82,36 +82,35 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
             if isinstance(value, (float, int)):
                 new_layer.value = Input(shape=(1,), name=key)
             elif isinstance(value, list):
-                new_layer.value = Input(shape=(2,), name=key)
+                if self._is_position(value):
+                    new_layer.value = Input(shape=(2,), name=key)
+                elif self._is_matrix(value):
+                    new_layer.value = Input(shape=(16, ), name=key)
             else:
                 raise TypeError(f"_generate_dict_input_layer_from_json: {value} have incorrect type")
             result[key] = new_layer
         return result
 
-    def _generate_dict_layer_from_json(self, json: Json, activation: str) -> Dict[str, TensorflowNetworkLayer]:
-        result: Dict[str, TensorflowNetworkLayer] = {}
-        size: int = 0
-        for key in json:
-            value: any = json[key]
-            new_layer: TensorflowNetworkLayer = TensorflowNetworkLayer()
-            if isinstance(value, (float, int)):
-                new_layer.value = layers.Dense(64, activation=activation, name=key)(self._input_layer)
-            elif isinstance(value, (List[int], List[float])):
-                new_layer.value = Input(shape=(2,), name=key)
-            else:
-                raise TypeError(f"_generate_dict_layer_from_json: {value} have incorrect type")
-            result[key] = new_layer
-        return result
+    @staticmethod
+    def _is_position(value: any) -> bool:
+        return len(value) == 2
+
+    @staticmethod
+    def _is_matrix(value: any) -> bool:
+        return len(value) == 4
 
     def generate_input_sector_params_layer(self) -> NetworkLayers:
         sector_params: SectorParams = SectorParams()
-        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(sector_params.as_json())
+        result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
+            sector_params.as_json()
+        )
         return result
 
     def generate_input_person_unit_params_layer(self) -> NetworkLayers:
         person_unit_params: PersonUnitParams = PersonUnitParams()
         result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
-            person_unit_params.as_json())
+            person_unit_params.as_json()
+        )
         return result
 
     def generate_command_definer_layer(self, input_layers: Dict[str, NetworkLayers]) -> NetworkLayer:

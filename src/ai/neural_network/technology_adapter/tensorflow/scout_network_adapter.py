@@ -48,7 +48,7 @@ class ScoutNetworkAdapter(NetworkAdapter):
 
     # TODO 7kia должен быть IAiAdapter и IAiAdapterSetter
     def set_input_layers(self, layers: Dict[str, NetworkLayers]):
-        self._network.set_input_layers(self._convert_to_tensor_dict(layers))
+        self._network.set_input_layers(self._convert_to_tensor_list(layers))
 
     def set_input_param_cost_definer(self, layers: NetworkLayers):
         self._network.set_input_param_cost_definer(self._extract_tensor_dict(layers))
@@ -70,6 +70,16 @@ class ScoutNetworkAdapter(NetworkAdapter):
             tensor_dict: Dict[str, Layer] = cls._extract_tensor_dict(layer_list)
             for tensor_key in tensor_dict:
                 result[tensor_key] = tensor_dict[tensor_key]
+        return result
+
+    @classmethod
+    def _convert_to_tensor_list(cls, layers: Dict[str, NetworkLayers]) -> List[Layer]:
+        result: List[Layer] = []
+        for key in layers.keys():
+            layer_list: NetworkLayers = layers[key]
+            tensor_dict: Dict[str, Layer] = cls._extract_tensor_dict(layer_list)
+            for tensor_key in tensor_dict:
+                result.append(tensor_dict[tensor_key])
         return result
 
     @staticmethod

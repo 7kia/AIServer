@@ -11,7 +11,7 @@ class ScoutNetworkLossFunction(Loss):
         self.error_function: TensorflowErrorFunction = error_function
 
     def __call__(self, y_true, y_pred, sample_weight=None):
-        return tf.constant(self.error_function(y_true, y_pred, sample_weight))
+        return tf.Variable(self.error_function(y_true, y_pred, sample_weight))
 
     def set_game_states(self, current_game_state: TfVariable, last_game_state: TfVariable):
         self.error_function.set_game_states(

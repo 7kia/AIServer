@@ -1,4 +1,6 @@
 import json
+import sys
+import traceback
 
 from src.ai.game_components.game_data_extractor import GameDataExtractor
 from src.ai.ai_data_and_info.ai_data import AiData
@@ -71,7 +73,7 @@ class RouteController:
             )
             return RouteController.generate_json_with_double_quotes(commands)
         except Exception as e:
-            print(e)
+            traceback.print_exc(file=sys.stdout)
             return str(e)
 
     def delete_ai(self, game_info: GameInfo):

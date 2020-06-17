@@ -20,7 +20,7 @@ class TensorflowErrorFunction(ErrorFunction):
         self._current_game_state = current_game_state
         self._last_game_state = last_game_state
 
-    def __call__(self, y_true, y_pred, sample_weight=None) -> tf.constant:
+    def __call__(self, y_true, y_pred, sample_weight=None) -> float:
         awards: AiAwards = self.ai_awards_definer.get_awards(
             self._current_game_state.read_value(),
             self._last_game_state.read_value()
