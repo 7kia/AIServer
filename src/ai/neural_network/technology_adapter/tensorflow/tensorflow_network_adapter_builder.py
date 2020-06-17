@@ -50,19 +50,6 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
         adapter.compile(optimizer=optimizer, loss=error_function)
         return adapter
 
-    def generate_input_layer(self) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
-        result.value = Input(shape=(150, 150, 3))
-        return result
-
-    def generate_input_param_cost_definer(self, input_layer: NetworkLayer) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
-        return result
-
-    def generate_command_cost_definer(self, input_param_cost_definer: NetworkLayer) -> NetworkLayer:
-        result: TensorflowNetworkLayer = TensorflowNetworkLayer()
-        return result
-
     def generate_output_layer(self, command_cost_definer_layer: NetworkLayer) -> NetworkLayer:
         result: TensorflowNetworkLayer = TensorflowNetworkLayer()
         return result
@@ -70,7 +57,7 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
     def generate_input_unit_observation_layer(self) -> NetworkLayers:
         unit_observation: UnitObservation = UnitObservation()
         result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
-            unit_observation.as_json()
+            unit_observation.as_json(),
         )
         return result
 
@@ -102,7 +89,7 @@ class TensorflowNetworkAdapterBuilder(NetworkTechnologyAdapterBuilder):
     def generate_input_sector_params_layer(self) -> NetworkLayers:
         sector_params: SectorParams = SectorParams()
         result: Dict[str, TensorflowNetworkLayer] = self._generate_dict_input_layer_from_json(
-            sector_params.as_json()
+            sector_params.generate_params_for_network()
         )
         return result
 

@@ -167,9 +167,13 @@ class AiManager:
             if self._ai_logger_list[str(game_id)] == {}:
                 del self._ai_logger_list[str(game_id)]
 
-        del self._ai_list[str(game_id)][str(player_id)]
-        if self._ai_list[str(game_id)] == {}:
-            del self._ai_list[str(game_id)]
+        for update_list in [
+            self._ai_awards_definer_list, self._ai_list,
+            self._ai_socket_connection_info
+        ]:
+            del update_list[str(game_id)][str(player_id)]
+            if update_list[str(game_id)] == {}:
+                del update_list[str(game_id)]
         return AiManager.get_succsess_delete_message()
 
     def _save_end_game_state(self, game_id, player_id):

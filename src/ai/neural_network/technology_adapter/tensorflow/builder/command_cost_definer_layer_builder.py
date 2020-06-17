@@ -1,5 +1,8 @@
 from typing import Dict
 
+import numpy
+from tensorflow import float32
+import tensorflow as tf
 from tensorflow.keras import layers
 
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import InputParamCostDefinerLayerNames, \
@@ -40,10 +43,18 @@ class TensorflowCommandCostDefinerLayerBuilder(CommandCostDefinerLayerBuilder, T
         for tensor_name in command_cost_definer_tensor_names:
             result[tensor_name.value] = TensorflowNetworkLayer()
             result[tensor_name.value].value = layers.Dense(
-                1,
+                self._get_layer_size(current_layer),
                 activation='relu',
-                name=f"{new_layer_name}__{tensor_name}"
+                name=f"{new_layer_name}__{tensor_name.value}"
             )(
                 current_layer.value
             )
         return result
+
+    def _get_layer_size(self, layer: TensorflowNetworkLayer) -> int:
+        type = layer.value.dtype
+        if type.__eq__(float32):
+            return tf.size(layer.value.shape[1])
+        elif type.__eq__(numpy.float32):
+            return tf.size(layer.value)
+        raise TypeError(f"{layer.value.dtype} not use the network")

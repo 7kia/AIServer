@@ -1,6 +1,7 @@
 from typing import List
 
 from src.ai.game_components.convert_self_to_json import ConvertSelfToJson, Json
+from src.ai.game_components.empty_structure_generator import EmptyStructureGenerator
 from src.ai.game_components.position_int import PositionInt
 from src.ai.game_components.unit import Unit
 
@@ -10,10 +11,10 @@ class SectorParams(ConvertSelfToJson):
         self.ownUnitToSectors: List[List[List[Unit]]] = []
         self.enemyUnitToSectors: List[List[List[Unit]]] = []
 
-        self.own_sum_info: List[List[float]] = []
-        self.own_max_info: List[List[float]] = []
-        self.enemy_sum_info: List[List[float]] = []
-        self.enemy_max_info: List[List[float]] = []
+        self.own_sum_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
+        self.own_max_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
+        self.enemy_sum_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
+        self.enemy_max_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
 
     def find_unit_index(self, unit: Unit) -> PositionInt:
         for row_index in range(len(self.ownUnitToSectors)):
@@ -34,3 +35,9 @@ class SectorParams(ConvertSelfToJson):
             "enemySumInfo": self.enemy_sum_info,
             "enemyMaxInfo": self.enemy_max_info,
         }
+
+    def generate_params_for_network(self) -> Json:
+        result: Json = self.as_json()
+        del result["ownUnitToSectors"]
+        del result["enemyUnitToSectors"]
+        return result
