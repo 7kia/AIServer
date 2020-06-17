@@ -1,7 +1,7 @@
 from typing import Dict
 
 import numpy
-from tensorflow import float32
+from tensorflow import float64, float32
 import tensorflow as tf
 from tensorflow.keras import layers
 

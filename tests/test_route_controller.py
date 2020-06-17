@@ -1,6 +1,10 @@
 import asynctest
 import json
 
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers
+
 from src.ai.ai_data_and_info.game_info import GameInfo
 from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.location_builder import LocationBuilder
@@ -311,6 +315,7 @@ class TestRouteController(asynctest.TestCase):
 
     @staticmethod
     def generate_test_game_state() -> Json:
+        no_position: float = -1.0
         return dict(troopAmount=4845.311937490126, organization=176.8321739928711, enemyTroopAmount=5132.199632267703,
                     enemyOrganization=165.1185164218997, experience=0.9810055016136355, overlap=176.8321739928711,
                     speed=4,
@@ -516,14 +521,14 @@ class TestRouteController(asynctest.TestCase):
                          'defence': 0.8132418058730279, 'lastMove': False, 'overlap': 0, 'order': 0, 'name': 3,
                          'lastbattle': 0, 'densityFire': 0, '_speed': 10, 'startTime': 0, 'notShoot': 0, 'distance': 0,
                          'updateCity': 0, 'isShow': 0, 'baseId': None}], [], []], [[], [], [], []]],
-                    ownSumInfo=[[None, None, None, None], [None, None, None, None],
-                                [None, None, None, 0.04072935059634568], [None, None, None, None]],
-                    ownMaxInfo=[[None, None, None, None], [None, None, None, None],
-                                [None, None, None, 0.02036467529817284], [None, None, None, None]],
-                    enemySumInfo=[[None, None, None, None], [None, None, None, None],
-                                  [None, 0.04072935059634536, None, None], [None, None, None, None]],
-                    enemyMaxInfo=[[None, None, None, None], [None, None, None, None],
-                                  [None, 0.020364675298172683, None, None], [None, None, None, None]],
+                    ownSumInfo=[[no_position, no_position, no_position, no_position], [no_position, no_position, no_position, no_position],
+                                [no_position, no_position, no_position, 0.04072935059634568], [no_position, no_position, no_position, no_position]],
+                    ownMaxInfo=[[no_position, no_position, no_position, no_position], [no_position, no_position, no_position, no_position],
+                                [no_position, no_position, no_position, 0.02036467529817284], [no_position, no_position, no_position, no_position]],
+                    enemySumInfo=[[no_position, no_position, no_position, no_position], [no_position, no_position, no_position, no_position],
+                                  [no_position, 0.04072935059634536, no_position, no_position], [no_position, no_position, no_position, no_position]],
+                    enemyMaxInfo=[[no_position, no_position, no_position, no_position], [no_position, no_position, no_position, no_position],
+                                  [no_position, 0.020364675298172683, no_position, no_position], [no_position, no_position, no_position, no_position]],
                     loserId=None, status='PROGESS', units={'ownUnits': {
                 'regiments': [
                     {'MOVE': False, 'STOP': False, 'OWN': True, 'lastElevation': 0, 'elevation': 0, 'battle': False,
@@ -663,12 +668,13 @@ class TestScoutNetwork(asynctest.TestCase):
             "location": TestRouteController.generate_mock_location_info(),
             "country": self.country,
             "gameState": TestRouteController.generate_test_game_state(),
-            "ai_options": {"troopType": "motorized", "isTrain": False}
+            "ai_options": {"troopType": "motorized", "isTrain": True}
         }
         self._game_info = GameInfo(int(self.game_id), int(self.player_id))
         self.controller = RouteController()
 
     def test_life_circle_network(self):
+
         self.controller.create_ai(self.input_data)
         commands: Json = self.controller.update_ai(
             TestRouteController.generate_test_game_state(),

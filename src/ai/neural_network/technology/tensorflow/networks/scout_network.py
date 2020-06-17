@@ -102,10 +102,8 @@ class ScoutNetwork(NetworkAdapter):
 
         result_tensor = self._final_model.predict(
             self.data_generator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
-        ).read_value()#input_data
-        index: int = tf.keras.backend.get_value(
-            result_tensor
         )
+        index: int = result_tensor[0]
         return AiCommand(
             direction=DIRECTIONS[index],
             command_name=CommandName.move_or_attack
