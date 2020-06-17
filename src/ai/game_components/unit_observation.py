@@ -28,11 +28,15 @@ class UnitObservation(ConvertSelfToJson):
 
     def as_json(self) -> Json:
         return {
-            "own_organization": self.own_organization,
-            "own_composition": self.own_composition,
-            "sector": self.sector.as_array(),
-            "own_sum_info": self.own_sum_info,
-            "own_max_info": self.own_max_info,
-            "enemy_sum_info": self.enemy_sum_info,
-            "enemy_max_info": self.enemy_max_info,
+            self._generate_prefix() + "own_organization": self.own_organization,
+            self._generate_prefix() + "own_composition": self.own_composition,
+            self._generate_prefix() + "sector": self.sector.as_array(),
+            self._generate_prefix() + "own_sum_info": self.own_sum_info,
+            self._generate_prefix() + "own_max_info": self.own_max_info,
+            self._generate_prefix() + "enemy_sum_info": self.enemy_sum_info,
+            self._generate_prefix() + "enemy_max_info": self.enemy_max_info,
         }
+
+    def _generate_prefix(self) -> str:
+        return "unit_observation__"
+

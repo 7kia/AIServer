@@ -48,7 +48,7 @@ class ScoutNetwork(NetworkAdapter):
             save_weights_only=True,
             verbose=1
         )
-
+        self.data_generator = InputNetworkDataGenerator()
         # if self.exist_model():
         #     self._final_model = keras.models.load_model(self._model_path)
         # https://github.com/maurock/snake-ga/blob/master/DQN.py
@@ -62,9 +62,8 @@ class ScoutNetwork(NetworkAdapter):
     def train(self,
               unit_observation: UnitObservation,
               current_game_state: GameState) -> AiCommand:
-        input_data: List[any] = InputNetworkDataGenerator.generate_input_data_as_list(unit_observation, current_game_state)
         history: History = self._final_model.fit(
-            InputNetworkDataGenerator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
+            self.data_generator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
             # batch_size=1,
             # callbacks=[self._callback_save_weight]
             epochs=1
@@ -77,7 +76,6 @@ class ScoutNetwork(NetworkAdapter):
              current_game_state: GameState) -> AiCommand:
         self._set_current_and_last_game_state(current_game_state)
 
-        input_data: list[any] = InputNetworkDataGenerator.generate_input_data_as_list(unit_observation, current_game_state)
         # 7kia Используемые входные значения. Оставлены в качестве напоминания
         # для разработчика. Не удалять
 
@@ -103,7 +101,7 @@ class ScoutNetwork(NetworkAdapter):
         # current_game_state.sector_params.enemy_max_info
 
         result_tensor = self._final_model.predict(
-            InputNetworkDataGenerator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
+            self.data_generator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
         ).read_value()#input_data
         index: int = tf.keras.backend.get_value(
             result_tensor
