@@ -3,9 +3,10 @@ from typing import Dict, List
 
 import numpy as np
 import tensorflow as tf
-from tensorflow import Variable as TfVariable
+from tensorflow import Variable as TfVariable, TensorShape
 from tensorflow import constant as TfConstant
 from tensorflow import keras
+from tensorflow.python import Dimension
 from tensorflow.python.keras.callbacks import History, ModelCheckpoint
 from tensorflow.python.keras.losses import Loss
 from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2
@@ -63,6 +64,22 @@ class ScoutNetwork(NetworkAdapter):
     def train(self,
               unit_observation: UnitObservation,
               current_game_state: GameState) -> AiCommand:
+        gradient = None
+        with tf.GradientTape() as tape:
+            tape.watch(self._final_model.variables)
+            y = self._final_model.loss(None, None)
+            y = tf.Variable([y])
+            gradient = tape.gradient(
+                self._final_model.loss(None, None),
+                self._final_model.variables
+            )
+            for index in range(len(gradient)):
+                if gradient[index] is None:
+                    gradient[index] = tf.Variable([0.0])
+
+        grads_and_vars = list(zip(gradient, self._final_model.variables))
+        self._final_model.optimizer.apply_gradients(grads_and_vars)  # processed_grads
+
         history: History = self._final_model.fit(
             self.data_generator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
             # batch_size=1,
@@ -156,16 +173,47 @@ class ScoutNetwork(NetworkAdapter):
 
     # TODO 7kia используется стандартный алгоритм обучения
     def _create_optimizer(self, optimizer: MyOptimizer, new_loss: Loss) -> OptimizerV2:
-        return tf.keras.optimizers.Adam(learning_rate=1e-3)\
-            .minimize(loss=new_loss,
-                      grad_loss=clip_gradients,
-                      var_list=self._final_model.trainable_weights)
+        # gradients = []
+        # with tf.GradientTape() as tape:
+        #     for var in self._final_model.variables:
+        #         tape.watch(self._final_model.variables)
+        #         gradients.append(
+        #             tape.gradient(new_loss(None, None), clip_gradients(var))
+        #         )
+
+        #     current_loss = loss(outputs, model(inputs))
+        # gradients = tf.gradients(new_loss, self._final_model.variables)
+        # model.W.assign_sub(learning_rate * dW)
+        # model.b.assign_sub(learning_rate * db)
+
+        new_optimizer: OptimizerV2 = tf.keras.optimizers.SGD(learning_rate=1e-3)
+        # Compute the gradients for a list of variables.
+        # with tf.GradientTape() as tape:
+        #     loss = new_loss.call()
+        # vars = self._final_model.variables
+        # grads = tape.gradient(loss, vars)
+
+        # Process the gradients, for example cap them, etc.
+        # capped_grads = [MyCapper(g) for g in grads]
+        # processed_grads = [process_gradient(g) for g in grads]
+        # Ask the optimizer to apply the processed gradients.
+        # grads_and_vars = list(zip(np.copy(gradients), self._final_model.variables))
+        # new_optimizer.apply_gradients(grads_and_vars)#processed_grads
+        # new_optimizer.minimize(
+        #         lambda x=None, y=None: new_loss.call(x, y),
+        #         var_list=self._final_model.trainable_weights,
+        #         grad_loss=zip(gradients, self._final_model.variables)
+        #     )
+        # new_optimizer.minimize(new_loss, var_list=self._final_model.trainable_weights)
+
+        # new_optimizer.apply_gradients(zip(grads, self._final_model.trainable_weights))
+        return new_optimizer
 
     def _create_loss(self, loss: MyErrorFunction) -> Loss:
         error_function: TensorflowErrorFunction = loss
         result = ScoutNetworkLossFunction(error_function)
         result.set_game_states(self.get_current_state, self.get_last_state)
-        return result.call
+        return result
 
 
 

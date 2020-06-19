@@ -18,7 +18,7 @@ class TensorflowErrorFunction(ErrorFunction):
 
     def __call__(self, y_true=None, y_pred=None) -> float:
         if self._get_current_game_state() is None:
-            return 0
+            return 0.0
         awards: AiAwards = self.ai_awards_definer.get_awards(
             self._get_current_game_state().read_value(),
             self._get_last_game_state().read_value()
