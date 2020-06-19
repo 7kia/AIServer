@@ -21,5 +21,21 @@ DIRECTIONS: List[MoveDirection] = []
 for direction in MoveDirection:
     DIRECTIONS.append(direction)
 
-SHORT_DISTANCE: float = 0.5  # km 5
-LONG_DISTANCE: float = 1  # km 10
+DISTANCE_COEFFICIENT: float = 100  # Задаётся на ИИ-сервере
+
+
+class LengthDistance(Enum):
+    short_distance: float = 0.5 / DISTANCE_COEFFICIENT  # km 5
+    long_distance: float = 1 / DISTANCE_COEFFICIENT  # km 10
+
+
+class LengthDistanceIndex(Enum):
+    short_distance: int = 0
+    long_distance: int = 1  # km 10
+
+
+length_distance_variant_amount: int = 0
+length_variant: List[float] = []
+for variant in LengthDistance:
+    length_variant.append(variant.value)
+    length_distance_variant_amount += 1

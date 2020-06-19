@@ -41,11 +41,11 @@ class TensorflowCommandCostDefinerLayerBuilder(CommandCostDefinerLayerBuilder, T
         current_layer: TensorflowNetworkLayer = input_layers[input_layer_key]
         # size: int = len(current_layer.value.units)
         for tensor_name in command_cost_definer_tensor_names:
-            result[tensor_name.value] = TensorflowNetworkLayer()
-            result[tensor_name.value].value = layers.Dense(
+            result[tensor_name] = TensorflowNetworkLayer()
+            result[tensor_name].value = layers.Dense(
                 self._get_layer_size(current_layer),
                 activation='relu',
-                name=f"{new_layer_name}__{tensor_name.value}"
+                name=f"{new_layer_name}__{tensor_name}"
             )(
                 current_layer.value
             )

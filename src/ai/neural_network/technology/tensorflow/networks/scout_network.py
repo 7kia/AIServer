@@ -15,10 +15,11 @@ from tensorflow.python.layers.base import Layer
 from src.ai.ai_command_generator import CommandName
 from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_state import GameState
-from src.ai.game_components.move_direction import DIRECTIONS
+from src.ai.game_components.move_direction import DIRECTIONS, length_variant
 from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology.tensorflow.input_network_data_generator import InputNetworkDataGenerator
-from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel
+from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel, \
+    LengthDistanceTensorPrefix, CommandCostDefinerTensorNames, LENGTH
 from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
@@ -103,20 +104,23 @@ class ScoutNetwork(NetworkAdapter):
         result_tensor = self._final_model.predict(
             self.data_generator.generate_input_data(unit_observation, current_game_state),# np.asarray(input_data),
         )
-        index: int = result_tensor[0]
+        direction_index: int = result_tensor[0] % LENGTH[CommandCostDefinerTensorNames]
+        distance_variant_index: int = int(result_tensor[0] / LENGTH[CommandCostDefinerTensorNames])
+
         return AiCommand(
-            direction=DIRECTIONS[index],
+            direction=DIRECTIONS[direction_index],
+            distance=length_variant[distance_variant_index],
             command_name=CommandName.move_or_attack
         )
 
     def compile(self, optimizer: MyOptimizer, loss: MyErrorFunction):
-        new_optimizer: OptimizerV2 = self._create_optimizer(optimizer)
-        new_loss: Loss = self._create_loss(loss)
-
         self._final_model = keras.Model(
             inputs=self._input_layer,
             outputs=self._output_layer[CommandDefinerLevel.result.value]
         )
+        new_loss: Loss = self._create_loss(loss)
+        new_optimizer: OptimizerV2 = self._create_optimizer(optimizer, new_loss)
+
         # TODO 7kia загрузка модели
         self._final_model.compile(
             optimizer=new_optimizer,
@@ -124,6 +128,7 @@ class ScoutNetwork(NetworkAdapter):
             # metrics=['accuracy'],
         )
         self._load_weight()
+        # keras.utils.plot_model(self._final_model, "./scout_network_model.png", show_shapes=True)
 
     def _load_weight(self):
         if self._exist_file(self._model_weight_path):
@@ -150,9 +155,10 @@ class ScoutNetwork(NetworkAdapter):
         self.__command_definer = layer
 
     # TODO 7kia используется стандартный алгоритм обучения
-    @staticmethod
-    def _create_optimizer(optimizer: MyOptimizer) -> OptimizerV2:
-        return tf.keras.optimizers.Adam(learning_rate=1e-3)
+    def _create_optimizer(self, optimizer: MyOptimizer, new_loss: Loss) -> OptimizerV2:
+        return tf.keras.optimizers.Adam(learning_rate=1e-3)\
+            .minimize(loss=new_loss,
+                      var_list=self._final_model.trainable_weights)
 
     def _create_loss(self, loss: MyErrorFunction) -> Loss:
         error_function: TensorflowErrorFunction = loss

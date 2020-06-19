@@ -6,7 +6,7 @@ from src.ai.ai import Ai
 from src.ai.ai_command_generator import AiCommandGenerator, Json, CommandName
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.game_data_extractor import UnitDict
-from src.ai.game_components.move_direction import DIRECTIONS, SHORT_DISTANCE, LONG_DISTANCE
+from src.ai.game_components.move_direction import DIRECTIONS, length_variant
 from src.ai.game_components.position import Position
 from src.ai.game_components.unit import UnitList, Unit
 
@@ -62,4 +62,4 @@ class ScriptBot(Ai):
 
     @staticmethod
     def _change_distance() -> float:
-        return random_choice([SHORT_DISTANCE, LONG_DISTANCE])
+        return random_choice(length_variant)

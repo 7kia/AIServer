@@ -48,9 +48,20 @@ class CommandCostDefinerTensorNames(Enum):
     up_left: str = "up_left_command_cost_definer"
 
 
-command_cost_definer_tensor_names: List[CommandCostDefinerTensorNames] = []
-for name in CommandCostDefinerTensorNames:
-    command_cost_definer_tensor_names.append(name)
+class LengthDistanceTensorPrefix(Enum):
+    min: str = "min_distance"
+    max: str = "max_distance"
+
+
+LENGTH = {
+    LengthDistanceTensorPrefix: len(LengthDistanceTensorPrefix),
+    CommandCostDefinerTensorNames: len(CommandCostDefinerTensorNames),
+}
+
+command_cost_definer_tensor_names: List[str] = []
+for prefix in LengthDistanceTensorPrefix:
+    for name in CommandCostDefinerTensorNames:
+        command_cost_definer_tensor_names.append(prefix.value + "__" + name.value)
 
 
 class CommandCostDefinerTensorId(Enum):
@@ -67,6 +78,7 @@ class CommandCostDefinerTensorId(Enum):
 class CommandDefinerLevel(Enum):
     command_cost_summation_layer: str = "command_cost_summation_layer"
     result: str = "result_layer"
+
 
 class NetworkAdapter:
     _input_layer: List[Layer] = None
@@ -97,4 +109,3 @@ class NetworkAdapter:
         for value in input_layer.values():
             result.append(value)
         return result
-

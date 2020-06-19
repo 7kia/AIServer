@@ -55,9 +55,15 @@ class CommandCostDefinerTensorNames(Enum):
     up_left: str = "up_left_command_cost_definer"
 
 
-command_cost_definer_tensor_names: List[CommandCostDefinerTensorNames] = []
-for name in CommandCostDefinerTensorNames:
-    command_cost_definer_tensor_names.append(name)
+class LengthDistanceTensorPrefix(Enum):
+    min: str = "min_distance"
+    max: str = "max_distance"
+
+
+command_cost_definer_tensor_names: List[str] = []
+for prefix in LengthDistanceTensorPrefix:
+    for name in CommandCostDefinerTensorNames:
+        command_cost_definer_tensor_names.append(prefix.value + "__" + name.value)
 
 
 class CommandCostDefinerTensorId(Enum):

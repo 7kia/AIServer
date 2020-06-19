@@ -22,25 +22,21 @@ class ScoutNetworkAdapter(NetworkAdapter):
         self._network: ScoutNetwork = ScoutNetwork()
 
     def train(self,
-              command_data_generation: CommandDataGeneration,
               unit_observation: UnitObservation,
-              current_game_state: GameState) -> Json:
-        command_numbers: AiCommand = self._network.train(
+              current_game_state: GameState) -> AiCommand:
+        result: AiCommand = self._network.train(
             unit_observation,
             current_game_state,
         )
-        result: Json = self._convert_to_json(command_numbers, command_data_generation)
         return result
 
     def test(self,
-             command_data_generation: CommandDataGeneration,
              unit_observation: UnitObservation,
-             current_game_state: GameState) -> Json:
-        command_numbers: AiCommand = self._network.test(
+             current_game_state: GameState) -> AiCommand:
+        result: AiCommand = self._network.test(
             unit_observation,
             current_game_state,
         )
-        result: Json = self._convert_to_json(command_numbers, command_data_generation)
         return result
 
     def compile(self, optimizer: Optimizer, loss: ErrorFunction):

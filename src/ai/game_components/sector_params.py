@@ -5,11 +5,13 @@ from src.ai.game_components.empty_structure_generator import EmptyStructureGener
 from src.ai.game_components.position_int import PositionInt
 from src.ai.game_components.unit import Unit
 
+UnitMatrix = List[List[List[Unit]]]
+
 
 class SectorParams(ConvertSelfToJson):
     def __init__(self):
-        self.ownUnitToSectors: List[List[List[Unit]]] = []
-        self.enemyUnitToSectors: List[List[List[Unit]]] = []
+        self.ownUnitToSectors: UnitMatrix = []
+        self.enemyUnitToSectors: UnitMatrix = []
 
         self.own_sum_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
         self.own_max_info: List[List[float]] = EmptyStructureGenerator.generate_list(0.0)
