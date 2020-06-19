@@ -5,16 +5,24 @@ import tensorflow as tf
 from tensorflow import Variable as TfVariable
 
 
+@tf.custom_gradient
+def clip_gradients(x):
+    def backward(dx):
+        return tf.clip_by_norm(dx, 0.1)
+
+    return x, backward
+
+
 class ScoutNetworkLossFunction(Loss):
     def __init__(self, error_function: TensorflowErrorFunction):
         super().__init__()
         self.error_function: TensorflowErrorFunction = error_function
 
-    def __call__(self, y_true, y_pred, sample_weight=None):
-        return tf.Variable(self.error_function(y_true, y_pred, sample_weight))
+    def call(self, y_true=None, y_pred=None):
+        return tf.Variable(self.error_function(y_true, y_pred))
 
-    def set_game_states(self, current_game_state: TfVariable, last_game_state: TfVariable):
+    def set_game_states(self, get_current_game_state, get_last_game_state):
         self.error_function.set_game_states(
-            current_game_state,
-            last_game_state
+            get_current_game_state,
+            get_last_game_state
         )

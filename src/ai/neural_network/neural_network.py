@@ -23,8 +23,12 @@ class NeuralNetwork(Ai):
         super().__init__()
 
     def get_commands(self, game_state: GameState) -> List[Json]:
-        self.set_last_game_state(self._current_game_state)
-        self.set_current_game_state(game_state)
+        if self._last_game_state is None:
+            self.set_last_game_state(game_state)
+            self.set_current_game_state(game_state)
+        else:
+            self.set_last_game_state(self._current_game_state)
+            self.set_current_game_state(game_state)
 
         result: List[Json] = []
         units: UnitList = self._generate_access_unit_list(game_state)

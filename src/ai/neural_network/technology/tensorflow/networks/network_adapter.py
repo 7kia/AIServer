@@ -11,6 +11,7 @@ from tensorflow.python.keras.models import Model
 
 from src.ai.neural_network.technology_adapter.network_layer import NetworkLayer
 from src.ai.neural_network.technology_adapter.tensorflow.network_layer import TensorflowNetworkLayer
+from tensorflow import Variable as TfVariable
 
 
 # TODO 7kia дублирование из-за того что не видит из модуля с director-ом
@@ -84,6 +85,8 @@ class NetworkAdapter:
     _input_layer: List[Layer] = None
     _output_layer: Dict[str, Layer] = None
     _final_model: Model = None
+    _current_game_state: TfVariable = None
+    _last_game_state: TfVariable = None
 
     def __init__(self):
         pass
@@ -109,3 +112,9 @@ class NetworkAdapter:
         for value in input_layer.values():
             result.append(value)
         return result
+
+    def get_current_state(self) -> TfVariable:
+        return self._current_game_state
+
+    def get_last_state(self) -> TfVariable:
+        return self._last_game_state

@@ -20,7 +20,8 @@ from src.ai.game_components.unit_observation import UnitObservation
 from src.ai.neural_network.technology.tensorflow.input_network_data_generator import InputNetworkDataGenerator
 from src.ai.neural_network.technology.tensorflow.networks.network_adapter import NetworkAdapter, CommandDefinerLevel, \
     LengthDistanceTensorPrefix, CommandCostDefinerTensorNames, LENGTH
-from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction
+from src.ai.neural_network.technology.tensorflow.scout_network_loss_function import ScoutNetworkLossFunction, \
+    clip_gradients
 from src.ai.neural_network.technology_adapter.ai_command import AiCommand
 from src.ai.neural_network.technology_adapter.error_function import ErrorFunction as MyErrorFunction
 from src.ai.neural_network.technology_adapter.optimizer import Optimizer as MyOptimizer
@@ -35,8 +36,7 @@ class ScoutNetwork(NetworkAdapter):
     # слой объединения значений и определения выходной окманды
     __command_definer: Layer = None
 
-    _current_game_state: TfVariable = None
-    _last_game_state: TfVariable = None
+
     _model_weight_path: str = 'model/scout_network.weight'
     _model_path: str = 'model/scout_network.model'
     _callback_save_weight: ModelCheckpoint = None
@@ -158,12 +158,14 @@ class ScoutNetwork(NetworkAdapter):
     def _create_optimizer(self, optimizer: MyOptimizer, new_loss: Loss) -> OptimizerV2:
         return tf.keras.optimizers.Adam(learning_rate=1e-3)\
             .minimize(loss=new_loss,
+                      grad_loss=clip_gradients,
                       var_list=self._final_model.trainable_weights)
 
     def _create_loss(self, loss: MyErrorFunction) -> Loss:
         error_function: TensorflowErrorFunction = loss
         result = ScoutNetworkLossFunction(error_function)
-        result.set_game_states(self._current_game_state, self._last_game_state)
-        return result.__call__
+        result.set_game_states(self.get_current_state, self.get_last_state)
+        return result.call
+
 
 
