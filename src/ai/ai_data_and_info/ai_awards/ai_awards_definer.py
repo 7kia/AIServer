@@ -1,6 +1,10 @@
+from typing import List
+
 from src.ai.ai_data_and_info.ai_awards.ai_awards import AiAwards
 from src.ai.ai_data_and_info.ai_awards.awards_definer_params import AwardsDefinerParams
 from src.ai.game_components.game_state import GameState
+from src.ai.game_components.sector_params import UnitMatrix
+from src.ai.game_components.unit import Unit
 
 
 class AiAwardsDefiner:
@@ -34,6 +38,7 @@ class AiAwardsDefiner:
         awards.organization = self.generate_organization_award(current_game_state, last_game_state)
         awards.experience = self.generate_experience_award(current_game_state, last_game_state)
         awards.overlap = self.generate_overlap_award(current_game_state, last_game_state)
+        awards.unit_detection = self.generate_unit_detection_award(current_game_state, last_game_state)
 
     def generate_troop_amount_award(self,
                                     current_game_state: GameState,
@@ -47,7 +52,7 @@ class AiAwardsDefiner:
         enemy_composition_different: float = enemy_composition_t - enemy_composition_t_last
 
         return self._coefficient_composition_generalization * (
-            own_composition_different - enemy_composition_different
+                own_composition_different - enemy_composition_different
         )
 
     def generate_organization_award(self,
@@ -62,7 +67,7 @@ class AiAwardsDefiner:
         enemy_organization_different: float = enemy_organization_t - enemy_organization_t_last
 
         return self._coefficient_organization_generalization * (
-            own_organization_different - enemy_organization_different
+                own_organization_different - enemy_organization_different
         )
 
     # rt = (unit_experiencet – unit_experiencet−1) / (unit_experiencet * unit_amount)
@@ -86,11 +91,31 @@ class AiAwardsDefiner:
 
         overlap_coefficient: float = self._generate_overlap_coefficient(own_overlap_different)
         return overlap_coefficient * own_overlap_different \
-            / (own_overlap_t * self.awards_definer_params.own_unit_amount)
+               / (own_overlap_t * self.awards_definer_params.own_unit_amount)
 
     @staticmethod
     def _generate_overlap_coefficient(own_overlap_different: float) -> float:
         result: float = 1
         if own_overlap_different > 0:
             return -3
+        return result
+
+    def generate_unit_detection_award(self,
+                                      current_game_state: GameState,
+                                      last_game_state: GameState) -> float:
+        current_unit_to_sectors: UnitMatrix = current_game_state.sector_params.enemyUnitToSectors
+        last_unit_to_sectors: UnitMatrix = last_game_state.sector_params.enemyUnitToSectors
+        result: float = 50.0 * self._get_new_enemies_amount(current_unit_to_sectors, last_unit_to_sectors)
+        return result
+
+    @staticmethod
+    def _get_new_enemies_amount(current_unit_to_sectors: UnitMatrix,
+                                last_unit_to_sectors: UnitMatrix) -> int:
+        result: int = 0
+        matrix_size: int = len(current_unit_to_sectors[0])
+        for row_index in range(matrix_size):
+            for cell_index in range(matrix_size):
+                current_units: List[Unit] = current_unit_to_sectors[row_index][cell_index]
+                last_units: List[Unit] = last_unit_to_sectors[row_index][cell_index]
+                result += len(current_units) - len(last_units)
         return result

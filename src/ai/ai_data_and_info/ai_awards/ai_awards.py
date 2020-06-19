@@ -7,6 +7,7 @@ class AiAwards(ConvertSelfToJson):
         self.organization: float = 0
         self.experience: float = 0
         self.overlap: float = 0
+        self.unit_detection: float = 0
 
     def as_json(self) -> Json:
         return {
@@ -14,6 +15,7 @@ class AiAwards(ConvertSelfToJson):
             "organization": self.organization,
             "experience": self.experience,
             "overlap": self.overlap,
+            "unit_detection": self.unit_detection,
         }
 
     def __iadd__(self, other):
@@ -21,6 +23,7 @@ class AiAwards(ConvertSelfToJson):
         self.organization += other.organization
         self.experience += other.experience
         self.overlap += other.overlap
+        self.unit_detection += other.unit_detection
         return self
 
     def clone_empty(self):
@@ -32,7 +35,10 @@ class AiAwards(ConvertSelfToJson):
         copy.organization = self.organization
         copy.experience = self.experience
         copy.overlap = self.overlap
+        copy.unit_detection = self.unit_detection
         return copy
 
     def get_sum_award(self) -> float:
-        return self.troop_amount + self.organization + self.experience + self.overlap
+        return self.troop_amount + self.organization\
+               + self.experience + self.overlap \
+               + self.unit_detection

@@ -18,6 +18,8 @@ from src.ai.game_components.convert_self_to_json import Json
 from src.ai.game_components.game_data_extractor import GameDataExtractor
 from src.ai.game_components.game_state import GameState
 from src.ai.game_components.person_unit_params import PersonUnitParams
+from src.ai.game_components.sector_params import SectorParams
+from src.ai.game_components.unit import Unit
 
 
 class GenerateSimpleAiAwards(unittest.TestCase):
@@ -38,7 +40,7 @@ class GenerateSimpleAiAwards(unittest.TestCase):
         game_id = 1
         player_id = 2
         ai_option = AiOption()
-        ai_option.troopType = "motorized"
+        ai_option.troop_type = "motorized"
         ai_option.is_train = True
         game_info = GameInfo(game_id, player_id, ai_option)
         ai: Ai = AiBuilderDirector.create_ai(ai_info, game_info)
@@ -67,8 +69,16 @@ class GenerateSimpleAiAwards(unittest.TestCase):
         person_unit_params.enemy_organization = 4
         person_unit_params.experience = 4
         person_unit_params.overlap = 5
-
         game_state.person_unit_params = person_unit_params
+
+        sector_params: SectorParams = SectorParams()
+        sector_params.enemyUnitToSectors = [
+            [[], [Unit().set(11, "motorized"), Unit().set(11, "motorized")], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+        ]
+        game_state.sector_params = sector_params
         game_state.current_time.set_string_presentation("5")
         return game_state
 
@@ -83,8 +93,16 @@ class GenerateSimpleAiAwards(unittest.TestCase):
 
         person_unit_params.experience = 1
         person_unit_params.overlap = 1
-
         game_state.person_unit_params = person_unit_params
+
+        sector_params: SectorParams = SectorParams()
+        sector_params.enemyUnitToSectors = [
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+        ]
+        game_state.sector_params = sector_params
         game_state.current_time.set_string_presentation("4.5")
 
         return game_state
@@ -158,17 +176,25 @@ class GenerateSimpleAiAwards(unittest.TestCase):
             self.json_awards["overlap"]
         )
 
+    def test_have_award_for_unit_detection(self):
+        self.assertEqual(
+            50.0 * 2,
+            self.json_awards["unit_detection"]
+        )
+
     def test_can_summ_awards(self):
         test_awards: AiAwards = AiAwards()
         test_awards.troop_amount = 1
         test_awards.organization = 1
         test_awards.experience = 1
         test_awards.overlap = 1
+        test_awards.unit_detection = 1
         self.awards += test_awards
         self.assertAlmostEqual(-0.1, self.awards.troop_amount, places=3)
         self.assertAlmostEqual(-0.083, self.awards.organization, places=3)
         self.assertAlmostEqual(1.1875, self.awards.experience, places=3)
         self.assertAlmostEqual(0.4, self.awards.overlap, places=3)
+        self.assertAlmostEqual(101.0, self.awards.unit_detection, places=3)
 
 
 
@@ -182,7 +208,7 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         game_id = 1
         player_id = 2
         ai_option = AiOption()
-        ai_option.troopType = "motorized"
+        ai_option.troop_type = "motorized"
         ai_option.is_train = True
         game_info = GameInfo(game_id, player_id, ai_option)
         ai: Ai = AiBuilderDirector.create_ai(ai_info, game_info)
@@ -209,8 +235,16 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         person_unit_params.overlap = 5
         person_unit_params.speed = 6
         person_unit_params.spent_time = 7
-
         game_state.person_unit_params = person_unit_params
+
+        sector_params: SectorParams = SectorParams()
+        sector_params.enemyUnitToSectors = [
+            [[], [Unit().set(11, "motorized"), Unit().set(11, "motorized")], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+        ]
+        game_state.sector_params = sector_params
         game_state.current_time.set_string_presentation("4.5")
         return game_state
 
@@ -227,8 +261,17 @@ class GenerateNextAwardsOnlyForScoutAndRetreatNetworks(GenerateSimpleAiAwards):
         person_unit_params.overlap = 1
         person_unit_params.speed = 1
         person_unit_params.spent_time = 1
-
         game_state.person_unit_params = person_unit_params
+
+        sector_params: SectorParams = SectorParams()
+        sector_params.enemyUnitToSectors = [
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+            [[], [], [], []],
+        ]
+        game_state.sector_params = sector_params
+
         game_state.current_time.set_string_presentation("2.5")
         return game_state
 
